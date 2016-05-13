@@ -1,0 +1,6 @@
+*** enhancement
+In the mixed offer assignment framework (./mixed_offer_assignment), we require that the upper bound of each part is known and add up to the overall upperbound, say 2+2+2 = 6.
+In the V4 framework (mixed_offer_assignment_flexible_upperbound), we allow undetermined upper bound for each part, so the upper bound of the parts could be (unk 2 unk), and the overall upperbound could be 6. Here 'unk' stands for unknown, where we plugged the overall upperbound and the number of offers a member has got into consideration.
+
+ 
+

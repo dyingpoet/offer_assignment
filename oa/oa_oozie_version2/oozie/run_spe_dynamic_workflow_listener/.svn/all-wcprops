@@ -1,0 +1,17 @@
+K 25
+svn:wc:ra_dav:version-url
+V 124
+/svn/repos/gci/!svn/ver/36687/MEP/Offer_Assignment_Automation/trunk/src/main/scripts/oozie/run_spe_dynamic_workflow_listener
+END
+job.properties
+K 25
+svn:wc:ra_dav:version-url
+V 139
+/svn/repos/gci/!svn/ver/36687/MEP/Offer_Assignment_Automation/trunk/src/main/scripts/oozie/run_spe_dynamic_workflow_listener/job.properties
+END
+workflow.xml
+K 25
+svn:wc:ra_dav:version-url
+V 137
+/svn/repos/gci/!svn/ver/36687/MEP/Offer_Assignment_Automation/trunk/src/main/scripts/oozie/run_spe_dynamic_workflow_listener/workflow.xml
+END

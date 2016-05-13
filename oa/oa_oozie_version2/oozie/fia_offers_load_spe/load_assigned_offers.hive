@@ -1,0 +1,31 @@
+create database if not exists ${mepschema};
+use ${mepschema};
+
+SET hive.exec.compress.output=true ;
+SET hive.exec.compress.intermediate=true ;
+SET mapred.output.compress=true ;
+SET mapred.output.compression.codec=org.apache.hadoop.io.compress.SnappyCodec ;
+SET mapred.map.output.compression.codec=org.apache.hadoop.io.compress.SnappyCodec ;
+SET io.seqfile.compression.type=BLOCK;
+SET io.sort.mb=500 ;
+SET mapred.reduce.slowstart.completed.maps=0.90 ;
+SET dfs.block.size=536870912;
+SET io.file.buffer.size=131072;
+SET mapred.compress.map.output=true;
+SET mapred.output.compression.type=BLOCK;
+
+drop table if exists FIA_ASSIGNED_OFFERS;
+
+
+CREATE TABLE FIA_ASSIGNED_OFFERS
+STORED AS SEQUENCEFILE
+AS
+SELECT VCOD.VALUE_COUPON_NBR, CCF.MEMBERSHIP_NBR, CCF.CARD_HOLDER_NBR
+FROM US_WC_PROMO_DM_TABLES.VALUE_COUPON_DIM VCOD
+JOIN US_WC_PROMO_DM_TABLES.CRDHLDR_COUPON_FACT CCF
+ON VCOD.VALUE_COUPON_SK_ID = CCF.VALUE_COUPON_SK_ID
+--WHERE VCOD.CAMPAIGN_NBR IN (${campaignnbr})
+WHERE VCOD.end_date >= to_date(from_unixtime(unix_timestamp()))
+group by 
+VCOD.VALUE_COUPON_NBR, CCF.MEMBERSHIP_NBR, CCF.CARD_HOLDER_NBR
+;

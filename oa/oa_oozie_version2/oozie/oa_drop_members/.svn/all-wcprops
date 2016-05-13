@@ -1,0 +1,41 @@
+K 25
+svn:wc:ra_dav:version-url
+V 106
+/svn/repos/gci/!svn/ver/36375/MEP/Offer_Assignment_Automation/trunk/src/main/scripts/oozie/oa_drop_members
+END
+drop_inp.py
+K 25
+svn:wc:ra_dav:version-url
+V 118
+/svn/repos/gci/!svn/ver/35988/MEP/Offer_Assignment_Automation/trunk/src/main/scripts/oozie/oa_drop_members/drop_inp.py
+END
+job.properties
+K 25
+svn:wc:ra_dav:version-url
+V 121
+/svn/repos/gci/!svn/ver/35988/MEP/Offer_Assignment_Automation/trunk/src/main/scripts/oozie/oa_drop_members/job.properties
+END
+dropCoupons.pig
+K 25
+svn:wc:ra_dav:version-url
+V 122
+/svn/repos/gci/!svn/ver/36375/MEP/Offer_Assignment_Automation/trunk/src/main/scripts/oozie/oa_drop_members/dropCoupons.pig
+END
+workflow.xml
+K 25
+svn:wc:ra_dav:version-url
+V 119
+/svn/repos/gci/!svn/ver/35988/MEP/Offer_Assignment_Automation/trunk/src/main/scripts/oozie/oa_drop_members/workflow.xml
+END
+copy_files.pig
+K 25
+svn:wc:ra_dav:version-url
+V 121
+/svn/repos/gci/!svn/ver/35988/MEP/Offer_Assignment_Automation/trunk/src/main/scripts/oozie/oa_drop_members/copy_files.pig
+END
+README.txt
+K 25
+svn:wc:ra_dav:version-url
+V 117
+/svn/repos/gci/!svn/ver/35988/MEP/Offer_Assignment_Automation/trunk/src/main/scripts/oozie/oa_drop_members/README.txt
+END

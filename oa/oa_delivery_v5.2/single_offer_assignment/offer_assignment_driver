@@ -1,0 +1,20 @@
+#!/bin/bash
+
+source offer_assignment_utility.sh
+
+source offer_assignment_param.cfg
+
+### preprocess
+if [[ $REASSIGN -ne 1 ]]; then 
+    bash ${SRC_DIR}/preprocess/oa_preprocess_driver
+else
+    bash ${SRC_DIR}/preprocess/oa_preprocess_reassign
+fi
+
+#### optimization
+bash ${SRC_DIR}/optimization/oa_optimization_driver
+
+### postprocess
+bash ${SRC_DIR}/postprocess/oa_postprocess_driver 
+
+

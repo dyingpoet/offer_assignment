@@ -1,0 +1,70 @@
+
+Input(s):
+Successfully read 56 records from: "/user/jli21/sams/offer/56clubs.txt"
+Successfully read 1495944 records from: "/user/pythia/Workspaces/SamsMEP/item_info_snapshot/ds=2014-03-31"
+Successfully read 4643385260 records from: "/user/pythia/Workspaces/SamsMEP/customer_club_day_item_sales_with_new_sub_category2013_2014"
+
+Output(s):
+Successfully stored 64986 records in: "/user/pythia/Workspaces/SamsMEP/subcatItemPref/global/ds=2014-04-14"
+
+Counters:
+Total records written : 64986
+Total bytes written : 0
+Spillable Memory Manager spill count : 0
+Total bags proactively spilled: 0
+Total records proactively spilled: 0
+
+Job DAG:
+job_201404020303_287906 ->      job_201404020303_287925,
+job_201404020303_287907 ->      job_201404020303_287925,
+job_201404020303_287925 ->      job_201404020303_288264,
+job_201404020303_288264
+
+
+2014-04-14 20:33:20,199 [main] WARN  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.MapReduceLauncher - Encountered Warning FIELD_DISCARDED_TYPE_CONVERSION_FAILED 5 time(s).
+2014-04-14 20:33:20,199 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.MapReduceLauncher - Success!
+
+
+
+<file member_item_preference.pig, line 91, column 41> Invalid field projection. Projected field [Mem4::membership_nbr] does not exist in schema: Mem2::membership_nbr:chararray,Mem2::membership_create_date:chararray,Mem2::membership_obsolete_date:chararray,Mem2::pdcardholder_nbr:chararray,Mem2::cardholder_nbr:chararray,TransData6::membership_nbr:chararray,TransData6::card_holder_nbr:chararray,TransData6::cat_subcat_nbr:bytearray,TransData6::system_item_nbr:long,TransData6::visit_date:chararray,TransData6::retail_all:double,TransData6::unit_qty:double.
+Details at logfile: /data1/home/jli21/sams/oa_module/preprocess/step2_preference/pig_1397533423743.log
+
+
+
+Success!
+
+Job Stats (time in seconds):
+JobId   Maps    Reduces MaxMapTime      MinMapTIme      AvgMapTime      MedianMapTime   MaxReduceTime   MinReduceTime   AvgReduceTime   MedianReducetime        Alias   Feature Outputs
+job_201404020303_289589 1       0       18      18      18      18      0       0       0       0       ItemSubcat      MAP_ONLY
+job_201404020303_289610 2       500     n/a     n/a     n/a     n/a     n/a     n/a     TransData0,TransData1,TransData2,TransData3,TransData4,TransData5,TransData6    REPLICATED_JOIN,GROUP_BY,COMBINER
+job_201404020303_290330 1001    500     194     33      79      75      157     97      106     106     Mem0,Mem1,Mem2,TransData7,TransData8,TransData9 HASH_JOIN
+job_201404020303_290419 28      500     72      31      47      47      55      13      17      16      TransData10,TransData11,TransData12     GROUP_BY
+job_201404020303_290468 10      800     117     45      65      58      22      7       13      13      TransData13,TransData14,item_list,ordered_item_list     GROUP_BY        /user/pythia/Workspaces/SamsMEP/subcatItemPref/member/ds=2014-04-14,
+
+Input(s):
+Successfully read 1495944 records from: "/user/pythia/Workspaces/SamsMEP/item_info_snapshot/ds=2014-03-31"
+Successfully read 4643385260 records from: "/user/pythia/Workspaces/SamsMEP/customer_club_day_item_sales_with_new_sub_category2013_2014"
+Successfully read 342713 records from: "/user/pythia/Workspaces/SamsMEP/TTEScoring/plus/init/2014-03-10/mem_with_compcards"
+
+Output(s):
+Successfully stored 27717878 records in: "/user/pythia/Workspaces/SamsMEP/subcatItemPref/member/ds=2014-04-14"
+
+Counters:
+Total records written : 27717878
+Total bytes written : 0
+Spillable Memory Manager spill count : 0
+Total bags proactively spilled: 0
+Total records proactively spilled: 0
+
+Job DAG:
+job_201404020303_289589 ->      job_201404020303_289610,
+job_201404020303_289610 ->      job_201404020303_290330,
+job_201404020303_290330 ->      job_201404020303_290419,
+job_201404020303_290419 ->      job_201404020303_290468,
+job_201404020303_290468
+
+
+2014-04-14 22:58:51,713 [main] WARN  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.MapReduceLauncher - Encountered Warning FIELD_DISCARDED_TYPE_CONVERSION_FAILED 5 time(s).
+2014-04-14 22:58:51,713 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.MapReduceLauncher - Success!
+
+

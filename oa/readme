@@ -1,0 +1,13 @@
+1) v5.1 (For club insider)
+Limit as most X% reward offer for each coupon. In the implementation, the %offer type constraint could only be applied to the last assignment of a mixed sequential assignment.
+
+https://gecgithub01.walmart.com/PersonalizedOffers/MEP/tree/master/Prod/OfferAssignment/v5.1
+
+
+2) v5.2 (General)
+Random backfill.
+Incorporated the offer assignment re-assignment for the single_offer_assignment module.
+
+https://gecgithub01.walmart.com/PersonalizedOffers/MEP/tree/master/Prod/OfferAssignment/v5.2
+
+

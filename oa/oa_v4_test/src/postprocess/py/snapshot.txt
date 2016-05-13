@@ -1,0 +1,27 @@
+[jli21@sg-dev01 py]$ ls -rlth
+total 84K
+-rw-rw-r-- 1 jli21 jli21  359 Dec  3 11:45 add_sc.py
+-rw-rw-r-- 1 jli21 jli21 2.0K Dec  3 11:45 generateCKP4.py
+-rw-rw-r-- 1 jli21 jli21  224 Dec  3 11:45 generateCKP3.py
+-rw-rw-r-- 1 jli21 jli21 1.3K Dec  3 11:45 appendScore.py
+-rw-rw-r-- 1 jli21 jli21 5.1K Dec  3 11:45 reco_and_popularity_no_cluster_backfill.py
+-rw-rw-r-- 1 jli21 jli21 4.1K Dec  3 11:45 reco_and_popularity_cluster_backfill.py
+-rw-rw-r-- 1 jli21 jli21 4.1K Dec  3 11:45 reco_and_popularity_backfill.py
+-rw-rw-r-- 1 jli21 jli21 3.5K Dec  3 11:45 reco_backfill.py
+-rw-rw-r-- 1 jli21 jli21 1.7K Dec  3 17:48 appendScoreCoupon.py
+-rw-rw-r-- 1 jli21 jli21 1.2K Dec  3 17:56 adjustScoreType.py
+-rw-rw-r-- 1 jli21 jli21 1.2K Dec  3 18:57 add_score_type_static.py
+-rw-rw-r-- 1 jli21 jli21 2.6K Dec  6 15:18 default_backfill.py.v1
+-rw-rw-r-- 1 jli21 jli21 5.1K Dec  6 16:49 popularity_no_cluster_backfill.py.v1
+-rw-rw-r-- 1 jli21 jli21 2.9K Dec  6 18:24 default_backfill.py
+-rw-rw-r-- 1 jli21 jli21 5.7K Dec  7 03:56 popularity_no_cluster_backfill.py
+-rw-rw-r-- 1 jli21 jli21 2.7K Dec  7 04:20 no_qualify_backfill.py
+
+* on 2014 Dec. 6-7
+modified and used
+-rw-rw-r-- 1 jli21 jli21 2.9K Dec  6 18:24 default_backfill.py
+-rw-rw-r-- 1 jli21 jli21 5.7K Dec  7 03:56 popularity_no_cluster_backfill.py
+not fully completed 
+-rw-rw-r-- 1 jli21 jli21 2.7K Dec  7 04:20 no_qualify_backfill.py
+
+

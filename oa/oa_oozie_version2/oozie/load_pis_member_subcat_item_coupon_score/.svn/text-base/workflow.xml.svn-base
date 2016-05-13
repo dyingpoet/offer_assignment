@@ -1,0 +1,109 @@
+<workflow-app xmlns="uri:oozie:workflow:0.2" name="load_pis_member_subcat_item_coupon_score">
+
+<start to="Item_Level_or_subcat_Level_decision"/>
+
+ <decision name="Item_Level_or_subcat_Level_decision">
+       <switch>
+	   <case to="load_pis_member_item_coupon">	
+		${item_level_score_ind == "Y"}
+	   </case>
+	   <case to="load_pis_member_subcat_coupon">
+	     ${item_level_score_ind == "N"}
+	   </case>
+	   <default to="load_pis_member_subcat_coupon"/>
+       </switch>
+</decision>
+<action name="load_pis_member_item_coupon">
+        <hive xmlns="uri:oozie:hive-action:0.2">
+                <job-tracker>${jobTracker}</job-tracker>
+                <name-node>${nameNode}</name-node>
+                <job-xml>${nameNode}/user/${wf:user()}/${appRoot}/env/${cluster}/hive-site.xml</job-xml>
+                <configuration>
+                <property>
+                  <name>oozie.hive.defaults</name>
+                  <value>/user/${wf:user()}/${appRoot}/env/${cluster}/hive-default.xml</value>
+                </property>
+                <property>
+                    <name>pool.name</name>
+                    <value>${etlPoolName}</value>
+                </property>
+                <property>
+                    <name>oozie.launcher.pool.name</name>
+                    <value>${oozieLauncherPoolName}</value>
+                </property>
+                </configuration>
+
+        <script>load_pis_member_item_coupon.hql</script>
+        <param>database=${database}</param>
+		<param>task_table=${task_table}</param>
+		<param>campaign_iter=${campaign_iter}</param>
+		<param>campaign_score_type=${campaign_score_type}</param>
+		<param>member_club_pref_table=${member_club_pref_table}</param>
+		<param>subcat_item_club_table=${fia_subcat_item_club}</param>
+		<param>reco_table=${reco_table}</param>
+		<param>recoLoc=${recoLoc}</param>
+	 </hive>
+        <ok to="end"/>
+        <error to="send-email"/>
+</action>
+
+<action name="load_pis_member_subcat_coupon">
+        <hive xmlns="uri:oozie:hive-action:0.2">
+                <job-tracker>${jobTracker}</job-tracker>
+                <name-node>${nameNode}</name-node>
+                <job-xml>${nameNode}/user/${wf:user()}/${appRoot}/env/${cluster}/hive-site.xml</job-xml>
+                <configuration>
+                <property>
+                  <name>oozie.hive.defaults</name>
+                  <value>/user/${wf:user()}/${appRoot}/env/${cluster}/hive-default.xml</value>
+                </property>
+                <property>
+                    <name>pool.name</name>
+                    <value>${etlPoolName}</value>
+                </property>
+                <property>
+                    <name>oozie.launcher.pool.name</name>
+                    <value>${oozieLauncherPoolName}</value>
+                </property>
+                </configuration>
+
+        <script>load_pis_member_subcat_coupon.hql</script>
+        <param>database=${database}</param>
+		<param>task_table=${task_table}</param>
+		<param>campaign_iter=${campaign_iter}</param>
+		<param>campaign_score_type=${campaign_score_type}</param>
+		<param>member_club_pref_table=${member_club_pref_table}</param>
+		<param>subcat_item_club_table=${fia_subcat_item_club}</param>
+		<param>reco_table=${reco_table}</param>
+        <param>recoLoc=${recoLoc}</param>
+		</hive>
+        <ok to="end"/>
+        <error to="send-email"/>
+</action>
+   
+<action name="send-email">
+        <email xmlns="uri:oozie:email-action:0.1">
+            <to>${emailTo}</to>
+            <subject>**MEP** OA – Pre Processing : Error Loading Plus Member SubCat Item Coupon Score - ${wf:id()}</subject>
+            <body>
+                hostname: hadoop-prod
+                severity: MINOR
+                object: HADOOP
+                modifier: HADOOP
+                group: HADOOP
+                text: Action failed. (ID ${wf:id()}, PATH ${wf:appPath()}) Error Message: ${wf:errorMessage(wf:lastErrorNode())}
+            </body>
+        </email>
+
+        <ok to="kill"/>
+        <error to="kill"/>
+        
+</action>
+ 
+<kill name="kill">
+    <message>FATAL: OA Plus Member SubCat Item Coupon Score Load Job Failed </message>
+</kill>
+
+<end name="end"/>
+
+</workflow-app>

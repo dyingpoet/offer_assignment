@@ -1,0 +1,253 @@
+<workflow-app xmlns="uri:oozie:workflow:0.4" name="load_global_and_member_item_preference">
+
+<start to ="fork1"/>
+
+<fork name="fork1">
+  <path start="global_item_preference"/>
+  <path start="check_member_source"/>
+</fork>
+
+<action name="global_item_preference">
+	<pig>
+	<job-tracker>${jobTracker}</job-tracker>
+	<name-node>${nameNode}</name-node>
+	<prepare>
+		<delete path="${nameNode}/user/hive/warehouse/${database}.db/global_sbcat_item_pref/campaign_iter=${campaign_iter}" />
+	</prepare>
+	<job-xml>${nameNode}/user/${wf:user()}/${appRoot}/env/${cluster}/hive-site.xml</job-xml>
+	<script>global_item_preference.pig</script>
+	<param>database=${database}</param>
+	<param>Pig=/usr/bin/pig</param>
+	<param>FilterClub=${nameNode}/${filterclub}</param>
+	<param>TransData=${nameNode}/user/hive/warehouse/${database}.db/customer_club_day_item_sales/campaign_iter=${campaign_iter}</param>
+	<param>ItemSubCatMapping=${nameNode}/user/hive/warehouse/${database}.db/item_info_snapshot/campaign_iter=${campaign_iter}</param>
+	<param>DataStartT=${DataStartT}</param>
+	<param>DataEndT=${DataEndT}</param>
+	<param>OutputGlobalPref=${nameNode}/user/hive/warehouse/${database}.db/global_sbcat_item_pref/campaign_iter=${campaign_iter}</param>	
+
+	</pig>
+        <ok to="join1"/>
+        <error to="join1"/>
+</action>
+
+<decision name="check_member_source">
+               <switch>
+                  <case to="member_source_internal">
+                        ${member_source_ind == "INTERNAL"}
+                  </case>
+				  <case to="member_source_external">
+                        ${member_source_ind == "EXTERNAL"}
+                  </case>
+                  <default to="member_source_internal"/>
+               </switch>
+</decision>
+
+<action name="member_source_internal">
+        <hive xmlns="uri:oozie:hive-action:0.2">
+                <job-tracker>${jobTracker}</job-tracker>
+                <name-node>${nameNode}</name-node>
+				<job-xml>${nameNode}/user/${wf:user()}/${appRoot}/env/${cluster}/hive-site.xml</job-xml>
+                <configuration>
+                <property>
+                  <name>oozie.hive.defaults</name>
+                  <value>/user/${wf:user()}/${appRoot}/env/${cluster}/hive-default.xml</value>
+                </property>
+                <property>
+                    <name>pool.name</name>
+                    <value>${etlPoolName}</value>
+                </property>
+                <property>
+                    <name>oozie.launcher.pool.name</name>
+                    <value>${oozieLauncherPoolName}</value>
+                </property>
+                </configuration>
+
+                <script>member_source_internal.hql</script>
+				<param>database=${database}</param>
+				<param>campaign_iter=${campaign_iter}</param>
+				<param>spe_member_list=${spe_member_list}</param>
+				<param>member_list_nbr=${member_list_nbr}</param>
+                
+        </hive>
+        <ok to="member_item_preference"/>
+        <error to="send-email"/>
+</action>
+
+<action name="member_source_external">
+        <hive xmlns="uri:oozie:hive-action:0.2">
+                <job-tracker>${jobTracker}</job-tracker>
+                <name-node>${nameNode}</name-node>
+			    <job-xml>${nameNode}/user/${wf:user()}/${appRoot}/env/${cluster}/hive-site.xml</job-xml>
+                <configuration>
+                <property>
+                  <name>oozie.hive.defaults</name>
+                  <value>/user/${wf:user()}/${appRoot}/env/${cluster}/hive-default.xml</value>
+                </property>
+                <property>
+                    <name>pool.name</name>
+                    <value>${etlPoolName}</value>
+                </property>
+                <property>
+                    <name>oozie.launcher.pool.name</name>
+                    <value>${oozieLauncherPoolName}</value>
+                </property>
+                </configuration>
+
+                <script>member_source_external.hql</script>
+				<param>database=${database}</param>
+				<param>campaign_iter=${campaign_iter}</param>
+				<param>member_list_nbr=${member_list_nbr}</param>
+				<param>member_list_ts=${member_list_ts}</param>
+				<param>unica_predefined_member_list=${unica_predefined_member_list}</param>
+                
+        </hive>
+        <ok to="member_item_preference"/>
+        <error to="send-email"/>
+</action>
+
+
+<action name="member_item_preference">
+	<pig>
+	<job-tracker>${jobTracker}</job-tracker>
+	<name-node>${nameNode}</name-node>
+	<prepare>
+		<delete path="${nameNode}/user/hive/warehouse/${database}.db/member_subcat_item_pref/campaign_iter=${campaign_iter}" />
+	</prepare>
+	<job-xml>${nameNode}/user/${wf:user()}/${appRoot}/env/${cluster}/hive-site.xml</job-xml>
+	<script>member_item_preference.pig</script>
+	<param>database=${database}</param>
+	<param>MemCombined=${nameNode}/user/hive/warehouse/${database}.db/member_pool/campaign_iter=${campaign_iter}</param>
+	<param>Pig=/usr/bin/pig</param>
+	<param>TransData=${nameNode}/user/hive/warehouse/${database}.db/customer_club_day_item_sales/campaign_iter=${campaign_iter}</param>
+	<param>ItemSubCatMapping=${nameNode}/user/hive/warehouse/${database}.db/item_info_snapshot/campaign_iter=${campaign_iter}</param>
+	<param>DataStartT=${DataStartT}</param>
+	<param>DataEndT=${DataEndT}</param>
+	<param>OutputMemberPref=${nameNode}/user/hive/warehouse/${database}.db/member_subcat_item_pref/campaign_iter=${campaign_iter}</param>
+
+        </pig>
+    <ok to="join1"/>
+	<error to="join1"/>
+</action>
+
+<join name="join1" to="checkerror"/>
+
+<decision name="checkerror">
+    <switch>
+          
+      <case to="send-email">
+	  	    ${null != wf:lastErrorNode()}          
+	  </case>
+	  	  
+	  <case to="fork3">
+	  	    ${null == wf:lastErrorNode()}
+	  </case>
+          
+      <default to="end"/>
+           
+    </switch>
+</decision> 
+
+<fork name="fork3">
+  <path start="load_global_sbcat_item_pref_final"/>
+  <path start="load_member_subcat_item_pref_final"/>
+</fork>
+
+<action name="load_global_sbcat_item_pref_final">
+        <hive xmlns="uri:oozie:hive-action:0.2">
+                <job-tracker>${jobTracker}</job-tracker>
+                <name-node>${nameNode}</name-node>
+                <job-xml>${nameNode}/user/${wf:user()}/${appRoot}/env/${cluster}/hive-site.xml</job-xml>
+                <configuration>
+                <property>
+                  <name>oozie.hive.defaults</name>
+                  <value>/user/${wf:user()}/${appRoot}/env/${cluster}/hive-default.xml</value>
+                </property>
+                <property>
+                    <name>pool.name</name>
+                    <value>${etlPoolName}</value>
+                </property>
+                <property>
+                    <name>oozie.launcher.pool.name</name>
+                    <value>${oozieLauncherPoolName}</value>
+                </property>
+                </configuration>
+
+                <script>load_global_sbcat_item_pref_final.hql</script>
+				<param>campaign_iter=${campaign_iter}</param>
+                <param>database=${database}</param>
+                <param>jarpath=${jarpath}</param>
+        </hive>
+        <ok to="join3"/>
+        <error to="join3"/>
+</action>
+
+<action name="load_member_subcat_item_pref_final">
+        <hive xmlns="uri:oozie:hive-action:0.2">
+                <job-tracker>${jobTracker}</job-tracker>
+                <name-node>${nameNode}</name-node>
+                <job-xml>${nameNode}/user/${wf:user()}/${appRoot}/env/${cluster}/hive-site.xml</job-xml>
+                <configuration>
+                <property>
+                  <name>oozie.hive.defaults</name>
+                  <value>/user/${wf:user()}/${appRoot}/env/${cluster}/hive-default.xml</value>
+                </property>
+                <property>
+                    <name>pool.name</name>
+                    <value>${etlPoolName}</value>
+                </property>
+                <property>
+                    <name>oozie.launcher.pool.name</name>
+                    <value>${oozieLauncherPoolName}</value>
+                </property>
+                </configuration>
+
+                <script>load_member_subcat_item_pref_final.hql</script>
+				<param>campaign_iter=${campaign_iter}</param>
+                <param>database=${database}</param>
+                <param>jarpath=${jarpath}</param>
+        </hive>
+        <ok to="join3"/>
+        <error to="join3"/>
+</action>
+
+<join name="join3" to="checkerror1"/>
+
+<decision name="checkerror1">
+       <switch>
+          
+          <case to="send-email">
+	  	    ${null != wf:lastErrorNode()}          
+	  </case>
+	  	  
+	  <case to="end">
+	  	    ${null == wf:lastErrorNode()}
+	  </case>
+          
+           <default to="end"/>
+           
+       </switch>
+</decision> 
+
+<action name="send-email">
+	<email xmlns="uri:oozie:email-action:0.1">
+	 <to>${emailTo}</to>
+	 <subject>**MEP** OA - Pre Processing : Error Loading Item Preference - ${wf:id()}</subject>
+	 <body>
+	     hostname: hadoop-prod
+	     severity: MINOR
+	     object: HADOOP
+	     modifier: HADOOP
+	     group: HADOOP
+	     text: Action failed. (ID ${wf:id()}, PATH ${wf:appPath()}) Error Message: ${wf:errorMessage(wf:lastErrorNode())}
+	 </body>
+	</email>
+
+	<ok to="kill"/>
+	<error to="kill"/>
+</action>
+
+<kill name="kill">
+ 	<message>Failed, error message[${wf:errorMessage(wf:lastErrorNode())}]</message>
+</kill>
+<end name="end"/>
+</workflow-app>

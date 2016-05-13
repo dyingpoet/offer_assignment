@@ -1,0 +1,393 @@
+<workflow-app xmlns="uri:oozie:workflow:0.4" name="oa_backfill_members">
+
+<start to ="campaign_score_chk"/> 
+<decision name="campaign_score_chk">
+               <switch>
+                  <case to="recommend_flow">
+                        ${campaign_score_type == "RECOMMEND"}
+                  </case>
+                  <default to="recommend_flow"/>
+               </switch>
+</decision>
+
+<!--Recommend scores to be backfilled -->
+
+<action name="recommend_flow">
+        <shell xmlns="uri:oozie:shell-action:0.1">
+             <job-tracker>${jobTracker}</job-tracker>
+             <name-node>${nameNode}</name-node>
+                <prepare>
+                        <delete path="${nameNode}/user/hive/warehouse/${database}.db/files/${campaign_iter}/fia_offers_file_rebuild/_SUCCESS" />
+                        <delete path="${nameNode}/user/hive/warehouse/${database}.db/files/${campaign_iter}/mem_sc_cpn_final/_SUCCESS" />
+                </prepare>
+             <job-xml>${nameNode}/user/${wf:user()}/${appRoot}/env/${cluster}/hive-site.xml</job-xml>
+             <configuration>
+               <property>
+                        <name>mapred.job.queue.name</name>
+                        <value>${queueName}</value>
+               </property>
+                        <property>
+                         <name>oozie.hive.defaults</name>
+                         <value>${nameNode}/user/${wf:user()}/${appRoot}/env/${cluster}/hive-default.xml</value>
+               </property>
+               <property>
+                           <name>pool.name</name>
+                           <value>${etlPoolName}</value>
+               </property>
+               <property>
+                           <name>oozie.launcher.pool.name</name>
+                           <value>${oozieLauncherPoolName}</value>
+               </property>
+
+               </configuration>
+                <exec>popularity_no_cluster_backfill.py</exec>
+                        <argument>${oaFile}</argument>
+                        <argument>${fiaFile}</argument>
+						<argument>${member_sc_cpn_popularity_backfill}</argument>
+                        <argument>${popularity_fail_backfill}</argument>
+						<argument>${gen_backfill_records}</argument>
+						<argument>${MEMBER_LB}</argument>
+         	<file>popularity_no_cluster_backfill.py</file>
+         </shell>
+	 <ok to="check_recomm_bkfill"/> 
+         <error to="kill" />
+ </action>
+
+ <decision name="check_recomm_bkfill">
+       <switch>
+          <case to="send-backfill-error-email">
+           ${fs:fileSize(popularity_fail_backfill) gt 0 * KB }
+          </case>
+          <default to="recomm_merge_file1"/>
+       </switch>
+ </decision>
+ 
+  <action name="recomm_merge_file1">
+        <shell xmlns="uri:oozie:shell-action:0.1">
+             <job-tracker>${jobTracker}</job-tracker>
+             <name-node>${nameNode}</name-node>
+             <job-xml>${nameNode}/user/${wf:user()}/${appRoot}/env/${cluster}/hive-site.xml</job-xml>
+             <configuration>
+               <property>
+                        <name>mapred.job.queue.name</name>
+                        <value>${queueName}</value>
+               </property>
+                        <property>
+                         <name>oozie.hive.defaults</name>
+                         <value>${nameNode}/user/${wf:user()}/${appRoot}/env/${cluster}/hive-default.xml</value>
+               </property>
+               <property>
+                           <name>pool.name</name>
+                           <value>${etlPoolName}</value>
+               </property>
+               <property>
+                           <name>oozie.launcher.pool.name</name>
+                           <value>${oozieLauncherPoolName}</value>
+               </property>
+
+               </configuration>
+                <exec>mergefile.py</exec>
+                        <argument>${member_sc_cpn_popularity_backfill}</argument>
+                        <argument>${oaFile}</argument>
+                        <argument>${member_sc_cpn_backfilled}</argument>
+                <file>mergefile.py</file>
+         </shell>
+         <ok to="no_qualify_chk"/>
+         <error to="kill" />
+ </action>
+ 
+  <decision name="no_qualify_chk">
+     <switch>
+         <case to="no_qualify_prepare">
+             ${NO_QUALIFY_BACKFILL == "Y"}
+         </case>
+         <default to="recomm_merge_file3"/>
+     </switch>
+</decision>
+
+<action name="no_qualify_prepare">
+   <fs>
+      <move source='${member_sc_cpn_backfilled}' target='${member_sc_cpn_qualify}' />      
+   </fs>
+      <ok to="no_qualify_backfill_chk"/>
+      <error to="kill" />
+ </action>
+ 
+ <decision name="no_qualify_backfill_chk">
+      <switch>
+         <case to="no_qualify_backfill_popularity_flow">
+             ${NO_QUALIFY_BACKFILL_POPULARITY == "Y"}
+         </case>
+         <case to="no_qualify_backfill_default_flow">
+             ${NO_QUALIFY_BACKFILL_DEFAULT == "Y"}
+         </case>
+         <default to="no_qualify_backfill_default_flow"/>
+      </switch>
+ </decision>
+ 
+ <action name="no_qualify_backfill_popularity_flow">
+        <shell xmlns="uri:oozie:shell-action:0.1">
+             <job-tracker>${jobTracker}</job-tracker>
+             <name-node>${nameNode}</name-node>
+             <job-xml>${nameNode}/user/${wf:user()}/${appRoot}/env/${cluster}/hive-site.xml</job-xml>
+             <configuration>
+               <property>
+                        <name>mapred.job.queue.name</name>
+                        <value>${queueName}</value>
+               </property>
+                        <property>
+                         <name>oozie.hive.defaults</name>
+                         <value>${nameNode}/user/${wf:user()}/${appRoot}/env/${cluster}/hive-default.xml</value>
+               </property>
+               <property>
+                           <name>pool.name</name>
+                           <value>${etlPoolName}</value>
+               </property>
+               <property>
+                           <name>oozie.launcher.pool.name</name>
+                           <value>${oozieLauncherPoolName}</value>
+               </property>
+
+               </configuration>
+                <exec>no_qualify_backfill.py</exec>
+                        <argument>${member_sc_cpn_qualify}</argument>
+                        <argument>${sc_coupon_cnt}</argument>
+						<argument>${MEMBER_LB}</argument>
+						<argument>${memberTest}</argument>
+                        <argument>${member_sc_cpn_no_qualify_backfill}</argument>
+						<argument>${member_sc_cpn_no_qualify_fail_backfill}</argument>
+                <file>no_qualify_backfill.py</file>
+         </shell>
+         <ok to="recomm_merge_file2"/>
+         <error to="kill" />
+ </action>
+ 
+  <action name="no_qualify_backfill_default_flow">
+        <shell xmlns="uri:oozie:shell-action:0.1">
+             <job-tracker>${jobTracker}</job-tracker>
+             <name-node>${nameNode}</name-node>
+             <job-xml>${nameNode}/user/${wf:user()}/${appRoot}/env/${cluster}/hive-site.xml</job-xml>
+             <configuration>
+               <property>
+                        <name>mapred.job.queue.name</name>
+                        <value>${queueName}</value>
+               </property>
+                        <property>
+                         <name>oozie.hive.defaults</name>
+                         <value>${nameNode}/user/${wf:user()}/${appRoot}/env/${cluster}/hive-default.xml</value>
+               </property>
+               <property>
+                           <name>pool.name</name>
+                           <value>${etlPoolName}</value>
+               </property>
+               <property>
+                           <name>oozie.launcher.pool.name</name>
+                           <value>${oozieLauncherPoolName}</value>
+               </property>
+
+               </configuration>
+                <exec>no_qualify_backfill_default.py</exec>
+                        <argument>${member_sc_cpn_qualify}</argument>
+                        <argument>${sc_coupon_cnt}</argument>
+						<argument>${MEMBER_LB}</argument>
+						<argument>${memberTest}</argument>
+						<argument>${backfill_offer}</argument>
+                        <argument>${member_sc_cpn_no_qualify_backfill}</argument>
+						<argument>${member_sc_cpn_no_qualify_fail_backfill}</argument>
+                <file>no_qualify_backfill_default.py</file>
+         </shell>
+         <ok to="recomm_merge_file2"/>
+         <error to="kill" />
+ </action>
+ 
+   <action name="recomm_merge_file2">
+        <shell xmlns="uri:oozie:shell-action:0.1">
+             <job-tracker>${jobTracker}</job-tracker>
+             <name-node>${nameNode}</name-node>
+             <job-xml>${nameNode}/user/${wf:user()}/${appRoot}/env/${cluster}/hive-site.xml</job-xml>
+             <configuration>
+               <property>
+                        <name>mapred.job.queue.name</name>
+                        <value>${queueName}</value>
+               </property>
+                        <property>
+                         <name>oozie.hive.defaults</name>
+                         <value>${nameNode}/user/${wf:user()}/${appRoot}/env/${cluster}/hive-default.xml</value>
+               </property>
+               <property>
+                           <name>pool.name</name>
+                           <value>${etlPoolName}</value>
+               </property>
+               <property>
+                           <name>oozie.launcher.pool.name</name>
+                           <value>${oozieLauncherPoolName}</value>
+               </property>
+
+               </configuration>
+                <exec>mergefile.py</exec>
+                        <argument>${member_sc_cpn_no_qualify_backfill}</argument>
+                        <argument>${member_sc_cpn_qualify}</argument>
+                        <argument>${member_sc_cpn_backfilled}</argument>
+                <file>mergefile.py</file>
+         </shell>
+         <ok to="recomm_merge_file3"/>
+         <error to="kill" />
+ </action>
+
+
+ <action name="recomm_merge_file3">
+        <shell xmlns="uri:oozie:shell-action:0.1">
+             <job-tracker>${jobTracker}</job-tracker>
+             <name-node>${nameNode}</name-node>
+             <job-xml>${nameNode}/user/${wf:user()}/${appRoot}/env/${cluster}/hive-site.xml</job-xml>
+             <configuration>
+               <property>
+                        <name>mapred.job.queue.name</name>
+                        <value>${queueName}</value>
+               </property>
+                        <property>
+                         <name>oozie.hive.defaults</name>
+                         <value>${nameNode}/user/${wf:user()}/${appRoot}/env/${cluster}/hive-default.xml</value>
+               </property>
+               <property>
+                           <name>pool.name</name>
+                           <value>${etlPoolName}</value>
+               </property>
+               <property>
+                           <name>oozie.launcher.pool.name</name>
+                           <value>${oozieLauncherPoolName}</value>
+               </property>
+
+               </configuration>
+                <exec>mergefilefinal.py</exec>
+                        <argument>${member_sc_cpn_backfilled}</argument>
+                        <argument>${offerAssignment_member_decouple}</argument>
+                <file>mergefilefinal.py</file>
+         </shell>
+         <ok to="end"/>
+         <error to="kill" />
+ </action>
+ <action name="concat_triple_key">
+        <shell xmlns="uri:oozie:shell-action:0.1">
+             <job-tracker>${jobTracker}</job-tracker>
+             <name-node>${nameNode}</name-node>
+			 <prepare>
+                        <delete path="${nameNode}/user/hive/warehouse/${database}.db/${offer_assignment_table}/job_id=${job_id}" />
+                        <mkdir path ="${nameNode}/user/hive/warehouse/${database}.db/${offer_assignment_table}/job_id=${job_id}" />
+			 </prepare>
+                    <job-xml>${nameNode}/user/${wf:user()}/${appRoot}/env/${cluster}/hive-site.xml</job-xml>
+             <configuration>
+               <property>
+                        <name>mapred.job.queue.name</name>
+                        <value>${queueName}</value>
+               </property>
+                        <property>
+                         <name>oozie.hive.defaults</name>
+                         <value>${nameNode}/user/${wf:user()}/${appRoot}/env/${cluster}/hive-default.xml</value>
+               </property>
+               <property>
+                           <name>pool.name</name>
+                           <value>${etlPoolName}</value>
+               </property>
+               <property>
+                           <name>oozie.launcher.pool.name</name>
+                           <value>${oozieLauncherPoolName}</value>
+               </property>
+
+               </configuration>
+                <exec>loadMemberDecouple.py</exec>
+                        <argument>${offerAssignment_member_decouple}</argument>
+                        <argument>${offerAssignment_member_decouple_cpy}</argument>
+         	<file>loadMemberDecouple.py</file>
+         </shell>
+	 <ok to="load_offer_assignment"/> 
+         <error to="kill" />
+ </action>
+<action name="load_offer_assignment">
+        <hive xmlns="uri:oozie:hive-action:0.2">
+                <job-tracker>${jobTracker}</job-tracker>
+                <name-node>${nameNode}</name-node>
+                <job-xml>${nameNode}/user/${wf:user()}/${appRoot}/env/${cluster}/hive-site.xml</job-xml>
+                <configuration>
+                <property>
+                  <name>oozie.hive.defaults</name>
+                  <value>/user/${wf:user()}/${appRoot}/env/${cluster}/hive-default.xml</value>
+                </property>
+                <property>
+                  <name>mapred.child.java.opts</name>
+                  <value>-Xmx1500m</value>
+                </property>
+                <property>
+                  <name>io.sort.mb</name>
+                  <value>500</value>
+                </property>
+                <property>
+                  <name>dfs.block.size</name>
+                  <value>536870912</value>
+                </property>
+                <property>
+                    <name>pool.name</name>
+                    <value>${etlPoolName}</value>
+                </property>
+                <property>
+                    <name>oozie.launcher.pool.name</name>
+                    <value>${oozieLauncherPoolName}</value>
+                </property>
+                </configuration>
+                <script>offer_assignment.hql</script>
+				<param>database=${database}</param>
+                <param>offerAssignment_member_decouple_cpy=${offerAssignment_member_decouple_cpy}</param>
+				<param>oa_hdfs_path_copy=${oa_hdfs_path_copy}</param>
+				<param>offer_assignment_table=${offer_assignment_table}</param>
+				<param>job_id=${job_id}</param>
+        </hive>
+        <ok to="end"/>
+        <error to="send-email"/>
+</action>
+<action name="send-backfill-error-email">
+        <email xmlns="uri:oozie:email-action:0.1">
+            <to>${emailTo}</to>
+            <subject>**MEP** Offer Assignment Automation backfill members :  default backfilling failed for some members - ${wf:id()}</subject>
+            <body>
+                hostname: hadoop-prod
+                severity: MINOR
+                object: HADOOP
+                modifier: HADOOP
+                group: HADOOP
+                text: Action failed. (ID ${wf:id()}, PATH ${wf:appPath()}) Error Message: ${wf:errorMessage(wf:lastErrorNode())}
+            </body>
+        </email>
+
+        <ok to="end"/>
+        <error to="kill"/>
+
+</action>
+
+<action name="send-email">
+        <email xmlns="uri:oozie:email-action:0.1">
+            <to>${emailTo}</to>
+            <subject> ${MODE} :  Error Loading Offer Cluster backfilling Process - ${wf:id()}</subject>
+            <body>
+                hostname: hadoop-prod
+                severity: MINOR
+                object: HADOOP
+                modifier: HADOOP
+                group: HADOOP
+                text: Action failed. (ID ${wf:id()}, PATH ${wf:appPath()}) Error Message: ${wf:errorMessage(wf:lastErrorNode())}
+            </body>
+        </email>
+
+        <ok to="kill"/>
+        <error to="kill"/>
+
+</action>
+
+ 
+
+	
+ <kill name="kill">
+	<message>Script failed, error message[${wf:errorMessage(wf:lastErrorNode())}]</message>
+ </kill>
+<end name='end'/>
+
+</workflow-app>

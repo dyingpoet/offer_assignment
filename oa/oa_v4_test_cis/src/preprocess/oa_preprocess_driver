@@ -1,0 +1,442 @@
+#!/bin/bash
+
+#WORK_DIR=/home/jli21/sams/working_session/Dec2014/$CAMPAIGN_MONTH_TYPE
+
+DataStartT=${DATA_START_T}
+DataEndT=${DATA_END_T}
+ELIGIBLE_START_T=$DataStartT
+ELIGIBLE_END_T=$DataEndT
+DateLB=$DataStartT
+DateUB=$DataEndT
+delta=$DELTA
+OutputGlobalPref=${PREF_LOC}/global/ds=${DS_RUN}
+OutputMemberPref=${PREF_LOC}/member/ds=${DS_RUN}
+#LastOfferAssignmentLoc=$LAST_OFFER_ASSIGNMENT_LOC
+#ItemMemberPopularityLoc=$MEMBER_ITEM_PREF_LOC
+#ItemGlobalPopularityLoc=$GLOBAL_ITEM_PREF_LOC
+
+#INVENTORY_CHECK_SKIP_CATEGORY_FILE=${CONFIG_FILE_PATH}/inventory_check_skip_category_list
+export INVENTORY_CHECK_SKIP_CATEGORY_LIST=`cat $INVENTORY_CHECK_SKIP_CATEGORY_FILE | tr '\n' , | sed 's/,$//'`
+[[  -e $INVENTORY_CHECK_SKIP_ITEM_FILE ]] && export INVENTORY_CHECK_SKIP_ITEM_LIST=`cat $INVENTORY_CHECK_SKIP_ITEM_FILE | tr '\n' , | sed 's/,$//'`
+
+echo "Start the preprocessing!"
+
+[ -d $WORK_DIR ] || mkdir -p $WORK_DIR
+
+#################################################################################################################################
+######
+###### member split on the propensity score file and generate score at the item level (put item=NULL for sub-cat level scores)
+######
+#################################################################################################################################
+
+# if [[ "$ControlOfferInd" == "Y"  ]]
+# then
+#     $PIG -p scoreAll=/user/pythia/Workspaces/SamsMEP/MNScoring/Dec2014/est/2014-11-06/score_items_tenure_season_masked_by_recency \
+#     -p memberSplit=/user/pythia/Workspaces/SamsMEP/offer_assignmemt_member_split/campaign_month=Dec2014 \
+#     -p scoreTest=/user/jli21/pythia/Workspaces/SamsMEP/MNScoring/Dec2014/est/2014-11-06/score_items_tenure_season_masked_by_recency_test_join_member_only_using_gcia \
+#     -f control_score_item_flt_join_member_only.pig
+#     
+#     ### control OA generation
+#     
+# fi
+
+
+#################################################################################################################################
+######
+###### item info mapping (system_item_nbr, cat, sub-cat): needed for sub-cat level score
+######
+#################################################################################################################################
+if [[ "$ITEM_LEVEL_SCORE_IND" == "N" ]]; then
+    if [[ ! -e ${TOUCH_ITEM_MAPPING} ]]; then
+        hive -f ${SRC_PREPROCESS_HIVE_DIR}/item_info_snapshot_tbl.hql \
+            -hiveconf itemInfoTbl=${ITEM_INFO_TBL}\
+            -hiveconf itemInfoLoc=${ITEM_INFO_LOC}
+        
+        hive -f ${SRC_PREPROCESS_HIVE_DIR}/item_info_snapshot_insert.hql \
+            -hiveconf ds=${DS_ITEM_MAPPING} \
+            -hiveconf itemInfoTbl=${ITEM_INFO_TBL} \
+            -hiveconf itemInfoSourceTbl=${ITEM_INFO_SOURCE_TBL}
+        if [[ $? -ne 0 ]]; then echo "Item-subcat mapping failed!"; exit 1; else echo "Item-subcat mapping succeeded!"; touch ${TOUCH_ITEM_MAPPING}; fi
+    else
+        echo "Item-subcat mapping was successfully run before!" 
+    fi
+else
+    echo "Item-subcat mapping is not needed for item-level scores."
+fi
+
+
+#################################################################################################################################
+######
+###### transaction: join scan and visit (not needed for the GeC cluster); The transaction table has also been centralized in the Prod 6 and is NOT necessary here
+######
+#################################################################################################################################
+# 
+# hive -f ${SRC_PREPROCESS_HIVE_DIR}/trans_tbl.hql \
+#     -hiveconf transTbl=${TRANS_TBL}
+#  
+# hive -f ${SRC_PREPROCESS_HIVE_DIR}/trans_insert.hql \
+#     -hiveconf transTbl=${TRANS_TBL} \
+#     -hiveconf ds=${DS_RUN} \
+#     -hiveconf StartDate=2012-01-01 \
+#     -hiveconf EndDate=${DS_RUN} \
+#     -hiveconf visitMemberTbl=${VISIT_MEMBER_TBL} \
+#     -hiveconf scanTbl=${SCAN_TBL} \
+#     -hiveconf itemDimTbl=${ITEM_DIM_TBL}
+#
+ 
+
+
+#################################################################################################################################
+######
+###### subcat level: item preference in the subcat 
+###### usage: generate coupon level scores from sub-cat level scores: global_item [reco] and member_item [reward]
+######
+#################################################################################################################################
+
+if [[ "$ITEM_LEVEL_SCORE_IND" == "N" ]]
+then
+    ### global preference
+    if [[ ! -e ${TOUCH_GLOBAL_ITEM_PREF} ]]; then
+        $PIG -p MemCombined=${MEM_COMBINED} \
+            -p TransOnline=${TRANS_ONLINE} \
+            -p TransOffline=${TRANS_OFFLINE} \
+            -p ItemSubCatMapping=${ITEM_SUBCAT_MAPPING} \
+            -p DataStartT=${DATA_START_T} -p DataEndT=${DATA_END_T} -p EligibleStartT=${ELIGIBLE_START_T} -p EligibleEndT=${ELIGIBLE_END_T} \
+            -p TaskDir=${SRC_PREPROCESS_PY_DIR} \
+            -p OutputGlobalPref=${OutputGlobalPref} \
+            -f ${SRC_PREPROCESS_PIG_DIR}/global_item_preference.pig  1>${LOG_PREPROCESS_HIVE_DIR}/global_item_preference.log 2>&1
+            #-p FilterClub=$FilterClub \
+            #-f ${SRC_PREPROCESS_PIG_DIR}/global_item_preference_testing_clubs.pig
+        if [[ $? -ne 0 ]]; then echo "Global item preference failed!"; exit 1; else echo "Global item preference succeeded!"; touch ${TOUCH_GLOBAL_ITEM_PREF}; fi
+    else
+        echo "Global item preference was successfully run before!" 
+    fi
+        
+        
+    ### member preference
+    if [[ ! -e ${TOUCH_MEMBER_ITEM_PREF} ]]; then
+        $PIG -p MemCombined=${MEM_COMBINED} \
+            -p TransOnline=${TRANS_ONLINE} \
+            -p TransOffline=${TRANS_OFFLINE} \
+            -p ItemSubCatMapping=${ITEM_SUBCAT_MAPPING} \
+            -p DateLB=$DateLB \
+            -p DateUB=$DateUB \
+            -p TaskDir=${SRC_PREPROCESS_PY_DIR} \
+            -p OutputMemberPref=${OutputMemberPref} \
+            -f ${SRC_PREPROCESS_PIG_DIR}/member_item_preference.pig 1>${LOG_PREPROCESS_HIVE_DIR}/member_item_preference.log 2>&1
+        if [[ $? -ne 0 ]]; then echo "Member item preference failed!"; exit 1; else echo "Member item preference succeeded!"; touch ${TOUCH_MEMBER_ITEM_PREF}; fi
+    else
+        echo "Member item preference was successfully run before!" 
+    fi
+fi
+
+
+#################################################################################################################################
+######
+###### propensity score loading (handle either sub-cat level or item level)
+######
+#################################################################################################################################
+
+hive -f ${SRC_PREPROCESS_HIVE_DIR}/clubItem_tbl.hql  1>${LOG_PREPROCESS_HIVE_DIR}/clubItem.log 2>&1 \
+    -hiveconf Database=${DATABASE}\
+    -hiveconf task_table=$ITEM_COUPON_SCORE_TBL \
+    -hiveconf task_path=$ITEM_COUPON_SCORE_LOC \
+    -hiveconf member_item_subcat_score_table=$SCORE_TBL \
+    -hiveconf member_item_subcat_score_path=$SCORE_LOC \
+    -hiveconf subcat_item_club_table=$SUBCAT_ITEM_CLUB_TBL \
+    -hiveconf subcat_item_club_path=$SUBCAT_ITEM_CLUB_LOC \
+    -hiveconf member_club_pref_table=$MEMBER_CLUB_PREF_TBL \
+    -hiveconf member_club_pref_path=$MEMBER_CLUB_PREF_LOC 
+
+# tmp=`hive -e "use $Database; show partitions $RecoTbl" | grep $CAMPAIGN_MONTH_TYPE | cut -d = -f2`;
+# array=($tmp)
+# #echo ${array[@]}
+# containsElement $CAMPAIGN_MONTH_TYPE "${array[@]}"
+
+if [[ ! -e $TOUCH_SCORE ]]
+then
+    hive -e "USE $DATABASE; ALTER TABLE $SCORE_TBL ADD PARTITION(campaign_month='$CAMPAIGN_MONTH_TYPE') LOCATION '$SCORE_LOC'";
+    if [[ $? -eq 0 ]]
+    then
+        echo "Inserted the score partition."
+        touch $TOUCH_SCORE
+    else 
+        echo "Score loading failed."; exit 1;
+    fi
+else
+    echo "Score was loaded before!"
+fi
+
+#################################################################################################################################
+######
+###### Eligibility filtering module
+######
+#################################################################################################################################
+
+
+### generate member's preferred club and FIA expansion, can be shared when running for different batch of deciles
+if [[ ! -e $TOUCH_MEMBER_CLUB_ITEM ]]; then
+    if ! hadoop fs -test -d ${SUBCAT_ITEM_CLUB_LOC}/campaign_month=${CAMPAIGN_MONTH}; then 
+        #hive -hiveconf campaign_month=$CAMPAIGN_MONTH -hiveconf campaign_month_type=$CAMPAIGN_MONTH_TYPE \
+        if [[ "$NO_INVENTORY_CHECK" = "Y"  ]]; then
+            hive -hiveconf campaign_month=$CAMPAIGN_MONTH \
+                -hiveconf ds=$DS_INVENTORY \
+                -hiveconf Database=${DATABASE} \
+                -hiveconf member_club_pref_table=${MEMBER_CLUB_PREF_TBL} \
+                -hiveconf fia_subcat_item_club_tbl=${SUBCAT_ITEM_CLUB_TBL} \
+                -hiveconf offer_assignment_fia_table=${FIA_TBL} \
+                -hiveconf club_item_inventory_history_table=${INVENTORY_HIST_TBL} \
+                -hiveconf offer_assigned_member_base_table=${OFFER_ASSIGNED_MEMBER_BASE_TBL} \
+                -hiveconf sams_membership_dim_table=${SAMS_MEMBERSHIP_DIM_TBL} \
+                -hiveconf sams_cardholder_dim_table=${SAMS_CARDHOLDER_DIM_TBL} \
+                -hiveconf ds_obsolete_date_lb=$DS_OBSOLETE_DATE \
+                -f ${SRC_PREPROCESS_HIVE_DIR}/step1_skip_all.hql  1>${LOG_PREPROCESS_HIVE_DIR}/step1_skip_all.log 2>&1
+        else
+            if [[ "$SKIP_INVENTORY_CHECK_ITEM_IND" = "Y"  ]]; then
+                hive -hiveconf campaign_month=$CAMPAIGN_MONTH \
+                    -hiveconf ds=$DS_INVENTORY \
+                    -hiveconf Database=${DATABASE} \
+                    -hiveconf member_club_pref_table=${MEMBER_CLUB_PREF_TBL} \
+                    -hiveconf fia_subcat_item_club_tbl=${SUBCAT_ITEM_CLUB_TBL} \
+                    -hiveconf offer_assignment_fia_table=${FIA_TBL} \
+                    -hiveconf club_item_inventory_history_table=${INVENTORY_HIST_TBL} \
+                    -hiveconf offer_assigned_member_base_table=${OFFER_ASSIGNED_MEMBER_BASE_TBL} \
+                    -hiveconf sams_membership_dim_table=${SAMS_MEMBERSHIP_DIM_TBL} \
+                    -hiveconf sams_cardholder_dim_table=${SAMS_CARDHOLDER_DIM_TBL} \
+                    -hiveconf ds_obsolete_date_lb=$DS_OBSOLETE_DATE \
+                    -hiveconf inventory_check_skip_category_list=$INVENTORY_CHECK_SKIP_CATEGORY_LIST \
+                    -hiveconf inventory_check_skip_item_list=$INVENTORY_CHECK_SKIP_ITEM_LIST \
+                    -f ${SRC_PREPROCESS_HIVE_DIR}/step1_skip_item.hql  1>${LOG_PREPROCESS_HIVE_DIR}/step1_skip_item.log 2>&1
+            else
+                hive -hiveconf campaign_month=$CAMPAIGN_MONTH \
+                    -hiveconf ds=$DS_INVENTORY \
+                    -hiveconf Database=${DATABASE} \
+                    -hiveconf member_club_pref_table=${MEMBER_CLUB_PREF_TBL} \
+                    -hiveconf fia_subcat_item_club_tbl=${SUBCAT_ITEM_CLUB_TBL} \
+                    -hiveconf offer_assignment_fia_table=${FIA_TBL} \
+                    -hiveconf club_item_inventory_history_table=${INVENTORY_HIST_TBL} \
+                    -hiveconf offer_assigned_member_base_table=${OFFER_ASSIGNED_MEMBER_BASE_TBL} \
+                    -hiveconf sams_membership_dim_table=${SAMS_MEMBERSHIP_DIM_TBL} \
+                    -hiveconf sams_cardholder_dim_table=${SAMS_CARDHOLDER_DIM_TBL} \
+                    -hiveconf ds_obsolete_date_lb=$DS_OBSOLETE_DATE \
+                    -hiveconf inventory_check_skip_category_list=$INVENTORY_CHECK_SKIP_CATEGORY_LIST \
+                    -f ${SRC_PREPROCESS_HIVE_DIR}/step1.hql  1>${LOG_PREPROCESS_HIVE_DIR}/step1.log 2>&1
+            fi
+        fi
+        if [[ $? -ne 0 ]]; then echo "Member club item preference failed!"; exit 1; else echo "Member club item preference succeeded!"; touch ${TOUCH_MEMBER_CLUB_ITEM}; fi
+    fi
+else
+    echo "Member club item preference was successfully run before!" 
+fi
+
+#echo "Top 10 records of $MEMBER_CLUB_PREF_TBL:"
+#hive -e "use $Database; select * from $MEMBER_CLUB_PREF_TBL where campaign_month='$CAMPAIGN_MONTH' limit 10";
+
+### inventory check on/off
+
+if [[ ! -e $TOUCH_INVENTORY_CHECK ]]; then
+    if [[ "$ITEM_LEVEL_SCORE_IND" == "Y" ]]; then
+        hive -hiveconf campaign_month=$CAMPAIGN_MONTH -hiveconf campaign_month_type=$CAMPAIGN_MONTH_TYPE \
+           -hiveconf task_table=$ITEM_COUPON_SCORE_TBL \
+           -hiveconf reco_table=$SCORE_TBL \
+           -hiveconf Database=$DATABASE \
+           -hiveconf member_club_pref_table=$MEMBER_CLUB_PREF_TBL \
+           -hiveconf subcat_item_club_table=$SUBCAT_ITEM_CLUB_TBL \
+           -f ${SRC_PREPROCESS_HIVE_DIR}/step2_item.hql 1>${LOG_PREPROCESS_HIVE_DIR}/step2_item.log 2>&1
+    else
+        hive -hiveconf campaign_month=$CAMPAIGN_MONTH -hiveconf campaign_month_type=$CAMPAIGN_MONTH_TYPE \
+           -hiveconf task_table=$ITEM_COUPON_SCORE_TBL \
+           -hiveconf reco_table=$SCORE_TBL \
+           -hiveconf Database=$DATABASE \
+           -hiveconf member_club_pref_table=$MEMBER_CLUB_PREF_TBL \
+           -hiveconf subcat_item_club_table=$SUBCAT_ITEM_CLUB_TBL \
+           -f ${SRC_PREPROCESS_HIVE_DIR}/step2_sc.hql 1>${LOG_PREPROCESS_HIVE_DIR}/step2_sc.log 2>&1
+    fi
+    if [[ $? -ne 0 ]]; then echo "Score inventory check failed!"; exit 1; else echo "Score inventory check succeeded!"; touch ${TOUCH_INVENTORY_CHECK}; fi
+else
+    echo "Score inventory check was successfully run before!" 
+fi
+
+
+### further filtering below
+scoreFlt=$SCORE_FLT_LOC
+scoreFlt1=$scoreFlt"_flt1"
+scoreFlt2=$scoreFlt"_flt2"
+scoreFltFinal=$SCORE_FLT_FINAL_LOC
+
+echo "ITEM_LEVEL_SCORE_IND=${ITEM_LEVEL_SCORE_IND}"
+echo "FILTER_LAST_CAMPAIGN_IND=${FILTER_LAST_CAMPAIGN_IND}"
+
+skip_screen=0
+
+if [[ ! -e $TOUCH_ELIGIBILITY_SCREEN ]]; then
+    if [[ "$CAMPAIGN_TYPE" = "REWARD" || "$CAMPAIGN_TYPE" = "LAPSED" ]]
+    then
+        if [[ "$ITEM_LEVEL_SCORE_IND" = "N" ]]
+        then 
+            if [[ "$STRICT_REWARD_IND" = "Y" && "$FILTER_LAST_CAMPAIGN_IND" = "Y" ]]
+            then
+                ### strict reward applied to sub-cat level reward scores
+                $PIG -p scoreFlt=$scoreFlt -p itemMemberPopularity=$MEMBER_ITEM_PREF_LOC -p scoreFlt1=$scoreFlt1 -f ${SRC_PREPROCESS_PIG_DIR}/strictReward.pig 1>${LOG_PREPROCESS_PIG_DIR}/strictReward.log 2>&1
+                ### filter offers assigned in the last campaign (sub-cat level input)
+                $PIG -p scoreFlt1=$scoreFlt1 -p lastOfferAssignment=$LAST_OFFER_ASSIGNMENT_LOC -p scoreFlt2=$scoreFltFinal -f ${SRC_PREPROCESS_PIG_DIR}/filterLastReward.pig 1>${LOG_PREPROCESS_PIG_DIR}/filterLastReward.log 2>&1
+            fi
+            if [[ "$STRICT_REWARD_IND" = "Y" && "$FILTER_LAST_CAMPAIGN_IND" = "N" ]]
+            then
+                ### strict reward applied to sub-cat level reward scores
+                $PIG -p scoreFlt=$scoreFlt -p itemMemberPopularity=$MEMBER_ITEM_PREF_LOC -p scoreFlt1=$scoreFltFinal -f ${SRC_PREPROCESS_PIG_DIR}/strictReward.pig 1>${LOG_PREPROCESS_PIG_DIR}/strictReward.log 2>&1
+            fi
+            if [[ "$STRICT_REWARD_IND" = "N" && "$FILTER_LAST_CAMPAIGN_IND" = "Y" ]]
+            then
+                ### filter offers assigned in the last campaign (sub-cat level input)
+                $PIG -p scoreFlt1=$scoreFlt -p lastOfferAssignment=$LAST_OFFER_ASSIGNMENT_LOC -p scoreFlt2=$scoreFltFinal -f ${SRC_PREPROCESS_PIG_DIR}/filterLastReward.pig 1>${LOG_PREPROCESS_PIG_DIR}/filterLastReward.log 2>&1
+            fi
+            if [[ "$STRICT_REWARD_IND" = "N" && "$FILTER_LAST_CAMPAIGN_IND" = "N" ]]
+            then
+                echo "Skip filtering and copy files."
+                $PIG -p scoreInput=$scoreFlt -p scoreOutput=$scoreFltFinal -f ${SRC_PREPROCESS_PIG_DIR}/copyConvert.pig 1>${LOG_PREPROCESS_PIG_DIR}/copyConvert.log 2>&1
+            fi
+        else
+            if [[ "$FILTER_LAST_CAMPAIGN_IND" = "Y" ]]
+            then
+                ### filter offers assigned in the last campaign (sub-cat level input)
+                $PIG -p scoreFlt1=$scoreFlt1 -p lastOfferAssignment=$LAST_OFFER_ASSIGNMENT_LOC -p scoreFlt2=$scoreFltFinal -f ${SRC_PREPROCESS_PIG_DIR}/filterLastReward.pig 1>${LOG_PREPROCESS_PIG_DIR}/filterLastReward.log 2>&1
+            else
+                ### no further filtering needed
+                echo "No further filtering needed."
+                SCORE_FLT_FINAL_LOC=$SCORE_FLT_LOC
+                skip_screen=1
+            fi
+        fi
+        if [[ $? -ne 0 ]]; then echo "Eligibility screening failed!"; exit 1; else echo "Eligibility screening succeeded!"; if [[ $skip_screen -lt 1  ]]; then touch ${TOUCH_ELIGIBILITY_SCREEN}; fi; fi
+    fi
+    
+    ### check RECO definition (filter reward sub-cats)
+    if [[ "$CAMPAIGN_TYPE" = "RECOMMEND" ]]
+        then 
+        $PIG -p scoreFlt=$scoreFlt -p itemMemberPopularity=$MEMBER_ITEM_PREF_LOC -p scoreFlt1=$scoreFltFinal -f ${SRC_PREPROCESS_PIG_DIR}/recommendFilter.pig 1>${LOG_PREPROCESS_PIG_DIR}/recommendFilter.log 2>&1
+        if [[ $? -ne 0 ]]; then echo "Eligibility screening failed!"; exit 1; else echo "Eligibility screening succeeded!"; touch ${TOUCH_ELIGIBILITY_SCREEN}; fi
+    fi
+
+else
+    echo "Eligibility screening was successfully run before!" 
+fi
+
+#################################################################################################################################
+######
+###### Coupon level score generation
+######
+#################################################################################################################################
+
+###### sub-cat level score
+###### item level score
+
+
+
+if [[ ! -e $TOUCH_COUPON_SCORE ]]; then
+
+    ###RECOMMEND
+    if [[ "$CAMPAIGN_TYPE" == "RECOMMEND" ]]
+    then
+        if [[ "$ITEM_LEVEL_SCORE_IND" == "N" ]]
+        then 
+            $PIG -p scoreFltFinal=$SCORE_FLT_FINAL_LOC -p itemGlobalPopularity=$GLOBAL_ITEM_PREF_LOC -p scoreRankDelta=$SCORE_FILE_LOC \
+                 -p delta=$delta -p memberHDFS=$MEMBER_FILE_LOC -f ${SRC_PREPROCESS_PIG_DIR}/recommendRankDelta.pig 1>${LOG_PREPROCESS_PIG_DIR}/recommendRankDelta.log 2>&1
+        else
+            #$PIG to do!
+            echo "code not ready. exit."; exit 1;
+        fi
+    fi
+        
+    ## ###REWARD
+    ## if [ "$CAMPAIGN_TYPE" == "REWARD" ]
+    ##     then 
+    ##     $PIG -p scoreFltFinal=$SCORE_FLT_FINAL_LOC -p itemMemberPopularity=$MEMBER_ITEM_PREF_LOC -p scoreRankDelta=$SCORE_FILE_LOC \
+    ##          -p delta=$delta -p memberHDFS=$MEMBER_FILE_LOC -f ${SRC_PREPROCESS_PIG_DIR}/rewardRankDelta.pig 1>rewardRankDelta.log 2>&1
+    ## fi
+    
+        
+    ###REWARD
+    if [[ "$CAMPAIGN_TYPE" == "REWARD" || "$CAMPAIGN_TYPE" = "LAPSED" ]]
+    then 
+        ### item reward [reco clustering filtering]
+        if [[ $ITEM_LEVEL_SCORE_IND == "Y" && $CLUSTER_IND == "Y" ]] 
+        then
+            $PIG -p scoreFltFinal=$SCORE_FLT_FINAL_LOC -p clusterRecoFile=$CLUSTER_RECO_LOC -p clusterLabelFile=$CLUSTER_LABEL_LOC  -p scoreFinal=$SCORE_FILE_LOC -p memberHDFS=$MEMBER_FILE_LOC  -f ${SRC_PREPROCESS_PIG_DIR}/item_reward_reco_cluster_flt.pig 1>${LOG_PREPROCESS_PIG_DIR}/item_reward_reco_cluster_flt.log 2>&1
+        fi
+        ### item reward [no reco clustering filtering]
+        if [[ "$ITEM_LEVEL_SCORE_IND" == "Y" && "$CLUSTER_IND" == "N" ]] 
+        then
+            $PIG -p scoreFltFinal=$SCORE_FLT_FINAL_LOC -p scoreFinal=$SCORE_FILE_LOC -p memberHDFS=$MEMBER_FILE_LOC  -f ${SRC_PREPROCESS_PIG_DIR}/item_reward.pig 1>${LOG_PREPROCESS_PIG_DIR}/item_reward.log 2>&1
+        fi
+        ### subcat reward [reco clustering filtering]
+        if [[ "$ITEM_LEVEL_SCORE_IND" == "N" && "$CLUSTER_IND" == "Y" ]] 
+        then
+            $PIG -p scoreFltFinal=$SCORE_FLT_FINAL_LOC -p clusterRecoFile=$CLUSTER_RECO_LOC -p clusterLabelFile=$CLUSTER_LABEL_LOC  -p scoreRankDelta=$SCORE_FILE_LOC -p itemMemberPopularity=$MEMBER_ITEM_PREF_LOC -p delta=$delta -p memberHDFS=$MEMBER_FILE_LOC -f ${SRC_PREPROCESS_PIG_DIR}/subcat_reward_reco_cluster_flt.pig 1>${LOG_PREPROCESS_PIG_DIR}/subcat_reward_reco_cluster_flt.log 2>&1
+        fi
+        ### subcat reward [no reco clustering filtering]
+        if [[ "$ITEM_LEVEL_SCORE_IND" == "N" && "$CLUSTER_IND" == "N" ]] 
+        then
+            $PIG -p scoreFltFinal=$SCORE_FLT_FINAL_LOC -p scoreRankDelta=$SCORE_FILE_LOC -p itemMemberPopularity=$MEMBER_ITEM_PREF_LOC -p memberHDFS=$MEMBER_FILE_LOC  -p delta=$delta -f ${SRC_PREPROCESS_PIG_DIR}/subcat_reward.pig 1>${LOG_PREPROCESS_PIG_DIR}/subcat_reward.log 2>&1
+        fi
+    fi
+
+    if [[ $? -ne 0 ]]; then echo "Coupon level score generation failed!"; exit 1; else echo "Coupon level score generation succeeded!"; touch ${TOUCH_COUPON_SCORE}; fi
+else
+    echo "Coupon level score generation was successfully run before!" 
+fi
+
+###need to filter lower bound if the hard lower bound is greater than 1
+
+#################################################################################################################################
+######
+###### Generate input files to be used in the optimization engine
+######
+#################################################################################################################################
+wait
+
+# # generate member file and score file
+hadoop fs -getmerge $SCORE_FILE_LOC $WORK_DIR/scoreFile
+hadoop fs -getmerge $MEMBER_FILE_LOC $WORK_DIR/memberFile
+
+#sed -i "s/$/ $MEMBER_LB $MEMBER_UB/"  $WORK_DIR/memberFile 
+sed -i "s/$/ 1 $MEMBER_UB/"  $WORK_DIR/memberFile 
+sed -i 's/\x01/_/' $WORK_DIR/scoreFile
+sed -i 's/\x01/_/' $WORK_DIR/scoreFile
+sed -i 's/\x01/ /g' $WORK_DIR/scoreFile
+
+
+# # dump offer files
+ #hive -e "select distinct value_coupon_nbr, investment_cnt_old from $FIA_TBL  where campaign_month='$CAMPAIGN_MONTH_TYPE' order by value_coupon_nbr" | tr '\t' ' ' > $WORK_DIR/offerFile
+ #hive -e "select distinct value_coupon_nbr, cat_subcat_nbr from $FIA_TBL where campaign_month='$CAMPAIGN_MONTH_TYPE' order by value_coupon_nbr" | tr '\t' ' '  > $WORK_DIR/offer2subcatFile
+ #hive -e "select distinct cat_subcat_nbr, value_coupon_nbr, investment_cnt_old from $FIA_TBL where campaign_month='$CAMPAIGN_MONTH_TYPE' order by value_coupon_nbr" | tr '\t' ' '  > $WORK_DIR/sc_coupon_cnt
+hive -e "select distinct value_coupon_nbr, investment_cnt_old from $FIA_TBL  where campaign_month='$CAMPAIGN_MONTH' order by value_coupon_nbr" | tr '\t' ' ' > $WORK_DIR/offerFile_all
+hive -e "select distinct value_coupon_nbr, cat_subcat_nbr from $FIA_TBL where campaign_month='$CAMPAIGN_MONTH' order by value_coupon_nbr" | tr '\t' ' '  > $WORK_DIR/offer2subcatFile
+hive -e "select distinct cat_subcat_nbr, value_coupon_nbr, investment_cnt_old from $FIA_TBL where campaign_month='$CAMPAIGN_MONTH' order by value_coupon_nbr" | tr '\t' ' '  > $WORK_DIR/sc_coupon_cnt_all
+
+if [[ "$HAS_STATIC_OFFER" == "Y"  ]]; then
+    echo "Removing the static coupon."
+    mv ${WORK_DIR}/scoreFile ${WORK_DIR}/scoreFile.bak
+    mv ${WORK_DIR}/offerFile_all ${WORK_DIR}/offerFile_all.bak
+    mv ${WORK_DIR}/offer2subcatFile ${WORK_DIR}/offer2subcatFile.bak
+    mv ${WORK_DIR}/sc_coupon_cnt_all ${WORK_DIR}/sc_coupon_cnt_all.bak
+    cat ${WORK_DIR}/scoreFile.bak | $PYTHON ${SRC_PREPROCESS_PY_DIR}/flt.py ${CONFIG_FILE_PATH}/static_offer 0 ' ' 1> ${WORK_DIR}/scoreFile 2> ${WORK_DIR}/scoreRemoveVC
+    cat ${WORK_DIR}/scoreFile | cut -d ' ' -f2 | sort | uniq | sed "s/$/ 1 ${MEMBER_UB}/" > ${WORK_DIR}/memberFile
+    cat ${WORK_DIR}/offerFile_all.bak | $PYTHON ${SRC_PREPROCESS_PY_DIR}/flt.py ${CONFIG_FILE_PATH}/static_offer 0 ' ' 1>${WORK_DIR}/offerFile_all
+    cat ${WORK_DIR}/offer2subcatFile.bak | $PYTHON ${SRC_PREPROCESS_PY_DIR}/flt.py ${CONFIG_FILE_PATH}/static_offer 0 ' ' 1>${WORK_DIR}/offer2subcatFile
+    cat ${WORK_DIR}/sc_coupon_cnt_all.bak | $PYTHON ${SRC_PREPROCESS_PY_DIR}/flt.py ${CONFIG_FILE_PATH}/static_offer 1 ' ' 1>${WORK_DIR}/sc_coupon_cnt_all
+fi
+
+
+if [[ "${CONTROL_SPLIT_IND}" = "Y" ]]; then 
+    #mv $WORK_DIR/offerFile $WORK_DIR/offerFile_all
+    #mv $WORK_DIR/sc_coupon_cnt $WORK_DIR/sc_coupon_cnt_all
+    $PYTHON ${SRC_PREPROCESS_PY_DIR}/oa_investment_adjust_control.py $CONTROL_OFFER_FILE $CONTROL_MEMBER_SIZE $WORK_DIR/offerFile_all $WORK_DIR/offerFile $WORK_DIR/sc_coupon_cnt_all $WORK_DIR/sc_coupon_cnt
+else
+    cp $WORK_DIR/offerFile_all $WORK_DIR/offerFile
+    cp $WORK_DIR/sc_coupon_cnt_all $WORK_DIR/sc_coupon_cnt
+fi
+
+
+
+

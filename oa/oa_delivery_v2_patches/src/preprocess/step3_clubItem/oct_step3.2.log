@@ -1,0 +1,50 @@
+* v1 
+MapReduce Total cumulative CPU time: 33 minutes 6 seconds 40 msec
+Ended Job = job_201409220913_229510
+Loading data to table pythia.pis_member_subcat_item_coupon_score partition (campaign_month=Oct2014)
+4588408 Rows loaded to pis_member_subcat_item_coupon_score
+MapReduce Jobs Launched:
+Job 0: Map: 7  Reduce: 1   Cumulative CPU: 1486.57 sec   MAPRFS Read: 43353296 MAPRFS Write: 188589415 SUCCESS
+Job 1: Map: 7  Reduce: 1   Cumulative CPU: 1619.17 sec   MAPRFS Read: 43347752 MAPRFS Write: 186817542 SUCCESS
+Job 2: Map: 1  Reduce: 1   Cumulative CPU: 2726.87 sec   MAPRFS Read: 11550920964 MAPRFS Write: 11548836227 SUCCESS
+Job 3: Map: 1  Reduce: 1   Cumulative CPU: 3265.83 sec   MAPRFS Read: 11438789846 MAPRFS Write: 11437345486 SUCCESS
+Job 4: Map: 2  Reduce: 1   Cumulative CPU: 4862.01 sec   MAPRFS Read: 22986182155 MAPRFS Write: 22830782124 SUCCESS
+Job 5: Map: 8  Reduce: 2   Cumulative CPU: 1986.04 sec   MAPRFS Read: 19092914231 MAPRFS Write: 18179861687 SUCCESS
+Total MapReduce CPU Time Spent: 0 days 4 hours 25 minutes 46 seconds 490 msec
+OK
+Time taken: 9761.238 seconds
+
+
+* v2
+Loading data to table pythia.pis_member_subcat_item_coupon_score partition (campaign_month=Oct2014-v2)
+0 Rows loaded to pis_member_subcat_item_coupon_score
+MapReduce Jobs Launched: 
+Job 0: Map: 9  Reduce: 1   Cumulative CPU: 1450.5 sec   MAPRFS Read: 43090740 MAPRFS Write: 186065888 SUCCESS
+Job 1: Map: 9  Reduce: 1   Cumulative CPU: 1657.67 sec   MAPRFS Read: 43085196 MAPRFS Write: 184257949 SUCCESS
+Job 2: Map: 1  Reduce: 1   Cumulative CPU: 2540.25 sec   MAPRFS Read: 11416168744 MAPRFS Write: 11414224392 SUCCESS
+Job 3: Map: 1  Reduce: 1   Cumulative CPU: 2945.74 sec   MAPRFS Read: 11305567500 MAPRFS Write: 11304276003 SUCCESS
+Job 4: Map: 2  Reduce: 1   Cumulative CPU: 4684.86 sec   MAPRFS Read: 22718500853 MAPRFS Write: 22564765750 SUCCESS
+Job 5: Map: 1  Reduce: 1   Cumulative CPU: 1792.36 sec   MAPRFS Read: 16391652894 MAPRFS Write: 16236499948 SUCCESS
+Total MapReduce CPU Time Spent: 0 days 4 hours 11 minutes 11 seconds 380 msec
+OK
+Time taken: 9597.501 seconds
+
+
+* v2 using right reco loc
+MapReduce Total cumulative CPU time: 36 minutes 22 seconds 800 msec
+Ended Job = job_201409220913_317803
+Loading data to table pythia.pis_member_subcat_item_coupon_score partition (campaign_month=Oct2014-v2)
+Deleted maprfs:/user/pythia/Workspaces/SamsMEP/pis_member_subcat_item_coupon_score/campaign_month=Oct2014-v2
+4547328 Rows loaded to pis_member_subcat_item_coupon_score
+MapReduce Jobs Launched: 
+Job 0: Map: 9  Reduce: 1   Cumulative CPU: 1357.5 sec   MAPRFS Read: 43090740 MAPRFS Write: 186101292 SUCCESS
+Job 1: Map: 9  Reduce: 1   Cumulative CPU: 1512.08 sec   MAPRFS Read: 43085196 MAPRFS Write: 184259759 SUCCESS
+Job 2: Map: 1  Reduce: 1   Cumulative CPU: 2814.12 sec   MAPRFS Read: 11416204148 MAPRFS Write: 11414224392 SUCCESS
+Job 3: Map: 1  Reduce: 1   Cumulative CPU: 2902.11 sec   MAPRFS Read: 11305569310 MAPRFS Write: 11304276003 SUCCESS
+Job 4: Map: 2  Reduce: 1   Cumulative CPU: 4722.79 sec   MAPRFS Read: 22718500853 MAPRFS Write: 22564765750 SUCCESS
+Job 5: Map: 8  Reduce: 2   Cumulative CPU: 2182.8 sec   MAPRFS Read: 18899203390 MAPRFS Write: 17986477404 SUCCESS
+Total MapReduce CPU Time Spent: 0 days 4 hours 18 minutes 11 seconds 400 msec
+OK
+Time taken: 9148.779 seconds
+
+

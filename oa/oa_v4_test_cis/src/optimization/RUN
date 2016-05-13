@@ -1,0 +1,33 @@
+
+#WORK_DIR=/home/jli21/sams/working_session
+WORK_DIR=/home/jli21/sams/working_session/Dec2014/gec
+PYTHON=/home/jli21/lib/canopy/appdata/canopy-1.3.0.1715.rh5-x86_64/bin/python2.7
+
+CONTROL_SPLIT_IND=Y
+MEMBER_SPLIT_FILE=/home/jli21/sams/offer/2014dec/oa/2014Dec_member_pool_split
+CONTROL_OFFER_FILE=/home/jli21/sams/offer/2014dec/oa/1toManyOffer
+CONTROL_MEMBER_SIZE=14370
+#CONTROL_MEMBER_SIZE=`awk '$7==1' ${MEMBER_SPLIT_FILE} | wc -l`
+
+
+[ -d $WORK_DIR ] || mkdir -p $WORK_DIR
+
+cp *py *sh $WORK_DIR
+
+pushd $WORK_DIR
+
+$PYTHON auctionFastWithSubcatConstraintsV3E3.py scoreFile offerFile memberFile offer2subcatFile > RUN.log
+#$PYTHON auctionFastWithSubcatConstraints2.py scoreFile offerFile memberFile offer2subcatFile > RUN.log
+mv scoreFile.converted_offerAssignment.outputFinal offerAssignment
+#./del.sh
+
+if [[ "${CONTROL_SPLIT_IND}" = "Y" ]]; then
+    mv offerAssignment offerAssignment_test
+    awk '$7==1' ${MEMBER_SPLIT_FILE} | cut -f1-3 | tr '\t' '_' | python oa_control.py ${CONTROL_OFFER_FILE} > offerAssignment_control
+    cat offerAssignment_test offerAssignment_control> offerAssignment
+fi
+
+popd
+
+
+

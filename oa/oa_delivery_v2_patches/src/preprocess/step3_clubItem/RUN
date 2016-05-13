@@ -1,0 +1,114 @@
+
+containsElement () {
+  local e
+  for e in "${@:2}"; do [[ "$e" == "$1" ]] && return 0; done
+  return 1
+}
+
+NUM_MEMBERS=193083
+DS_OBSOLETE_DATE=2014-09-26
+#DS_ITEM_MAPPING=2014-07-28
+DS_INVENTORY=2014-09-29
+CampaignMonth=Oct2014
+CampaignMonthType=Oct2014-v3
+ItemLevelScoreInd=Y
+
+FiaTbl=pythia.offer_assignment_fia
+InventoryHistTbl=sams_us_clubs.club_item_inventory_history
+OfferAssignedMemberBaseTbl=pythia.offer_assigned_member_base
+SamsMembershipDimTbl=customers.sams_us_clubs_sams_membership_dim
+SamsCardholderDimTbl=customers.sams_us_clubs_sams_mbr_cardholder_dim
+
+Database=pythia
+TaskTbl=pis_member_subcat_item_coupon_score
+TaskLoc=/user/pythia/Workspaces/SamsMEP/pis_member_subcat_item_coupon_score
+#RecoTbl=pis_member_reco_score_anchor
+#RecoLoc=/user/pythia/Workspaces/SamsMEP/Recommend/Scoring/plus/init/20140317Decay/recommend_score_cobought_no_smoothing_max_raw_cobought_transaction_debug_12mon
+#RecoLoc=/user/pythia/Workspaces/SamsMEP/Recommend/Scoring/plus/init/20140516Decay/recommend_score_offer_assignment/Jun2014-gec
+#RecoLoc=/user/pythia/Workspaces/SamsMEP/Recommend/Scoring/plus/init/20140516Decay/recommend_score_offer_assignment/$CampaignMonthType
+ScoreTbl=pis_member_item_subcat_score
+#ScoreLoc=/user/pythia/Workspaces/SamsMEP/MNScoring/Aug2014/est/2014-07-29/score_items_tenure_season_fia_only_normalized
+#ScoreLoc=/user/pythia/Workspaces/SamsMEP/MNScoring/Sept2014/est/2014-09-03/score_items_tenure_season
+#ScoreLoc=/user/pythia/Workspaces/SamsMEP/MNScoring/Oct2014/est/2014-09-30/score_items_tenure_season
+ScoreLoc=/user/pythia/Workspaces/SamsMEP/MNScoring/Oct2014/est/2014-10-07/score_items_tenure_season_masked_by_recency
+
+
+MemberClubPrefTbl=offer_assigned_member_base_w_club_preference
+MemberClubPrefLoc=/user/pythia/Workspaces/SamsMEP/offer_assigned_member_base_w_club_preference
+
+SubcatItemClubTbl=fia_subcat_item_club
+SubcatItemClubLoc=/user/pythia/Workspaces/SamsMEP/fia_subcat_item_club
+
+#DS=$DS_ITEM_MAPPING
+
+
+hive -f clubItem_tbl.hql \
+    -hiveconf Database=$Database \
+    -hiveconf task_table=$TaskTbl \
+    -hiveconf task_path=$TaskLoc \
+    -hiveconf subcat_item_club_table=$SubcatItemClubTbl \
+    -hiveconf subcat_item_club_path=$SubcatItemClubLoc \
+    -hiveconf member_club_pref_table=$MemberClubPrefTbl \
+    -hiveconf member_club_pref_path=$MemberClubPrefLoc 
+
+tmp=`hive -e "use $Database; show partitions $RecoTbl" | grep $CampaignMonthType | cut -d = -f2`;
+array=($tmp)
+#echo ${array[@]}
+containsElement $CampaignMonthType "${array[@]}"
+
+if [ $? -eq 1 ]
+    then
+#    hive -e "USE $Database; ALTER TABLE $RecoTbl ADD PARTITION(campaign_month='$CampaignMonthType') LOCATION '$RecoLoc'";
+    hive -e "USE $Database; ALTER TABLE $ScoreTbl ADD PARTITION(campaign_month='$CampaignMonthType') LOCATION '$ScoreLoc'";
+    ###hive -f reco_load.hql -hiveconf reco_table=$RecoTbl -hiveconf reco_loc=$RecoLoc -hiveconf campaign_month_type=$CampaignMonthType;
+    echo "Inserted the score partition."
+fi
+
+hive -hiveconf campaign_month=$CampaignMonth -hiveconf campaign_month_type=$CampaignMonthType \
+    -hiveconf ds=$DS_INVENTORY \
+    -hiveconf Database=$Database \
+    -hiveconf member_club_pref_table=$MemberClubPrefTbl \
+    -hiveconf subcat_item_club_table=$SubcatItemClubTbl \
+    -hiveconf offer_assignment_fia_table=$FiaTbl \
+    -hiveconf club_item_inventory_history_table=$InventoryHistTbl \
+    -hiveconf offer_assigned_member_base_table=$OfferAssignedMemberBaseTbl \
+    -hiveconf sams_membership_dim_table=$SamsMembershipDimTbl \
+    -hiveconf sams_cardholder_dim_table=$SamsCardholderDimTbl \
+    -hiveconf ds_obsolete_date_lb=$DS_OBSOLETE_DATE \
+    -f step1.hql
+
+#echo "Top 10 records of $MemberClubPrefTbl:"
+#hive -e "use $Database; select * from $MemberClubPrefTbl where campaign_month='$CampaignMonth' limit 10";
+
+###hive -e 'select count(distinct membership_nbr) from pythia.offer_assigned_member_base_w_club_preference where campaign_month="Aug2014";'#276643
+###hive -e 'select count(distinct membership_nbr, cardholder_nbr, membership_create_date) from pythia.offer_assigned_member_base_w_club_preference where campaign_month="Aug2014";' #277577
+
+#tmp=`hive -e "use $Database; select count(distinct membership_nbr) from $MemberClubPrefTbl where campaign_month='$CampaignMonth'";`
+#echo $tmp
+#if [ $tmp -ne $NUM_MEMBERS ]
+#    then
+#    echo "Some members don't have the preferred clubs. We should investigate."
+#    exit 1
+#fi
+
+
+if [[ "$ItemLevelScoreInd" == "Y" ]] then
+hive -hiveconf campaign_month=$CampaignMonth -hiveconf campaign_month_type=$CampaignMonthType \
+   -hiveconf task_table=$TaskTbl \
+   -hiveconf reco_table=$ScoreTbl \
+   -hiveconf Database=$Database \
+   -hiveconf member_club_pref_table=$MemberClubPrefTbl \
+   -hiveconf subcat_item_club_table=$SubcatItemClubTbl \
+   -f step2_item.hql
+else
+hive -hiveconf campaign_month=$CampaignMonth -hiveconf campaign_month_type=$CampaignMonthType \
+   -hiveconf task_table=$TaskTbl \
+   -hiveconf reco_table=$ScoreTbl \
+   -hiveconf Database=$Database \
+   -hiveconf member_club_pref_table=$MemberClubPrefTbl \
+   -hiveconf subcat_item_club_table=$SubcatItemClubTbl \
+   -f step2_sc.hql
+fi
+
+
+

@@ -1,0 +1,11 @@
+export MIXED_TYPE_LIST=("LAPSED" "RECOMMEND" "REWARD")
+#export MEMBER_UB_LIST=(unk unk 2)
+export MEMBER_UB_LIST=(2 4 2)
+#export SCORE_LIST=($path1 $path2 $path3)
+export ITEM_LEVEL_SCORE_LIST=(N N Y)
+
+export CAMPAIGN_MONTH=Feb2016-684
+export MEMBER_LB_ALL=6
+export MEMBER_UB_ALL=6
+
+export RewardPctCap=0.2

@@ -1,0 +1,53 @@
+
+Pig=$PIG
+TaskDir="."
+
+#FilterClub=/user/jli21/sams/offer/56clubs.txt
+#MemCombined=/user/pythia/Workspaces/SamsMEP/TTEScoring/plus/init/2014-03-10/mem_with_compcards
+#TransData=/user/pythia/Workspaces/SamsMEP/customer_club_day_item_sales_with_new_sub_category2013_2014
+#ItemSubCatMapping=/user/pythia/Workspaces/SamsMEP/item_info_snapshot/ds=2014-03-31
+#PrefLoc=/user/pythia/Workspaces/SamsMEP/subcatItemPref
+
+FilterClub=$FILTER_CLUB
+MemCombined=$MEM_COMBINED
+TransData=$TRANS_LOC_PARTITION
+ItemSubCatMapping=$ITEM_SUBCAT_MAPPING
+PrefLoc=$PREF_LOC
+
+DS=$DS_RUN
+DataStartT=$DATA_START_T
+DataEndT=$DATA_END_T
+EligibleStartT=$DataStartT
+EligibleEndT=$DataEndT
+DateLB=$DataStartT
+DateUB=$DataEndT
+
+OutputGlobalPref=$PrefLoc/global/ds=$DS
+OutputMemberPref=$PrefLoc/member/ds=$DS
+
+### global preference
+$Pig -p MemCombined=$MemCombined \
+    -p TransData=$TransData \
+    -p ItemSubCatMapping=$ItemSubCatMapping \
+    -p DataStartT=$DataStartT -p DataEndT=$DataEndT -p EligibleStartT=$EligibleStartT -p EligibleEndT=$EligibleEndT \
+    -p FilterClub=$FilterClub \
+    -p TaskDir=$TaskDir \
+    -p OutputGlobalPref=$OutputGlobalPref \
+    -f global_item_preference_testing_clubs.pig 1>global_item_preference_testing_clubs.log 2>&1
+
+
+
+### member preference
+$Pig -p MemCombined=$MemCombined \
+    -p TransData=$TransData \
+    -p ItemSubCatMapping=$ItemSubCatMapping \
+    -p DateLB=$DateLB \
+    -p DateUB=$DateUB \
+    -p TaskDir=$TaskDir \
+    -p OutputMemberPref=$OutputMemberPref \
+    -f member_item_preference.pig 1>member_item_preference.log 2>&1
+
+
+
+
+

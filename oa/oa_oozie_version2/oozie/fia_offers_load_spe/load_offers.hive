@@ -1,0 +1,68 @@
+create database if not exists ${mepschema};
+use ${mepschema};
+
+SET hive.exec.compress.output=true ;
+SET hive.exec.compress.intermediate=true ;
+SET mapred.output.compress=true ;
+SET mapred.output.compression.codec=org.apache.hadoop.io.compress.SnappyCodec ;
+SET mapred.map.output.compression.codec=org.apache.hadoop.io.compress.SnappyCodec ;
+SET io.seqfile.compression.type=BLOCK;
+SET io.sort.mb=500 ;
+SET mapred.reduce.slowstart.completed.maps=0.90 ;
+SET dfs.block.size=536870912;
+SET io.file.buffer.size=131072;
+SET mapred.compress.map.output=true;
+SET mapred.output.compression.type=BLOCK;
+SET hive.auto.convert.join = TRUE;
+SET hive.exec.dynamic.partition.mode=nonstrict;
+SET hive.exec.max.dynamic.partitions.pernode=1000;
+
+INSERT OVERWRITE TABLE FIA_OFFERS PARTITION(campaign_nbr)
+SELECT  a.dept_nbr,
+        a.subclass_nbr,
+        a.cat_subcat_nbr,
+        a.val_offer_type_code,
+        a.val_offer_type_desc,
+        a.mds_fam_id,
+        a.investment_cnt,
+        a.value_amt,
+        a.value_pct,
+        a.min_item_purch_qty,
+        a.max_redemption_cnt,
+        a.package_code,
+        a.package_desc,
+        a.vendor_funded_ind,
+        a.coupon_item_nbr,
+        a.val_item_type_code,
+        a.val_item_type_desc,
+        a.value_coupon_nbr,
+        a.prvdr_coupon_nbr,
+        a.club_avail_ind,
+        a.filler_data,
+		a.CAMPAIGN_NBR
+FROM VALUE_COUPON_ITEM_FINAL a
+GROUP BY
+        a.campaign_nbr,
+        a.dept_nbr,
+        a.subclass_nbr,
+        a.cat_subcat_nbr,
+        a.val_offer_type_code,
+        a.val_offer_type_desc,
+        a.mds_fam_id,
+        a.investment_cnt,
+        a.value_amt,
+        a.value_pct,
+        a.min_item_purch_qty,
+        a.max_redemption_cnt,
+        a.package_code,
+        a.package_desc,
+        a.vendor_funded_ind,
+        a.coupon_item_nbr,
+        a.val_item_type_code,
+        a.val_item_type_desc,
+        a.value_coupon_nbr,
+        a.prvdr_coupon_nbr,
+        a.club_avail_ind,
+        a.filler_data
+;
+

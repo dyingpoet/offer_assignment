@@ -1,0 +1,41 @@
+K 25
+svn:wc:ra_dav:version-url
+V 113
+/svn/repos/gci/!svn/ver/35988/MEP/Offer_Assignment_Automation/trunk/src/main/scripts/oozie/load_fia_extract_files
+END
+load_fia_offerfile.hql
+K 25
+svn:wc:ra_dav:version-url
+V 136
+/svn/repos/gci/!svn/ver/35987/MEP/Offer_Assignment_Automation/trunk/src/main/scripts/oozie/load_fia_extract_files/load_fia_offerfile.hql
+END
+job.properties
+K 25
+svn:wc:ra_dav:version-url
+V 128
+/svn/repos/gci/!svn/ver/25030/MEP/Offer_Assignment_Automation/trunk/src/main/scripts/oozie/load_fia_extract_files/job.properties
+END
+load_fia_offer2subcatfile.hql
+K 25
+svn:wc:ra_dav:version-url
+V 143
+/svn/repos/gci/!svn/ver/35987/MEP/Offer_Assignment_Automation/trunk/src/main/scripts/oozie/load_fia_extract_files/load_fia_offer2subcatfile.hql
+END
+workflow.xml
+K 25
+svn:wc:ra_dav:version-url
+V 126
+/svn/repos/gci/!svn/ver/35987/MEP/Offer_Assignment_Automation/trunk/src/main/scripts/oozie/load_fia_extract_files/workflow.xml
+END
+README.txt
+K 25
+svn:wc:ra_dav:version-url
+V 124
+/svn/repos/gci/!svn/ver/35988/MEP/Offer_Assignment_Automation/trunk/src/main/scripts/oozie/load_fia_extract_files/README.txt
+END
+load_fia_sc_coupon_cnt.hql
+K 25
+svn:wc:ra_dav:version-url
+V 140
+/svn/repos/gci/!svn/ver/35987/MEP/Offer_Assignment_Automation/trunk/src/main/scripts/oozie/load_fia_extract_files/load_fia_sc_coupon_cnt.hql
+END

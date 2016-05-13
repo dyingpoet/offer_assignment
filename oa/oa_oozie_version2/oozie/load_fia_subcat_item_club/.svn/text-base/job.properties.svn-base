@@ -1,0 +1,16 @@
+# Application/workflow settings
+appName=load_fia_subcat_item_club
+appRoot=etl
+oozie.libpath=/user/${user.name}/${appRoot}/lib
+oozie.wf.application.path=${nameNode}/user/${user.name}/${appRoot}/${appName}
+
+# Cluster settings
+nameNode=${NAMENODE}
+jobTracker=${JOBTRACKER}
+emailTo=${user.name}@email.wal-mart.com
+
+#pool defs
+#etlTdSqoopPoolName=etl-td-sqoop
+etlPoolName=etl
+oozieLauncherPoolName=oozie-launcher
+oozieLauncherJavaOpts=-Xmx1500m

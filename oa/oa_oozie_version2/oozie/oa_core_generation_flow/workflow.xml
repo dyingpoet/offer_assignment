@@ -1,0 +1,144 @@
+<workflow-app xmlns="uri:oozie:workflow:0.2" name="oa_core_generation_flow">
+  <start to="update_inprogressjoborderstatus"/>
+ 
+<action name="update_inprogressjoborderstatus">
+ 	<java>
+		<job-tracker>${jobTracker}</job-tracker>
+                <name-node>${nameNode}</name-node>
+        <configuration>
+                 <property>
+                 	<name>mapred.job.queue.name</name>
+                        <value>default</value>
+                 </property>
+   		  
+                 </configuration>
+
+                 <main-class>com.walmart.mep.job.status.StatusUpdateMain</main-class>
+                         <arg>${job_id}</arg>
+                         <arg>${schema_name}</arg>
+                         <arg>${table_name}</arg>
+                         <arg>${inprogressstatus}</arg>
+                         </java>
+
+        <ok to="load_offer_assignment_preprocess"/>
+        <error to="update_errorjoborderstatus"/>
+</action>
+
+<action name="load_offer_assignment_preprocess">
+        <sub-workflow>
+            <app-path>${nameNode}/user/${wf:user()}/${appRoot}/load_offer_assignment_preprocess</app-path>
+            <propagate-configuration/>
+              <configuration>
+                    <property>
+                            <name>jobTracker</name>
+                            <value>${jobTracker}</value>
+                   </property>
+              </configuration>
+        </sub-workflow>
+
+        <ok to="offerassignment_part"/>
+        <error to="update_errorjoborderstatus"/>
+</action>
+
+ <action name="offerassignment_part">
+    <sub-workflow>
+            <app-path>${nameNode}/user/${wf:user()}/${appRoot}/oa_offerassignment_part</app-path>
+            <propagate-configuration/>
+              <configuration>
+                    <property>
+                            <name>jobTracker</name>
+                            <value>${jobTracker}</value>
+                   </property>
+              </configuration>
+                </sub-workflow>
+
+        <ok to="create_statistics"/>
+        <error to="update_errorjoborderstatus"/>
+</action>
+
+<action name="create_statistics">
+    <sub-workflow>
+            <app-path>${nameNode}/user/${wf:user()}/${appRoot}/update_stats</app-path>
+            <propagate-configuration/>
+              <configuration>
+                    <property>
+                            <name>jobTracker</name>
+                            <value>${jobTracker}</value>
+                   </property>
+              </configuration>
+                </sub-workflow>
+
+        <ok to="update_completedjoborderstatus"/>
+        <error to="update_errorjoborderstatus"/>
+</action>
+
+ <action name="update_completedjoborderstatus">
+ 	<java>
+		<job-tracker>${jobTracker}</job-tracker>
+                <name-node>${nameNode}</name-node>
+        <configuration>
+                 <property>
+                 	<name>mapred.job.queue.name</name>
+                        <value>default</value>
+                 </property>
+   		  
+                 </configuration>
+
+                 <main-class>com.walmart.mep.job.status.StatusUpdateMain</main-class>
+                         <arg>${job_id}</arg>
+                         <arg>${schema_name}</arg>
+                         <arg>${table_name}</arg>
+                         <arg>${completedstatus}</arg>
+                         </java>
+
+        <ok to="end"/>
+        <error to="update_errorjoborderstatus"/>
+</action>
+<action name="update_errorjoborderstatus">
+ 	<java>
+		<job-tracker>${jobTracker}</job-tracker>
+                <name-node>${nameNode}</name-node>
+        <configuration>
+                 <property>
+                 	<name>mapred.job.queue.name</name>
+                        <value>default</value>
+                 </property>
+   		  
+                 </configuration>
+
+                 <main-class>com.walmart.mep.job.status.StatusUpdateMain</main-class>
+                         <arg>${job_id}</arg>
+                         <arg>${schema_name}</arg>
+                         <arg>${table_name}</arg>
+                         <arg>${errorstatus}</arg>
+                         </java>
+
+        <ok to="send-email"/>
+        <error to="send-email"/>
+</action>
+
+<action name="send-email">
+        <email xmlns="uri:oozie:email-action:0.1">
+            <to>${emailTo}</to>
+            <subject>**MEP** OA :  Main Work Flow Error- ${wf:id()}</subject>
+            <body>
+                hostname: hadoop-prod
+                severity: MINOR
+                object: HADOOP
+                modifier: HADOOP
+                group: HADOOP
+                text: Action failed. (ID ${wf:id()}, PATH ${wf:appPath()}) Error Message: ${wf:errorMessage(wf:lastErrorNode())}
+            </body>
+        </email>
+
+        <ok to="kill"/>
+        <error to="kill"/>
+</action>
+
+<kill name="kill">
+    <message>FATAL: OA - Main Work flow Failed </message>
+</kill>
+
+<end name="end"/>
+
+</workflow-app>

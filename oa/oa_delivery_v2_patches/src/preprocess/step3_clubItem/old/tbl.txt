@@ -1,0 +1,93 @@
+
+hive> use pythia;
+OK
+Time taken: 0.04 seconds
+
+
+hive> desc offer_assigned_member_base;
+OK
+membership_nbr	string	
+card_holder_nbr	string	
+creation_date	string	
+campaign_month	string	
+Time taken: 0.357 seconds
+hive> show partitions offer_assigned_member_base;
+OK
+campaign_month=Dec2013
+campaign_month=Jan2014
+campaign_month=Nov2013
+Time taken: 0.282 seconds
+
+
+
+hive> desc offer_assignment_fia;
+OK
+cat_subcat_nbr	string	
+campaign_nbr	int	
+subclass_nbr	int	
+dept_nbr	int	
+val_offer_type_code	string	
+val_offer_type_desc	string	
+system_item_nbr	int	
+investment_cnt_old	string	
+value_amt	string	
+value_pct	string	
+min_item_purch_qty	string	
+max_redemption_cnt	string	
+package_code	string	
+package_desc	string	
+vendor_funded_ind	string	
+coupon_item_nbr	int	
+val_item_type_code	string	
+val_item_type_desc	string	
+value_coupon_nbr	int	
+prvdr_coupon_nbr	int	
+club_avail_ind	string	
+filler_data	string	
+investment_cnt	int	
+campaign_month	string	
+Time taken: 0.542 seconds
+hive> show partitions offer_assignment_fia;
+OK
+campaign_month=Dec2013
+campaign_month=Jan2014
+campaign_month=Nov2013
+Time taken: 0.823 seconds
+
+
+
+
+
+-- intermediate table
+
+hive> desc offer_assigned_member_base_w_club_preference ;
+OK
+membership_nbr	int	
+cardholder_nbr	smallint	
+membership_create_date	string	
+preferred_club_nbr	int	
+issuing_club_nbr	int	
+assigned_club_nbr	int	
+campaign_month	string	
+Time taken: 0.895 seconds
+
+hive> show partitions offer_assigned_member_base_w_club_preference ;
+OK
+campaign_month=Jan2014
+Time taken: 0.624 seconds
+
+
+hive> desc fia_subcat_item_club;
+OK
+cat_subcat_nbr	string	
+system_item_nbr	int	
+value_coupon_nbr	int	
+club_nbr	int	
+campaign_month	string	
+Time taken: 0.345 seconds
+hive> show partitions fia_subcat_item_club;
+OK
+campaign_month=Jan2014
+Time taken: 0.471 seconds
+
+

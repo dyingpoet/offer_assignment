@@ -1,0 +1,66 @@
+In order to change the average load for a reducer (in bytes):
+  set hive.exec.reducers.bytes.per.reducer=<number>
+In order to limit the maximum number of reducers:
+  set hive.exec.reducers.max=<number>
+In order to set a constant number of reducers:
+  set mapred.reduce.tasks=<number>
+Starting Job = job_201409220913_226345, Tracking URL = http://mapr010.sv.walmartlabs.com:50030/jobdetails.jsp?jobid=job_201409220913_226345
+Kill Command = /opt/mapr/hadoop/hadoop-0.20.2/bin/../bin/hadoop job  -Dmapred.job.tracker=maprfs:/// -kill job_201409220913_226345
+Hadoop job information for Stage-1: number of mappers: 14; number of reducers: 4
+2014-09-30 16:02:07,539 Stage-1 map = 0%,  reduce = 0%
+2014-09-30 16:02:21,328 Stage-1 map = 7%,  reduce = 0%, Cumulative CPU 29.29 sec
+2014-09-30 16:02:23,444 Stage-1 map = 14%,  reduce = 0%, Cumulative CPU 44.22 sec
+2014-09-30 16:02:25,788 Stage-1 map = 14%,  reduce = 0%, Cumulative CPU 44.22 sec
+2014-09-30 16:02:28,377 Stage-1 map = 14%,  reduce = 0%, Cumulative CPU 44.22 sec
+2014-09-30 16:02:31,714 Stage-1 map = 21%,  reduce = 0%, Cumulative CPU 56.0 sec
+2014-09-30 16:02:35,420 Stage-1 map = 36%,  reduce = 0%, Cumulative CPU 192.77 sec
+2014-09-30 16:02:38,764 Stage-1 map = 71%,  reduce = 0%, Cumulative CPU 321.72 sec
+2014-09-30 16:02:45,127 Stage-1 map = 86%,  reduce = 0%, Cumulative CPU 334.19 sec
+2014-09-30 16:02:50,595 Stage-1 map = 93%,  reduce = 0%, Cumulative CPU 368.53 sec
+2014-09-30 16:02:58,619 Stage-1 map = 93%,  reduce = 0%, Cumulative CPU 403.82 sec
+2014-09-30 16:03:04,633 Stage-1 map = 100%,  reduce = 0%, Cumulative CPU 403.82 sec
+2014-09-30 16:03:06,569 Stage-1 map = 100%,  reduce = 0%, Cumulative CPU 403.82 sec
+2014-09-30 16:03:08,068 Stage-1 map = 100%,  reduce = 0%, Cumulative CPU 403.82 sec
+2014-09-30 16:03:10,075 Stage-1 map = 100%,  reduce = 0%, Cumulative CPU 403.82 sec
+2014-09-30 16:03:13,586 Stage-1 map = 100%,  reduce = 17%, Cumulative CPU 403.82 sec
+2014-09-30 16:03:18,566 Stage-1 map = 100%,  reduce = 62%, Cumulative CPU 429.08 sec
+2014-09-30 16:03:20,280 Stage-1 map = 100%,  reduce = 100%, Cumulative CPU 454.49 sec
+MapReduce Total cumulative CPU time: 7 minutes 34 seconds 490 msec
+Ended Job = job_201409220913_226345
+Loading data to table pythia.fia_subcat_item_club partition (campaign_month=Oct2014)
+203617 Rows loaded to fia_subcat_item_club
+MapReduce Jobs Launched: 
+Job 0: Map: 14  Reduce: 4   Cumulative CPU: 454.49 sec   MAPRFS Read: 3540699771 MAPRFS Write: 246772282 SUCCESS
+Total MapReduce CPU Time Spent: 7 minutes 34 seconds 490 msec
+OK
+Time taken: 89.334 seconds
+
+
+MapReduce Total cumulative CPU time: 15 seconds 480 msec
+Ended Job = job_201409220913_226765
+MapReduce Jobs Launched: 
+Job 0: Map: 1  Reduce: 1   Cumulative CPU: 15.48 sec   MAPRFS Read: 15611678 MAPRFS Write: 8082583 SUCCESS
+Total MapReduce CPU Time Spent: 15 seconds 480 msec
+OK
+Time taken: 49.046 seconds
+192441
+Some members don't have the preferred clubs. We should investigate.
+
+NUM_MEMBERS=193083
+
+
+
+* v2 remove 5 more vc's
+MapReduce Total cumulative CPU time: 8 minutes 2 seconds 900 msec
+Ended Job = job_201409220913_250955
+Loading data to table pythia.fia_subcat_item_club partition (campaign_month=Oct2014-v2)
+203005 Rows loaded to fia_subcat_item_club
+MapReduce Jobs Launched: 
+Job 0: Map: 14  Reduce: 4   Cumulative CPU: 482.9 sec   MAPRFS Read: 3540701361 MAPRFS Write: 246759734 SUCCESS
+Total MapReduce CPU Time Spent: 8 minutes 2 seconds 900 msec
+OK
+Time taken: 71.289 seconds
+
+
+
+

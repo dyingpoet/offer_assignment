@@ -1,0 +1,11 @@
+2014-09-08 16:19:56,289 Stage-1 map = 100%,  reduce = 100%, Cumulative CPU 503.9 sec
+MapReduce Total cumulative CPU time: 8 minutes 23 seconds 900 msec
+Ended Job = job_201409041405_112697
+Loading data to table pythia.fia_subcat_item_club partition (campaign_month=Sep2014)
+200484 Rows loaded to fia_subcat_item_club
+MapReduce Jobs Launched: 
+Job 0: Map: 14  Reduce: 4   Cumulative CPU: 503.9 sec   MAPRFS Read: 3517500708 MAPRFS Write: 246272291 SUCCESS
+Total MapReduce CPU Time Spent: 8 minutes 23 seconds 900 msec
+OK
+Time taken: 113.146 seconds
+

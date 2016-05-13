@@ -1,0 +1,41 @@
+K 25
+svn:wc:ra_dav:version-url
+V 114
+/svn/repos/gci/!svn/ver/35988/MEP/Offer_Assignment_Automation/trunk/src/main/scripts/oozie/oa_offerassignment_part
+END
+auctionFastWithSubcatConstraints2.py
+K 25
+svn:wc:ra_dav:version-url
+V 151
+/svn/repos/gci/!svn/ver/35988/MEP/Offer_Assignment_Automation/trunk/src/main/scripts/oozie/oa_offerassignment_part/auctionFastWithSubcatConstraints2.py
+END
+add_sc.py
+K 25
+svn:wc:ra_dav:version-url
+V 124
+/svn/repos/gci/!svn/ver/35988/MEP/Offer_Assignment_Automation/trunk/src/main/scripts/oozie/oa_offerassignment_part/add_sc.py
+END
+job.properties
+K 25
+svn:wc:ra_dav:version-url
+V 129
+/svn/repos/gci/!svn/ver/35988/MEP/Offer_Assignment_Automation/trunk/src/main/scripts/oozie/oa_offerassignment_part/job.properties
+END
+workflow.xml
+K 25
+svn:wc:ra_dav:version-url
+V 127
+/svn/repos/gci/!svn/ver/35988/MEP/Offer_Assignment_Automation/trunk/src/main/scripts/oozie/oa_offerassignment_part/workflow.xml
+END
+README.txt
+K 25
+svn:wc:ra_dav:version-url
+V 125
+/svn/repos/gci/!svn/ver/35988/MEP/Offer_Assignment_Automation/trunk/src/main/scripts/oozie/oa_offerassignment_part/README.txt
+END
+load_offer_assignment.hql
+K 25
+svn:wc:ra_dav:version-url
+V 140
+/svn/repos/gci/!svn/ver/35988/MEP/Offer_Assignment_Automation/trunk/src/main/scripts/oozie/oa_offerassignment_part/load_offer_assignment.hql
+END

@@ -1,0 +1,71 @@
+K 25
+svn:wc:ra_dav:version-url
+V 110
+/svn/repos/gci/!svn/ver/39411/MEP/Offer_Assignment_Automation/trunk/src/main/scripts/oozie/fia_offers_load_spe
+END
+create_trigger.sh
+K 25
+svn:wc:ra_dav:version-url
+V 128
+/svn/repos/gci/!svn/ver/39399/MEP/Offer_Assignment_Automation/trunk/src/main/scripts/oozie/fia_offers_load_spe/create_trigger.sh
+END
+load_coupon_item_dim.hive
+K 25
+svn:wc:ra_dav:version-url
+V 136
+/svn/repos/gci/!svn/ver/39399/MEP/Offer_Assignment_Automation/trunk/src/main/scripts/oozie/fia_offers_load_spe/load_coupon_item_dim.hive
+END
+load_coupon_item_final.hive
+K 25
+svn:wc:ra_dav:version-url
+V 138
+/svn/repos/gci/!svn/ver/39399/MEP/Offer_Assignment_Automation/trunk/src/main/scripts/oozie/fia_offers_load_spe/load_coupon_item_final.hive
+END
+job.properties
+K 25
+svn:wc:ra_dav:version-url
+V 125
+/svn/repos/gci/!svn/ver/39411/MEP/Offer_Assignment_Automation/trunk/src/main/scripts/oozie/fia_offers_load_spe/job.properties
+END
+load_item.hive
+K 25
+svn:wc:ra_dav:version-url
+V 125
+/svn/repos/gci/!svn/ver/39399/MEP/Offer_Assignment_Automation/trunk/src/main/scripts/oozie/fia_offers_load_spe/load_item.hive
+END
+workflow.xml
+K 25
+svn:wc:ra_dav:version-url
+V 123
+/svn/repos/gci/!svn/ver/39399/MEP/Offer_Assignment_Automation/trunk/src/main/scripts/oozie/fia_offers_load_spe/workflow.xml
+END
+load_assigned_offers.hive
+K 25
+svn:wc:ra_dav:version-url
+V 136
+/svn/repos/gci/!svn/ver/39399/MEP/Offer_Assignment_Automation/trunk/src/main/scripts/oozie/fia_offers_load_spe/load_assigned_offers.hive
+END
+load_campaigns.hive
+K 25
+svn:wc:ra_dav:version-url
+V 130
+/svn/repos/gci/!svn/ver/39399/MEP/Offer_Assignment_Automation/trunk/src/main/scripts/oozie/fia_offers_load_spe/load_campaigns.hive
+END
+load_coupon_detail_item.hive
+K 25
+svn:wc:ra_dav:version-url
+V 139
+/svn/repos/gci/!svn/ver/39399/MEP/Offer_Assignment_Automation/trunk/src/main/scripts/oozie/fia_offers_load_spe/load_coupon_detail_item.hive
+END
+load_offers.hive
+K 25
+svn:wc:ra_dav:version-url
+V 127
+/svn/repos/gci/!svn/ver/39399/MEP/Offer_Assignment_Automation/trunk/src/main/scripts/oozie/fia_offers_load_spe/load_offers.hive
+END
+load_coupon_detail.hive
+K 25
+svn:wc:ra_dav:version-url
+V 134
+/svn/repos/gci/!svn/ver/39399/MEP/Offer_Assignment_Automation/trunk/src/main/scripts/oozie/fia_offers_load_spe/load_coupon_detail.hive
+END

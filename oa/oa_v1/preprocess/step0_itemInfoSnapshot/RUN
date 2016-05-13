@@ -1,0 +1,21 @@
+
+
+
+#ItemInfoSourceTbl=sams_us_clubs.item_info_history
+#ItemInfoTbl=pythia.item_info_snapshot
+#ItemInfoLoc=/user/pythia/Workspaces/SamsMEP/item_info_snapshot
+#DS=2014-03-31
+ItemInfoSourceTbl=$ITEM_INFO_SOURCE_TBL
+ItemInfoTbl=$ITEM_INFO_TBL
+ItemInfoLoc=$ITEM_INFO_LOC
+DS=$DS_ITEM_MAPPING
+
+hive -f item_info_snapshot_tbl.hql \
+    -hiveconf itemInfoTbl=$ItemInfoTbl \
+    -hiveconf itemInfoLoc=$ItemInfoLoc
+
+hive -f item_info_snapshot_insert.hql \
+    -hiveconf ds=$DS \
+    -hiveconf itemInfoTbl=$ItemInfoTbl \
+    -hiveconf itemInfoSourceTbl=$ItemInfoSourceTbl
+

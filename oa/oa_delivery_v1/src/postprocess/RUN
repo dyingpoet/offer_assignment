@@ -1,0 +1,57 @@
+#WORK_DIR=/home/jli21/sams/working_session
+
+#CampaignNbr=308
+Database=$DATABASE
+CustomersPartition=$MEMBERSHIP_DIM_PARTITION_DATE
+#OfferFile=/home/jli21/sams/oa_module/postprocess/offer_gec_rec_03172014.txt
+#OAOutputTbl=offer_assignment_output
+#OAOutputLoc=/user/pythia/Workspaces/SamsMEP/offer_assignment_output
+OAOutputTbl=$OA_OUTPUT_TBL
+OAOutputLoc=$OA_OUTPUT_LOC
+#OApartition=2014apr-gec
+OApartition=$CAMPAIGN_MONTH_TYPE
+OutputCKP=offerAssignment_CKP_$OApartition
+OutputCKPnew=$OutputCKP"_new"
+echo $OutputCKP
+
+ScoreSource=$SCORE_SOURCE
+ScoreType=$SCORE_TYPE
+
+#SamsMemberXrefTbl=customers.sams_us_clubs_member_xref
+#SamsMembershipDimTbl=customers.sams_us_clubs_sams_membership_dim
+#SamsValueCouponDimTbl=sams_us_clubs.value_coupon_dim
+#SamsValueCouponItemDimTbl=sams_us_clubs.value_coupon_item_dim
+SamsMemberXrefTbl=$SAMS_MEMBER_XREF_TBL
+SamsMembershipDimTbl=$SAMS_MEMBERSHIP_DIM_TBL
+SamsValueCouponDimTbl=$SAMS_VALUE_COUPON_DIM_TBL
+SamsValueCouponItemDimTbl=$SAMS_VALUE_COUPON_ITEM_DIM_TBL
+
+cp -r *py *hql $WORK_DIR
+
+pushd $WORK_DIR
+
+python add_sc.py > member_sc_cpn
+
+tr '_' ' ' < member_sc_cpn > offerAssignment_member_decouple
+
+###hive -hiveconf OfferData=$OfferData -hiveconf OATable=$OATable -f create_offerAssignment.hql 
+hadoop fs -put offerAssignment_member_decouple $OAOutputLoc/"campaign_month="$OApartition/offerAssignment_member_decouple
+hive -e "USE $Database; ALTER TABLE $OAOutputTbl ADD PARTITION(campaign_month='$OApartition');"
+echo "USE $Database; ALTER TABLE $OAOutputTbl ADD PARTITION(campaign_month='$OApartition');"
+##select * from offer_assignment_output where campaign_month='2014apr-gec' limit 10;
+##select count(*) from offer_assignment_output where campaign_month='2014apr-gec' ; --1290441
+
+
+hive -hiveconf CustomersPartition=$CustomersPartition -hiveconf CampaignNbr=$CampaignNbr -hiveconf OATable=$OAOutputTbl -hiveconf OApartition=$OApartition \
+    -hiveconf Database=$Database \
+    -hiveconf SamsMemberXrefTbl=$SamsMemberXrefTbl \
+    -hiveconf SamsMembershipDimTbl=$SamsMembershipDimTbl \
+    -hiveconf SamsValueCouponDimTbl=$SamsValueCouponDimTbl \
+    -hiveconf SamsValueCouponItemDimTbl=$SamsValueCouponItemDimTbl \
+    -f joinFields5.hql > offerAssignment_CKP_temporary
+
+cat offerAssignment_CKP_temporary | python generateCKP4.py $CampaignNbr $OfferFile > $OutputCKP
+
+python appendScoreCoupon.py $OutputCKP $OfferFile scoreFile $ScoreSource $ScoreType > $OutputCKPnew
+
+popd

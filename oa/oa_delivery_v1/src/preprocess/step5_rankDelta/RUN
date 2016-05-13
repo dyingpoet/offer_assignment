@@ -1,0 +1,50 @@
+
+
+Pig=$PIG
+#DELTA=0.02
+#MEMBER_LB=1
+#MEMBER_UB=4
+#WORK_DIR=/home/jli21/sams/working_session
+#MEMBER_ITEM_PREF_LOC=/user/pythia/Workspaces/SamsMEP/subcatItemPref/member/ds=2014-04-14
+#GLOBAL_ITEM_PREF_LOC=/user/pythia/Workspaces/SamsMEP/subcatItemPref/global/ds=2014-04-14
+#SCORE_FLT_LOC=/user/pythia/Workspaces/SamsMEP/pis_member_subcat_item_coupon_score/campaign_month=Apr2014-gec
+#SCORE_FLT_FINAL_LOC=/user/pythia/Workspaces/SamsMEP/pis_member_subcat_item_coupon_score_final/campaign_month=Apr2014-gec
+#LAST_OFFER_ASSIGNMENT_LOC=/user/pythia/Workspaces/SamsMEP/offer_assignment_output/campaign_month=2014feb
+#
+#SCORE_FILE_LOC=/user/pythia/Workspaces/SamsMEP/pis_offer_assignment_score_file/campaign_month=Apr2014-gec
+#MEMBER_FILE_LOC=/user/pythia/Workspaces/SamsMEP/pis_offer_assignment_member_file/campaign_month=Apr2014-gec
+#CAMPAIGN_TYPE=RECOMMEND
+
+
+LastOfferAssignmentLoc=$LAST_OFFER_ASSIGNMENT_LOC
+ItemMemberPopularityLoc=$MEMBER_ITEM_PREF_LOC
+ItemGlobalPopularityLoc=$GLOBAL_ITEM_PREF_LOC
+delta=$DELTA
+
+[ -d $WORK_DIR ] || mkdir $WORK_DIR
+
+####need to filter lower bound if lower bound is greater than 1
+###RECOMMEND
+if [ $CAMPAIGN_TYPE == "RECOMMEND" ]
+    then 
+    $Pig -p scoreFltFinal=$SCORE_FLT_FINAL_LOC -p itemGlobalPopularity=$ItemGlobalPopularityLoc -p scoreRankDelta=$SCORE_FILE_LOC \
+         -p delta=$delta -p memberHDFS=$MEMBER_FILE_LOC -f recommendRankDelta.pig 1>recommendRankDelta.log 2>&1
+fi
+
+
+###REWARD
+if [ $CAMPAIGN_TYPE == "REWARD" ]
+    then 
+    $Pig -p scoreFltFinal=$SCORE_FLT_FINAL_LOC -p itemMemberPopularity=$ItemMemberPopularityLoc -p scoreRankDelta=$SCORE_FILE_LOC \
+         -p delta=$delta -p memberHDFS=$MEMBER_FILE_LOC -f rewardRankDelta.pig 1>rewardRankDelta.log 2>&1
+fi
+
+
+hadoop fs -getmerge $SCORE_FILE_LOC $WORK_DIR/scoreFile
+hadoop fs -getmerge $MEMBER_FILE_LOC $WORK_DIR/memberFile
+
+sed -i "s/$/ $MEMBER_LB $MEMBER_UB/"  $WORK_DIR/memberFile 
+
+
+
+

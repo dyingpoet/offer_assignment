@@ -1,0 +1,41 @@
+K 25
+svn:wc:ra_dav:version-url
+V 124
+/svn/repos/gci/!svn/ver/35987/MEP/Offer_Assignment_Automation/trunk/src/main/scripts/oozie/load_recommend_campaign_filtering
+END
+job.properties
+K 25
+svn:wc:ra_dav:version-url
+V 139
+/svn/repos/gci/!svn/ver/35987/MEP/Offer_Assignment_Automation/trunk/src/main/scripts/oozie/load_recommend_campaign_filtering/job.properties
+END
+load_memberfile.hql
+K 25
+svn:wc:ra_dav:version-url
+V 144
+/svn/repos/gci/!svn/ver/35987/MEP/Offer_Assignment_Automation/trunk/src/main/scripts/oozie/load_recommend_campaign_filtering/load_memberfile.hql
+END
+workflow.xml
+K 25
+svn:wc:ra_dav:version-url
+V 137
+/svn/repos/gci/!svn/ver/35987/MEP/Offer_Assignment_Automation/trunk/src/main/scripts/oozie/load_recommend_campaign_filtering/workflow.xml
+END
+README.txt
+K 25
+svn:wc:ra_dav:version-url
+V 135
+/svn/repos/gci/!svn/ver/35987/MEP/Offer_Assignment_Automation/trunk/src/main/scripts/oozie/load_recommend_campaign_filtering/README.txt
+END
+recommendFilter.pig
+K 25
+svn:wc:ra_dav:version-url
+V 144
+/svn/repos/gci/!svn/ver/26232/MEP/Offer_Assignment_Automation/trunk/src/main/scripts/oozie/load_recommend_campaign_filtering/recommendFilter.pig
+END
+recommendRankDelta.pig
+K 25
+svn:wc:ra_dav:version-url
+V 147
+/svn/repos/gci/!svn/ver/35987/MEP/Offer_Assignment_Automation/trunk/src/main/scripts/oozie/load_recommend_campaign_filtering/recommendRankDelta.pig
+END

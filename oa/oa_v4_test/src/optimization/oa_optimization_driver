@@ -1,0 +1,26 @@
+#!/bin/bash
+
+
+[ -d $WORK_DIR ] || mkdir -p $WORK_DIR
+
+#cp *py *sh $WORK_DIR
+
+pushd $WORK_DIR
+
+mv offer2subcatFile offer2subcatFile.orig
+cat offer2subcatFile.orig |  $PYTHON  ${SRC_OPTIMIZATION_PY_DIR}/removeDup.py 0 ' '  > offer2subcatFile
+
+$PYTHON ${SRC_OPTIMIZATION_PY_DIR}/auctionFastWithSubcatConstraintsV3E3.py scoreFile offerFile memberFile offer2subcatFile > oa_optimization.log
+#$PYTHON auctionFastWithSubcatConstraints2.py scoreFile offerFile memberFile offer2subcatFile > RUN.log
+mv scoreFile.converted_offerAssignment.outputFinal offerAssignment
+#./del.sh
+
+if [[ "${CONTROL_SPLIT_IND}" = "Y" ]]; then
+    mv offerAssignment offerAssignment_test
+    awk '$8==1' ${MEMBER_SPLIT_FILE} | cut -f1-3 | tr '\t' '_' | $PYTHON ${SRC_OPTIMIZATION_PY_DIR}/oa_control.py ${CONTROL_OFFER_FILE} > offerAssignment_control
+    cat offerAssignment_test offerAssignment_control> offerAssignment
+fi
+
+popd
+
+

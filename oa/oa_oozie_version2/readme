@@ -1,0 +1,9 @@
+Please find below the svn link for Offer Assignment
+https://svn01.wal-mart.com/svn/repos/gci/MEP/Offer_Assignment_Automation/trunk/src/main/scripts/oozie/
+ 
+oa_core_generation_flow/ - Main workflow for Offer Assignment process
+ 
+backfill_generation_flow/ - Main workflow for backfill process
+ 
+
+

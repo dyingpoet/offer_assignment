@@ -1,0 +1,29 @@
+K 25
+svn:wc:ra_dav:version-url
+V 118
+/svn/repos/gci/!svn/ver/36644/MEP/Offer_Assignment_Automation/trunk/src/main/scripts/oozie/load_member_club_preference
+END
+job.properties
+K 25
+svn:wc:ra_dav:version-url
+V 133
+/svn/repos/gci/!svn/ver/25050/MEP/Offer_Assignment_Automation/trunk/src/main/scripts/oozie/load_member_club_preference/job.properties
+END
+load_offer_assigned_member_base_w_club_pref.hql
+K 25
+svn:wc:ra_dav:version-url
+V 166
+/svn/repos/gci/!svn/ver/36644/MEP/Offer_Assignment_Automation/trunk/src/main/scripts/oozie/load_member_club_preference/load_offer_assigned_member_base_w_club_pref.hql
+END
+workflow.xml
+K 25
+svn:wc:ra_dav:version-url
+V 131
+/svn/repos/gci/!svn/ver/36644/MEP/Offer_Assignment_Automation/trunk/src/main/scripts/oozie/load_member_club_preference/workflow.xml
+END
+README.txt
+K 25
+svn:wc:ra_dav:version-url
+V 129
+/svn/repos/gci/!svn/ver/29635/MEP/Offer_Assignment_Automation/trunk/src/main/scripts/oozie/load_member_club_preference/README.txt
+END

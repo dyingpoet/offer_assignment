@@ -1,0 +1,17 @@
+
+TaskTable=pis_member_subcat_item_coupon_score
+RecoTable=pis_member_reco_score_anchor
+RecoLoc=/user/pythia/Workspaces/SamsMEP/Recommend/Scoring/plus/init/20140317Decay/recommend_score_cobought_no_smoothing_max_raw_cobought_transaction_debug_12mon
+CampaignMonth=Apr2014
+CampaignMonthType=Apr2014-gec
+
+#hive -e "USE pythia; ALTER TABLE ${hiveconf:reco_table} ADD PARTITION(campaign_month='${hiveconf:campaign_month_type}') LOCATION '${hiveconf:reco_loc}'" -hiveconf reco_table=$RecoTable -hiveconf reco_loc=$RecoLoc -hiveconf campaign_month_type=$CampaignMonthType;
+#hive -f reco_load.hql -hiveconf reco_table=$RecoTable -hiveconf reco_loc=$RecoLoc -hiveconf campaign_month_type=$CampaignMonthType;
+
+#hive -hiveconf campaign_month=$CampaignMonth -hiveconf campaign_month_type=$CampaignMonthType -f step1.hql
+
+hive -hiveconf campaign_month=$CampaignMonth -hiveconf campaign_month_type=$CampaignMonthType \
+     -hiveconf task_table=$TaskTable -hiveconf reco_table=$RecoTable \
+     -f step2.hql
+
+

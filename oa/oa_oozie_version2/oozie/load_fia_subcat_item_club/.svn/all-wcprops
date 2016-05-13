@@ -1,0 +1,53 @@
+K 25
+svn:wc:ra_dav:version-url
+V 116
+/svn/repos/gci/!svn/ver/40128/MEP/Offer_Assignment_Automation/trunk/src/main/scripts/oozie/load_fia_subcat_item_club
+END
+step1.hql
+K 25
+svn:wc:ra_dav:version-url
+V 126
+/svn/repos/gci/!svn/ver/40103/MEP/Offer_Assignment_Automation/trunk/src/main/scripts/oozie/load_fia_subcat_item_club/step1.hql
+END
+step1_skip_item.hql
+K 25
+svn:wc:ra_dav:version-url
+V 136
+/svn/repos/gci/!svn/ver/40103/MEP/Offer_Assignment_Automation/trunk/src/main/scripts/oozie/load_fia_subcat_item_club/step1_skip_item.hql
+END
+job.properties
+K 25
+svn:wc:ra_dav:version-url
+V 131
+/svn/repos/gci/!svn/ver/35987/MEP/Offer_Assignment_Automation/trunk/src/main/scripts/oozie/load_fia_subcat_item_club/job.properties
+END
+load_fia_subcat_item_club.hql
+K 25
+svn:wc:ra_dav:version-url
+V 146
+/svn/repos/gci/!svn/ver/35987/MEP/Offer_Assignment_Automation/trunk/src/main/scripts/oozie/load_fia_subcat_item_club/load_fia_subcat_item_club.hql
+END
+load_fia_subcat_item_club_inv_chck.hql
+K 25
+svn:wc:ra_dav:version-url
+V 155
+/svn/repos/gci/!svn/ver/35987/MEP/Offer_Assignment_Automation/trunk/src/main/scripts/oozie/load_fia_subcat_item_club/load_fia_subcat_item_club_inv_chck.hql
+END
+workflow.xml
+K 25
+svn:wc:ra_dav:version-url
+V 129
+/svn/repos/gci/!svn/ver/40128/MEP/Offer_Assignment_Automation/trunk/src/main/scripts/oozie/load_fia_subcat_item_club/workflow.xml
+END
+README.txt
+K 25
+svn:wc:ra_dav:version-url
+V 127
+/svn/repos/gci/!svn/ver/40102/MEP/Offer_Assignment_Automation/trunk/src/main/scripts/oozie/load_fia_subcat_item_club/README.txt
+END
+step1_skip_all.hql
+K 25
+svn:wc:ra_dav:version-url
+V 135
+/svn/repos/gci/!svn/ver/40103/MEP/Offer_Assignment_Automation/trunk/src/main/scripts/oozie/load_fia_subcat_item_club/step1_skip_all.hql
+END

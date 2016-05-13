@@ -1,0 +1,53 @@
+
+Please modify the configuration file *.cfg and *init (used in the mixed offer assignment), and generate some small configuration data in ${CONFIG_FILE_PATH}/.
+
+
+Below are some features we have added in V4 release.
+
+1). Make the sequential OA flexible to upper bounds
+In the previous version, it requires fixed upper bounds for each type of offers, say at most 2 reward offers (priority 1) and at most 4 recommend offers (priority 2) for an overall max  = 6 assignment. Here it enforces 6 = 4 + 2.
+./mixed_offer_assignment
+In the new version, the upper bounds could be flexible, say assign as many reward offers as possible (priority 1) and at most 4 recommend offers (priority 2) for an overall max = 6 assignment.
+./mixed_offer_assignment_flexible_upperbound
+
+2). Resolve the issue of offers falling in multiple sub-categories
+
+3). Add strict-item-reward turn on/off option for the sub-cat reward OA.
+In the old versions, the strict-item-reward is enforced such that only the coupon with items purchased will be qualified.
+In the new version, we can turn on / off this eligiblity option.
+
+4). Enhancement of backfilling logic
+
+5). 1-many OA included
+./1toMany_assignment
+
+6). Make the postprocessing script appending meta info scalable
+
+
+
+
+
+
+
+
+Below are some features we have added in V3 release.
+
+1). Be able to backfill offers to any lower bould.
+
+2). Be able to backfill offers to member without any scores.
+
+3). Be able to add nonoffers in the output
+
+4). Be able to turn on / off  the inventory check 
+
+5). Support mixed type offer assignment offers. Please specify the types of offers in the file mixed_offer_assignment.init. The current implenmetation assigns offer sequentially based on the order of types specified in the init file.
+
+
+
+
+
+
+
+
+
+

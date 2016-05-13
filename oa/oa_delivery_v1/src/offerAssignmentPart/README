@@ -1,0 +1,17 @@
+* input
+    memberFile
+    offer2subcatFile
+    offerFile
+    scoreFile
+
+* output
+    offerAssignment
+
+* execution
+    ./RUN
+
+* output
+    offerAssignment.output
+
+
+

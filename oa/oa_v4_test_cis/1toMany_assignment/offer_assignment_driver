@@ -1,0 +1,24 @@
+#!/bin/bash
+
+source offer_assignment_param.cfg
+
+### pre-loading
+hadoop fs -put $CONFIG_FILE_PATH/$FIA_INPUT /user/pythia/Workspaces/SamsMEP/offer_assignment_fia/campaign_month=${CAMPAIGN_MONTH}/$FIA_INPUT
+hive -e "USE pythia; ALTER TABLE offer_assignment_fia ADD PARTITION(campaign_month='${CAMPAIGN_MONTH}');"
+hive -e "USE pythia; LOAD DATA LOCAL INPATH '$CONFIG_FILE_PATH/${MEMBER_INPUT}' OVERWRITE INTO TABLE offer_assigned_member_base PARTITION (campaign_month='${CAMPAIGN_MONTH}')";
+
+### scores
+hive -e "SELECT DISTINCT cat_subcat_nbr, value_coupon_nbr, investment_cnt_old FROM $FIA_TBL WHERE campaign_month='$CAMPAIGN_MONTH' ORDER BY value_coupon_nbr" | tr '\t' ' '  > $WORK_DIR/sc_coupon_cnt_all
+hadoop fs -cat $SCORE_LOC/* | $PYTHON ${SRC_POSTPROCESS_PY_DIR}/quickSc2CpnScore.py $WORK_DIR/sc_coupon_cnt_all > $WORK_DIR/scoreFile
+hadoop fs -cat $SCORE_LOC_ADJ/* | $PYTHON ${SRC_POSTPROCESS_PY_DIR}/quickSc2CpnScore.py $WORK_DIR/sc_coupon_cnt_all > $WORK_DIR/scoreFileAdj
+
+### offer assignment
+$PYTHON ${SRC_POSTPROCESS_PY_DIR}/assignCluster.py $CONFIG_FILE_PATH/1toManyClusterOffer $CONFIG_FILE_PATH/${MEMBER_INPUT} > $WORK_DIR/offerAssignment
+
+### postprocess
+touch $WORK_DIR/scoreFile
+bash ${SRC_DIR}/postprocess/oa_postprocess_1-many_driver 
+
+
+
+

@@ -1,0 +1,171 @@
+#PYTHON=/home/jli21/lib/canopy/appdata/canopy-1.3.0.1715.rh5-x86_64/bin/python2.7
+
+set -e
+
+[ -d $WORK_DIR ] || mkdir -p $WORK_DIR
+
+echo "DS_RUN=${DS_RUN}"
+echo $RECO_SCORE_FILE
+
+
+oaFile=member_sc_cpn
+memberClusterFile=memberClusterFile
+recoClusterFile=recoClusterFile
+
+
+CustomersPartition=$MEMBERSHIP_DIM_PARTITION_DATE
+fiaFile=$OFFER_FILE
+
+OUTPUT_CKP=offerAssignment_CKP_${OA_PARTITION}
+OUTPUT_CKP_NEW=offerAssignment_CKP_${OA_PARTITION}"_new"
+echo $OUTPUT_CKP_NEW
+
+
+
+# cp -r *py *hql $WORK_DIR
+
+pushd $WORK_DIR
+
+
+hadoop fs -cat ${CLUSTER_RECO_LOC}/* > recoClusterFile
+hadoop fs -cat ${CLUSTER_LABEL_LOC}/* > memberClusterFile
+
+if [[ "${CONTROL_SPLIT_IND}" = "Y" ]]; then 
+    python ${SRC_POSTPROCESS_PY_DIR}/add_sc.py sc_coupon_cnt_all offerAssignment > member_sc_cpn
+else
+    python ${SRC_POSTPROCESS_PY_DIR}/add_sc.py > member_sc_cpn
+fi
+
+##if [[ $NO_QUALIFY_BACKFILL == 'Y' ]]; then
+##    mv member_sc_cpn member_sc_cpn_qualify
+##    python ${SRC_POSTPROCESS_PY_DIR}/no_qualify_backfill.py member_sc_cpn_qualify $WORK_DIR/sc_coupon_cnt $MEMBER_UB $CONFIG_FILE_PATH/memberTest 1>member_sc_cpn_no_qualify_backfill 2>member_sc_cpn_no_qualify_fail_backfill
+##    cat member_sc_cpn_qualify member_sc_cpn_no_qualify_backfill > member_sc_cpn
+##fi
+
+
+if [[ "$BACKFILL_IND" == "Y" && "$BACKFILL_SIMPLE" == "N" ]]
+then
+    if [[ "$CAMPAIGN_TYPE" == "REWARD" ]]
+    then
+        echo "Reward scores to be backfilled!"
+        if [[ "$BACKFILL_RECO_IND" == "Y" ]]
+        then
+            if [[ "$BACKFILL_CLUSTER_IND" == "Y" ]] 
+            then
+                ###pre-determined set, with clusters
+                echo $BACKFILL_CLUSTER_IND
+                echo "using reco +  pre-determined set with clusters"
+                cat $RECO_SCORE_FILE | python ${SRC_POSTPROCESS_PY_DIR}/reco_backfill.py $oaFile $fiaFile $memberClusterFile $recoClusterFile $MEMBER_LB 1>member_sc_cpn_reco_backfill 2>reco_fail_backfill
+                cat member_sc_cpn member_sc_cpn_reco_backfill > member_sc_cpn_w_reco
+                python ${SRC_POSTPROCESS_PY_DIR}/default_backfill.py $fiaFile $memberClusterFile $recoClusterFile $BACKFILL_CLUSTER_FILE member_sc_cpn_w_reco $MEMBER_LB 1>member_sc_cpn_default_backfill 2>default_fail_backfill
+                if [[ -s default_fail_backfill ]]; then echo "default backfilling failed for some members"; exit 1; else echo "default backfilling succeeded"; fi 
+                cat member_sc_cpn_w_reco member_sc_cpn_default_backfill > member_sc_cpn_backfilled
+                ### here assume that the cluster_level back-filling choices are enough. Not need popularity any more
+            else
+                ###popularity based, no clusters
+                echo "using reco + popularity based backfills"
+                cat $RECO_SCORE_FILE | python ${SRC_POSTPROCESS_PY_DIR}/reco_and_popularity_no_cluster_backfill.py $oaFile $fiaFile $MEMBER_LB 1>member_sc_cpn_reco_popularity_backfill 2>reco_popularity_fail_backfill
+                if [[ -s reco_popularity_fail_backfill ]]; then echo "reco_popularity backfilling failed for some members"; exit 1; else echo "reco_popularity backfilling succeeded"; fi 
+                cat member_sc_cpn member_sc_cpn_reco_popularity_backfill > member_sc_cpn_backfilled
+            fi 
+        else
+            if [[ "$BACKFILL_CLUSTER_IND" == "Y" ]] 
+            then
+                ###pre-determined set, with clusters
+                echo "only using pre-determined set with clusters"
+                python ${SRC_POSTPROCESS_PY_DIR}/default_backfill.py $fiaFile $memberClusterFile $recoClusterFile $BACKFILL_CLUSTER_FILE member_sc_cpn $MEMBER_LB 1>member_sc_cpn_default_backfill 2>default_fail_backfill
+                if [[ -s default_fail_backfill ]]; then echo "default backfilling failed for some members"; exit 1; else echo "default backfilling succeeded"; fi 
+                cat member_sc_cpn member_sc_cpn_default_backfill > member_sc_cpn_backfilled
+            else
+                ###popularity based, no clusters, backfill to MEMBER_LB, not limited to 2 offers
+                echo "only using popularity based backfills"
+                python ${SRC_POSTPROCESS_PY_DIR}/popularity_no_cluster_backfill.py $oaFile $WORK_DIR/sc_coupon_cnt_all $MEMBER_LB 1>member_sc_cpn_popularity_backfill 2>popularity_fail_backfill
+                if [[ -s popularity_fail_backfill ]]; then echo "popularity backfilling failed for some members"; exit 1; else echo "popularity backfilling succeeded"; fi 
+                cat member_sc_cpn member_sc_cpn_popularity_backfill > member_sc_cpn_backfilled
+            fi 
+        fi
+    else
+        echo "Recommend scores to be backfilled!"
+        ###popularity based, no clusters
+        echo "only using popularity based backfills"
+        python ${SRC_POSTPROCESS_PY_DIR}/popularity_no_cluster_backfill.py $oaFile $fiaFile $MEMBER_LB 1>member_sc_cpn_popularity_backfill 2>popularity_fail_backfill
+        if [[ -s popularity_fail_backfill ]]; then echo "popularity backfilling failed for some members"; exit 1; else echo "popularity backfilling succeeded"; fi 
+        cat member_sc_cpn member_sc_cpn_popularity_backfill > member_sc_cpn_backfilled
+    fi
+
+    if [[ $NO_QUALIFY_BACKFILL == 'Y' ]]; then
+        mv member_sc_cpn_backfilled member_sc_cpn_qualify
+        if [[ $NO_QUALIFY_BACKFILL_POPULARITY == 'Y' ]]; then
+            #python ${SRC_POSTPROCESS_PY_DIR}/no_qualify_backfill.py member_sc_cpn_qualify $WORK_DIR/sc_coupon_cnt $MEMBER_LB $CONFIG_FILE_PATH/memberTest 1>member_sc_cpn_no_qualify_backfill 2>member_sc_cpn_no_qualify_fail_backfill
+            python ${SRC_POSTPROCESS_PY_DIR}/no_qualify_backfill.py member_sc_cpn_qualify $WORK_DIR/sc_coupon_cnt_all $MEMBER_LB $CONFIG_FILE_PATH/memberTest 1>member_sc_cpn_no_qualify_backfill 2>member_sc_cpn_no_qualify_fail_backfill
+        fi
+        if [[ $NO_QUALIFY_BACKFILL_DEFAULT == 'Y' ]]; then
+            python ${SRC_POSTPROCESS_PY_DIR}/no_qualify_backfill_default.py member_sc_cpn_qualify $WORK_DIR/sc_coupon_cnt_all $MEMBER_LB $CONFIG_FILE_PATH/memberTest $CONFIG_FILE_PATH/backfill_offer 1>member_sc_cpn_no_qualify_backfill 2>member_sc_cpn_no_qualify_fail_backfill
+        fi
+        cat member_sc_cpn_qualify member_sc_cpn_no_qualify_backfill > member_sc_cpn_backfilled
+    fi
+    tr '_' ' ' < member_sc_cpn_backfilled > offerAssignment_member_decouple
+#else
+#    echo "no backfilling"
+#    tr '_' ' ' < member_sc_cpn > offerAssignment_member_decouple
+fi
+
+
+if [[ "$BACKFILL_IND" == "Y" && "$BACKFILL_SIMPLE" == "Y" ]]
+then
+    # $NO_QUALIFY_BACKFILL == 'Y' 
+    mv member_sc_cpn member_sc_cpn_qualify
+    if [[ $NO_QUALIFY_BACKFILL_POPULARITY == 'Y' ]]; then
+        #python ${SRC_POSTPROCESS_PY_DIR}/no_qualify_backfill.py member_sc_cpn_qualify $WORK_DIR/sc_coupon_cnt $MEMBER_LB $CONFIG_FILE_PATH/memberTest 1>member_sc_cpn_no_qualify_backfill 2>member_sc_cpn_no_qualify_fail_backfill
+        python ${SRC_POSTPROCESS_PY_DIR}/no_qualify_backfill.py member_sc_cpn_qualify $WORK_DIR/sc_coupon_cnt_all $MEMBER_LB $CONFIG_FILE_PATH/memberTest 1>member_sc_cpn_no_qualify_backfill 2>member_sc_cpn_no_qualify_fail_backfill
+    fi
+    if [[ $NO_QUALIFY_BACKFILL_DEFAULT == 'Y' ]]; then
+        python ${SRC_POSTPROCESS_PY_DIR}/no_qualify_backfill_default.py member_sc_cpn_qualify $WORK_DIR/sc_coupon_cnt_all $MEMBER_LB $CONFIG_FILE_PATH/memberTest $CONFIG_FILE_PATH/backfill_offer 1>member_sc_cpn_no_qualify_backfill 2>member_sc_cpn_no_qualify_fail_backfill
+    fi
+    cat member_sc_cpn_qualify member_sc_cpn_no_qualify_backfill > member_sc_cpn_backfilled
+    tr '_' ' ' < member_sc_cpn_backfilled > offerAssignment_member_decouple
+fi
+
+if [[ "$BACKFILL_IND" == "N" ]]
+then 
+    echo "no backfilling"
+    tr '_' ' ' < member_sc_cpn > offerAssignment_member_decouple
+fi
+
+hive -hiveconf OfferData=$OA_OUTPUT_LOC -hiveconf OATable=$OA_OUTPUT_TBL -f ${SRC_POSTPROCESS_HIVE_DIR}/create_offerAssignment.hql 
+
+hadoop fs -put offerAssignment_member_decouple ${OA_OUTPUT_LOC}/"campaign_month="${OA_PARTITION}"/offerAssignment_member_decouple"
+
+hive -e "USE $DATABASE; ALTER TABLE $OA_OUTPUT_TBL ADD PARTITION(campaign_month='$OA_PARTITION');"
+
+echo "USE $DATABASE; ALTER TABLE $OA_OUTPUT_TBL ADD PARTITION(campaign_month='$OA_PARTITION'); is done."
+
+
+hive -hiveconf CustomersPartition=$CustomersPartition -hiveconf CampaignNbr=$CAMPAIGN_NBR -hiveconf OATable=$OA_OUTPUT_TBL -hiveconf OApartition=$OA_PARTITION \
+     -hiveconf Database=$DATABASE \
+     -hiveconf SamsMemberXrefTbl=$SAMS_MEMBER_XREF_TBL \
+     -hiveconf SamsMembershipDimTbl=$SAMS_MEMBERSHIP_DIM_TBL \
+     -hiveconf SamsValueCouponDimTbl=$SAMS_VALUE_COUPON_DIM_TBL \
+     -hiveconf SamsValueCouponItemDimTbl=$SAMS_VALUE_COUPON_ITEM_DIM_TBL \
+     -f ${SRC_POSTPROCESS_HIVE_DIR}/joinFields5.hql > offerAssignment_CKP_temporary
+
+echo "OFFER_FILE=${OFFER_FILE}"
+cat offerAssignment_CKP_temporary | python ${SRC_POSTPROCESS_PY_DIR}/generateCKP4.py $CAMPAIGN_NBR $OFFER_FILE > $OUTPUT_CKP
+
+python ${SRC_POSTPROCESS_PY_DIR}/appendScoreCoupon.py $OUTPUT_CKP $OFFER_FILE scoreFile $SCORE_SOURCE $SCORE_TYPE | sort | uniq | awk -F \| '{printf "%s|1|\n", $0}'> $OUTPUT_CKP_NEW
+
+
+if [[ "$NON_OFFER" == "Y" ]]
+then
+    OUTPUT_CKP_WITH_NONOFFER=offerAssignment_CKP_${OA_PARTITION}"_with_nonoffer"
+    cut -d \| -f1-10 $WORK_DIR/${OUTPUT_CKP_NEW} | sort | uniq > $WORK_DIR/memberProfile
+    python ${SRC_POSTPROCESS_PY_DIR}/nonoffer_desc.py ${CONFIG_FILE_PATH}/nonoffer ${CAMPAIGN_FILE} $WORK_DIR/memberProfile > $WORK_DIR/nonoffer_format
+    cat $WORK_DIR/${OUTPUT_CKP_NEW} $WORK_DIR/nonoffer_format > $WORK_DIR/${OUTPUT_CKP_WITH_NONOFFER}
+fi
+
+#yyyymmdd=20140328
+#[ -d test ] || mkdir test
+#tar -czvf test/FI_SAMS_IEP_VMI_MBR_DETAILS_$yyyymmdd-1of1.txt.gz $OUTPUT_CKP
+#gzip -c $OUTPUT_CKP > test/FI_SAMS_IEP_VMI_MBR_DETAILS_$yyyymmdd-1of1.txt.gz 
+
+

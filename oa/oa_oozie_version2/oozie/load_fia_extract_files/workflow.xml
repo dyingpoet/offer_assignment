@@ -1,0 +1,166 @@
+<workflow-app xmlns="uri:oozie:workflow:0.2" name="load_fia_extract_files">
+
+<start to="fork"/>
+
+<fork name="fork">
+  <path start="load_fia_offer_file"/>
+  <path start="load_fia_offer2subcat_file"/>
+  <path start="load_fia_sc_coupon_cnt"/>
+</fork>
+
+<action name="load_fia_offer_file">
+        <hive xmlns="uri:oozie:hive-action:0.2">
+                <job-tracker>${jobTracker}</job-tracker>
+                <name-node>${nameNode}</name-node>
+                <job-xml>${nameNode}/user/${wf:user()}/${appRoot}/env/${cluster}/hive-site.xml</job-xml>
+                <configuration>
+                <property>
+                  <name>oozie.hive.defaults</name>
+                  <value>/user/${wf:user()}/${appRoot}/env/${cluster}/hive-default.xml</value>
+                </property>
+                <property>
+                    <name>pool.name</name>
+                    <value>${etlPoolName}</value>
+                </property>
+                <property>
+                    <name>oozie.launcher.pool.name</name>
+                    <value>${oozieLauncherPoolName}</value>
+                </property>
+                </configuration>
+
+                <script>load_fia_offerfile.hql</script>
+                <param>offerfile=${offerfile}</param>
+		<param>FiaTbl=${FiaTbl}</param>
+		<param>fia_campaign_no=${fia_campaign_no}</param>
+        <param>campaign_iter=${campaign_iter}</param>		
+        </hive>
+        <ok to="join"/>
+        <error to="join"/>
+</action>
+
+
+<action name="load_fia_offer2subcat_file">
+        <hive xmlns="uri:oozie:hive-action:0.2">
+                <job-tracker>${jobTracker}</job-tracker>
+                <name-node>${nameNode}</name-node>
+                <job-xml>${nameNode}/user/${wf:user()}/${appRoot}/env/${cluster}/hive-site.xml</job-xml>
+                <configuration>
+                <property>
+                  <name>oozie.hive.defaults</name>
+                  <value>/user/${wf:user()}/${appRoot}/env/${cluster}/hive-default.xml</value>
+                </property>
+                <property>
+                    <name>pool.name</name>
+                    <value>${etlPoolName}</value>
+                </property>
+                <property>
+                    <name>oozie.launcher.pool.name</name>
+                    <value>${oozieLauncherPoolName}</value>
+                </property>
+                </configuration>
+
+                <script>load_fia_offer2subcatfile.hql</script>
+		<param>offer2subcatfile=${offer2subcatfile}</param>
+		<param>FiaTbl=${FiaTbl}</param>
+		<param>fia_campaign_no=${fia_campaign_no}</param>
+        <param>campaign_iter=${campaign_iter}</param>		
+        </hive>
+        <ok to="join"/>
+        <error to="join"/>
+</action>
+
+
+<action name="load_fia_sc_coupon_cnt">
+        <hive xmlns="uri:oozie:hive-action:0.2">
+                <job-tracker>${jobTracker}</job-tracker>
+                <name-node>${nameNode}</name-node>
+                <job-xml>${nameNode}/user/${wf:user()}/${appRoot}/env/${cluster}/hive-site.xml</job-xml>
+                <configuration>
+                <property>
+                  <name>oozie.hive.defaults</name>
+                  <value>/user/${wf:user()}/${appRoot}/env/${cluster}/hive-default.xml</value>
+                </property>
+                <property>
+                    <name>pool.name</name>
+                    <value>${etlPoolName}</value>
+                </property>
+                <property>
+                    <name>oozie.launcher.pool.name</name>
+                    <value>${oozieLauncherPoolName}</value>
+                </property>
+                </configuration>
+
+                <script>load_fia_sc_coupon_cnt.hql</script>
+		<param>sc_coupon_cnt_tbl=${sc_coupon_cnt_tbl}</param>
+		<param>FiaTbl=${FiaTbl}</param>		
+		<param>fia_campaign_no=${fia_campaign_no}</param>
+        <param>campaign_iter=${campaign_iter}</param>		
+        </hive>
+        <ok to="join"/>
+        <error to="join"/>
+</action>
+
+<join name="join" to="checkerror"/>
+
+<decision name="checkerror">
+       <switch>
+          
+          <case to="send-email">
+	  	    ${null != wf:lastErrorNode()}          
+	  </case>
+	  	  
+	  <case to="success-send-email">
+	  	    ${null == wf:lastErrorNode()}
+	  </case>
+          
+           <default to="success-send-email"/>
+           
+       </switch>
+</decision> 
+
+<action name="success-send-email">
+        <email xmlns="uri:oozie:email-action:0.1">
+            <to>${emailTo}</to>
+            <subject>**MEP** Offer Assignment - Successfully Loaded FIA Extract Files - ${wf:id()}</subject>
+            <body>
+                hostname: hadoop-prod
+                severity: MINOR
+                object: HADOOP
+                modifier: HADOOP
+                group: HADOOP
+                text: Action Succeeded. (ID ${wf:id()}, PATH ${wf:appPath()}) Error Message: ${wf:errorMessage(wf:lastErrorNode())}
+            </body>
+        </email>
+
+        <ok to="end"/>
+        <error to="kill"/>
+        
+</action>
+ 
+ 
+<action name="send-email">
+        <email xmlns="uri:oozie:email-action:0.1">
+            <to>${emailTo}</to>
+            <subject>**MEP** Offer Assignment - Error Loading FIA Extract Files - ${wf:id()}</subject>
+            <body>
+                hostname: hadoop-prod
+                severity: MINOR
+                object: HADOOP
+                modifier: HADOOP
+                group: HADOOP
+                text: Action failed. (ID ${wf:id()}, PATH ${wf:appPath()}) Error Message: ${wf:errorMessage(wf:lastErrorNode())}
+            </body>
+        </email>
+
+        <ok to="kill"/>
+        <error to="kill"/>
+        
+</action>
+ 
+<kill name="kill">
+    <message>FATAL: OA FIA Extract Files Load Job Failed </message>
+</kill>
+
+<end name="end"/>
+
+</workflow-app>

@@ -1,0 +1,22 @@
+
+StartDate=$DATA_START_T
+EndDate=$DATA_END_T
+TransTbl=$TRANS_TBL
+TransLoc=$TRANS_LOC
+VisitMemberTbl=$VISIT_MEMBER_TBL
+ScanTbl=$SCAN_TBL
+ItemDimTbl=$ITEM_DIM_TBL
+DS=$DS_RUN
+
+hive -f trans_tbl.hql \
+    -hiveconf transTbl=$TransTbl  \
+    -hiveconf transLoc=$TransLoc 
+
+hive -f trans_insert.hql \
+    -hiveconf transTbl=$TransTbl \ 
+    -hiveconf ds=$DS \ 
+    -hiveconf visitMemberTbl=$VisitMemberTbl \ 
+    -hiveconf scanTbl=$ScanTbl \
+    -hiveconf itemDimTbl=$ItemDimTbl
+
+

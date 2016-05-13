@@ -1,0 +1,40 @@
+<workflow-app xmlns="uri:oozie:workflow:0.4" name="oa_refresh_fia">
+
+<start to ="refresh_fia"/> 
+<action name="refresh_fia">
+	<pig>
+	<job-tracker>${jobTracker}</job-tracker>
+	<name-node>${nameNode}</name-node>
+	<job-xml>${nameNode}/user/${wf:user()}/${appRoot}/env/${cluster}/hive-site.xml</job-xml>
+	<script>Refresh_fia_offers.pig</script>
+	<param>Pig=/usr/bin/pig</param>
+	<param>member_sc_cpn=${member_sc_cpn}</param>
+	<param>FiaOfferFile=${FiaOfferFile}</param>
+	<param>fia_offers_file_refresh=${fia_offers_file_refresh}</param>
+	</pig>
+        <ok to="end"/>
+        <error to="send-email"/>
+</action>
+<action name="send-email">
+	<email xmlns="uri:oozie:email-action:0.1">
+	 <to>${emailTo}</to>
+	 <subject>**MEP** Offer Assignment Refresh fia_offers file : Error Loading Refresh_fia_offers - ${wf:id()}</subject>
+	 <body>
+	     hostname: hadoop-prod
+	     severity: MINOR
+	     object: HADOOP
+	     modifier: HADOOP
+	     group: HADOOP
+	     text: Action failed. (ID ${wf:id()}, PATH ${wf:appPath()}) Error Message: ${wf:errorMessage(wf:lastErrorNode())}
+	 </body>
+	</email>
+
+	<ok to="kill"/>
+	<error to="kill"/>
+</action>
+
+<kill name="kill">
+ 	<message>Failed, error message[${wf:errorMessage(wf:lastErrorNode())}]</message>
+</kill>
+<end name="end"/>
+</workflow-app>

@@ -1,0 +1,9 @@
+export MIXED_TYPE_LIST=("LAPSED" "REWARD" "RECOMMEND")
+export MEMBER_UB_LIST=(unk 2 unk)
+#export SCORE_LIST=($path1 $path2 $paht3)
+export ITEM_LEVEL_SCORE_LIST=(N Y N)
+
+export CAMPAIGN_MONTH=Oct2015-601-groupA
+export MEMBER_LB_ALL=4
+export MEMBER_UB_ALL=6
+

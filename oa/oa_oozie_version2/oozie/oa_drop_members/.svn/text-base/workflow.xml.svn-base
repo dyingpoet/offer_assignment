@@ -1,0 +1,113 @@
+<workflow-app xmlns="uri:oozie:workflow:0.4" name="oa_drop_members">
+
+<start to ="validate_script"/>
+<decision name="validate_script">
+       <switch>
+                        <case to="create_drop_tmp">
+                                ${drop_records!="999999"}
+                        </case>
+                        <default to="copy_files"/>
+       </switch>
+</decision>
+<action name="create_drop_tmp">
+     <shell xmlns="uri:oozie:shell-action:0.1">
+          <job-tracker>${jobTracker}</job-tracker>
+          <name-node>${nameNode}</name-node>
+		  <prepare>
+					<delete path="${nameNode}/user/hive/warehouse/${database}.db/files/${campaign_iter}/drop_tmp" />
+					<mkdir path ="${nameNode}/user/hive/warehouse/${database}.db/files/${campaign_iter}/drop_tmp" />
+			</prepare>
+          <job-xml>${nameNode}/user/${wf:user()}/${appRoot}/env/${cluster}/hive-site.xml</job-xml>
+           <configuration>
+                        <property>
+                                  <name>oozie.hive.defaults</name>
+                                  <value>${nameNode}/user/${wf:user()}/${appRoot}/env/${cluster}/hive-default.xml</value>
+                        </property>
+                        <property>
+                                  <name>mapred.child.java.opts</name>
+                                  <value>-Xmx1500m</value>
+                        </property>
+                        <property>
+                                  <name>io.sort.mb</name>
+                                  <value>500</value>
+                        </property>
+                        <property>
+                                  <name>dfs.block.size</name>
+                                  <value>536870912</value>
+                        </property>
+                        <property>
+                                    <name>pool.name</name>
+                                    <value>${etlPoolName}</value>
+                        </property>
+                        <property>
+                                    <name>oozie.launcher.pool.name</name>
+                                    <value>${oozieLauncherPoolName}</value>
+                        </property>
+                        </configuration>
+                    <exec>drop_inp.py</exec>
+                    <argument>${drop_records}</argument>
+                    <argument>${drop_tmp}</argument>
+                                        <file>drop_inp.py</file>
+     </shell>
+        <ok to="drop_members"/>
+        <error to="send-email"/>
+</action>
+
+<action name="drop_members">
+        <pig>
+        <job-tracker>${jobTracker}</job-tracker>
+        <name-node>${nameNode}</name-node>
+        <job-xml>${nameNode}/user/${wf:user()}/${appRoot}/env/${cluster}/hive-site.xml</job-xml>
+        <script>dropCoupons.pig</script>
+        <param>database=${database}</param>
+        <param>Pig=/usr/bin/pig</param>
+        <param>member_sc_cpn=${member_sc_cpn}</param>
+        <param>mem_sc_cpn_final=${mem_sc_cpn_final}</param>
+        <param>drop_tmp=${drop_tmp}</param>
+        <param>fia_offers_file_refresh=${fia_offers_file_refresh}</param>
+        <param>fia_offers_file_dropped=${fia_offers_file_dropped}</param>
+        </pig>
+        <ok to="end"/>
+        <error to="send-email"/>
+</action>
+
+<action name="copy_files">
+         <pig>
+         <job-tracker>${jobTracker}</job-tracker>
+         <name-node>${nameNode}</name-node>
+         <job-xml>${nameNode}/user/${wf:user()}/${appRoot}/env/${cluster}/hive-site.xml</job-xml>
+         <script>copy_files.pig</script>
+         <param>database=${database}</param>
+         <param>Pig=/usr/bin/pig</param>
+         <param>fia_offers_file_refresh=${fia_offers_file_refresh}</param>
+         <param>fia_offers_file_dropped=${fia_offers_file_dropped}</param>
+		 <param>member_sc_cpn=${member_sc_cpn}</param>
+        <param>mem_sc_cpn_final=${mem_sc_cpn_final}</param>
+         </pig>
+         <ok to="end"/>
+         <error to="send-email"/>
+</action>
+
+<action name="send-email">
+        <email xmlns="uri:oozie:email-action:0.1">
+         <to>${emailTo}</to>
+         <subject>**MEP** Offer Assignment Backfill Drop  : Error Loading drop_fia_offers - ${wf:id()}</subject>
+         <body>
+             hostname: hadoop-prod
+             severity: MINOR
+             object: HADOOP
+             modifier: HADOOP
+             group: HADOOP
+             text: Action failed. (ID ${wf:id()}, PATH ${wf:appPath()}) Error Message: ${wf:errorMessage(wf:lastErrorNode())}
+         </body>
+        </email>
+
+        <ok to="kill"/>
+        <error to="kill"/>
+</action>
+
+<kill name="kill">
+        <message>Failed, error message[${wf:errorMessage(wf:lastErrorNode())}]</message>
+</kill>
+<end name="end"/>
+</workflow-app>

@@ -1,0 +1,71 @@
+#!/bin/bash
+
+source offer_assignment_utility.sh
+
+source mixed_offer_assignment.init
+source mixed_offer_assignment_param.cfg
+
+FINAL_DIR=/home/jli21/sams/working_session/${CAMPAIGN_MONTH}/${CAMPAIGN_MONTH}
+[ -d $FINAL_DIR ] || mkdir -p $FINAL_DIR
+
+#echo ${#MIXED_TYPE_LIST[@]} 
+
+for ((i=0;i<${#MIXED_TYPE_LIST[@]};i++))
+do
+    echo "i="$i
+    export TYPE=${MIXED_TYPE_LIST[$i]}
+    export ITEM_LEVEL_SCORE_IND=${ITEM_LEVEL_SCORE_LIST[$i]}
+    export CAMPAIGN_MONTH_TYPE=${CAMPAIGN_MONTH}-$TYPE
+    export SCORE_LOC=${SCORE_LIST[$i]}
+    source mixed_offer_assignment_param.cfg
+    export MEMBER_UB=${MEMBER_UB_LIST[$i]}
+    echo $MEMBER_UB
+    echo $ITEM_LEVEL_SCORE_IND
+    echo $CAMPAIGN_MONTH_TYPE
+    echo $SCORE_LOC
+    
+    ### preprocess
+    python ${SRC_DIR}/preprocess/oa_preprocess_driver
+    
+    ### i>=1: change investment count
+    if [[ $i > 0 ]]; then
+        cp -r $FINAL_DIR/offerFile_left $WORK_DIR/offerFile
+        mv $WORK_DIR/scoreFile $WORK_DIR/scoreFile_bak
+        mv $WORK_DIR/offer2subcatFile $WORK_DIR/offer2subcatFile_bak
+        bash ${SRC_PREPROCESS_PY_DIR}/adjInput.py $FINAL_DIR/offerFile_left $WORK_DIR/scoreFile_bak $WORK_DIR/offer2subcatFile_bak 1>$WORK_DIR/scoreFile 2>$WORK_DIR/offer2subcatFile
+        ### memberFile
+        cut -d ' ' -f2 $WORK_DIR/scoreFile | sort | uniq | sed "s/$ 1 $MEMBER_UB/" > $WORK_DIR/memberFile
+    fi
+    
+    ### optimization
+    bash ${SRC_DIR}/optimization/oa_optimization_driver
+    
+    ### modify the investment count, append OA result
+    cat $WORK_DIR/scoreFile >> $FINAL_DIR/scoreFile
+    cat $WORK_DIR/offerAssignment >> $FINAL_DIR/offerAssignment
+    if [[ $i -eq 0 ]]; then
+        cp $WORK_DIR/offerFile $FINAL_DIR/offerFile
+        cp $WORK_DIR/offerFile_all $FINAL_DIR/offerFile_all
+        cp $WORK_DIR/offer2subcatFile $FINAL_DIR/offer2subcatFile
+        cp $WORK_DIR/sc_coupon_cnt_all $FINAL_DIR/sc_coupon_cnt_all
+        cp $WORK_DIR/sc_coupon_cnt $FINAL_DIR/sc_coupon_cnt
+    fi
+    python ${SRC_PREPROCESS_PY_DIR}/adjInvestment.py $FINAL_DIR/offerAssignment $FINAL_DIR/offerFile_all 1>$FINAL_DIR/offerFile_left
+done
+
+### preprocess
+#bash ${SRC_DIR}/preprocess/oa_preprocess_driver
+
+### optimization
+#bash ${SRC_DIR}/optimization/oa_optimization_driver
+
+
+export CAMPAIGN_MONTH_TYPE=${CAMPAIGN_MONTH}
+
+source mixed_offer_assignment_param.cfg
+
+
+### postprocess
+bash ${SRC_DIR}/postprocess/oa_postprocess_driver 
+
+

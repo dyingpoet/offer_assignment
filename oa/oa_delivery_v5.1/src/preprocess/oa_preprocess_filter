@@ -1,0 +1,44 @@
+
+
+DataStartT=${DATA_START_T}
+DataEndT=${DATA_END_T}
+ELIGIBLE_START_T=$DataStartT
+ELIGIBLE_END_T=$DataEndT
+DateLB=$DataStartT
+DateUB=$DataEndT
+delta=$DELTA
+
+
+#################################################################################################################################
+######
+###### items purchased [join with FIA and map to the coupon level]
+######
+#################################################################################################################################
+
+    ### member preference
+    if [[ ! -e ${TOUCH_MEMBER_ITEM_PREF} ]]; then
+        $PIG -p MemCombined=${MEM_COMBINED} \
+            -p TransOnline=${TRANS_ONLINE} \
+            -p TransOffline=${TRANS_OFFLINE} \
+            -p ItemSubCatMapping=${ITEM_SUBCAT_MAPPING} \
+            -p DateLB=$DateLB \
+            -p DateUB=$DateUB \
+            -p TaskDir=${SRC_PREPROCESS_PY_DIR} \
+            -p OutputMemberPref=${OutputMemberPref} \
+            -f ${SRC_PREPROCESS_PIG_DIR}/member_item_preference.pig 1>${LOG_PREPROCESS_HIVE_DIR}/member_item_preference.log 2>&1
+        if [[ $? -ne 0 ]]; then echo "Member item preference failed!"; exit 1; else echo "Member item preference succeeded!"; touch ${TOUCH_MEMBER_ITEM_PREF}; fi
+    else
+        echo "Member item preference was successfully run before!" 
+    fi
+
+
+
+#################################################################################################################################
+######
+###### offer assigned
+######
+#################################################################################################################################
+
+
+
+

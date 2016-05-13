@@ -1,0 +1,14 @@
+
+#WORK_DIR=/home/jli21/sams/working_session
+WORK_DIR=/home/jli21/sams/working_session/Oct2014/gec
+FiaTbl=pythia.offer_assignment_fia
+campaignMonthType=Oct2014-v2
+
+[ -d $WORK_DIR ] || mkdir -p $WORK_DIR
+
+
+hive -e "select distinct value_coupon_nbr, investment_cnt_old from $FiaTbl  where campaign_month='$campaignMonthType' order by value_coupon_nbr" | tr '\t' ' ' > $WORK_DIR/offerFile
+hive -e "select distinct value_coupon_nbr, cat_subcat_nbr from $FiaTbl where campaign_month='$campaignMonthType' order by value_coupon_nbr" | tr '\t' ' '  > $WORK_DIR/offer2subcatFile
+hive -e "select distinct cat_subcat_nbr, value_coupon_nbr, investment_cnt_old from $FiaTbl where campaign_month='$campaignMonthType' order by value_coupon_nbr" | tr '\t' ' '  > $WORK_DIR/sc_coupon_cnt
+
+

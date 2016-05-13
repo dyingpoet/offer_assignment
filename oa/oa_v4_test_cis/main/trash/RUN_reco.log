@@ -1,0 +1,50 @@
+MapReduce Jobs Launched:
+Job 0: Map: 1  Reduce: 1   Cumulative CPU: 7.19 sec   MAPRFS Read: 11750 MAPRFS Write: 4327 SUCCESS
+Job 1: Map: 1  Reduce: 1   Cumulative CPU: 5.01 sec   MAPRFS Read: 5324 MAPRFS Write: 4621 SUCCESS
+Total MapReduce CPU Time Spent: 12 seconds 200 msec
+OK
+Time taken: 65.434 seconds
+Logging initialized using configuration in file:/etc/hive/conf.bfd-puppet/hive-log4j.properties
+Hive history file=/data1/hive/jli21/hive_job_log_jli21_201501301354_1974070973.txt
+Total MapReduce jobs = 2
+Launching Job 1 out of 2
+Number of reduce tasks not specified. Estimated from input data size: 1
+In order to change the average load for a reducer (in bytes):
+  set hive.exec.reducers.bytes.per.reducer=<number>
+In order to limit the maximum number of reducers:
+  set hive.exec.reducers.max=<number>
+In order to set a constant number of reducers:
+  set mapred.reduce.tasks=<number>
+Starting Job = job_201501081236_749652, Tracking URL = http://mapr300.sv.walmartlabs.com:50030/jobdetails.jsp?jobid=job_201501081236_749652
+Kill Command = /opt/mapr/hadoop/hadoop-0.20.2/bin/../bin/hadoop job  -Dmapred.job.tracker=maprfs:/// -kill job_201501081236_749652
+Hadoop job information for Stage-1: number of mappers: 1; number of reducers: 1
+2015-01-30 13:54:32,126 Stage-1 map = 0%,  reduce = 0%
+2015-01-30 13:54:47,967 Stage-1 map = 100%,  reduce = 0%, Cumulative CPU 5.01 sec
+2015-01-30 13:54:52,097 Stage-1 map = 100%,  reduce = 0%, Cumulative CPU 5.01 sec
+2015-01-30 13:54:54,722 Stage-1 map = 100%,  reduce = 0%, Cumulative CPU 6.83 sec
+MapReduce Total cumulative CPU time: 6 seconds 830 msec
+Ended Job = job_201501081236_749652
+Launching Job 2 out of 2
+Number of reduce tasks determined at compile time: 1
+In order to change the average load for a reducer (in bytes):
+  set hive.exec.reducers.bytes.per.reducer=<number>
+In order to limit the maximum number of reducers:
+  set hive.exec.reducers.max=<number>
+In order to set a constant number of reducers:
+  set mapred.reduce.tasks=<number>
+Starting Job = job_201501081236_749666, Tracking URL = http://mapr300.sv.walmartlabs.com:50030/jobdetails.jsp?jobid=job_201501081236_749666
+Kill Command = /opt/mapr/hadoop/hadoop-0.20.2/bin/../bin/hadoop job  -Dmapred.job.tracker=maprfs:/// -kill job_201501081236_749666
+Hadoop job information for Stage-2: number of mappers: 1; number of reducers: 1
+2015-01-30 13:55:04,415 Stage-2 map = 0%,  reduce = 0%
+2015-01-30 13:55:14,175 Stage-2 map = 100%,  reduce = 0%, Cumulative CPU 3.77 sec
+2015-01-30 13:55:19,387 Stage-2 map = 100%,  reduce = 0%, Cumulative CPU 3.77 sec
+MapReduce Total cumulative CPU time: 3 seconds 770 msec
+Ended Job = job_201501081236_749666
+MapReduce Jobs Launched:
+Job 0: Map: 1  Reduce: 1   Cumulative CPU: 6.83 sec   MAPRFS Read: 12540 MAPRFS Write: 5180 SUCCESS
+Job 1: Map: 1  Reduce: 1   Cumulative CPU: 5.19 sec   MAPRFS Read: 6019 MAPRFS Write: 5334 SUCCESS
+Total MapReduce CPU Time Spent: 12 seconds 20 msec
+OK
+Time taken: 58.002 seconds
+[jli21@sg-dev01 2015mar79]$ bash RUN_reco 
+

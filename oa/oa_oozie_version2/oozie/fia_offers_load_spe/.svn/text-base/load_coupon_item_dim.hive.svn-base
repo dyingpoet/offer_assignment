@@ -1,0 +1,29 @@
+create database if not exists ${mepschema};
+use ${mepschema};
+
+SET hive.exec.compress.output=true ;
+SET hive.exec.compress.intermediate=true ;
+SET mapred.output.compress=true ;
+SET mapred.output.compression.codec=org.apache.hadoop.io.compress.SnappyCodec ;
+SET mapred.map.output.compression.codec=org.apache.hadoop.io.compress.SnappyCodec ;
+SET io.seqfile.compression.type=BLOCK;
+SET io.sort.mb=500 ;
+SET mapred.reduce.slowstart.completed.maps=0.90 ;
+SET dfs.block.size=536870912;
+SET io.file.buffer.size=131072;
+SET mapred.compress.map.output=true;
+SET mapred.output.compression.type=BLOCK;
+
+drop table if exists VALUE_COUPON_ITEM_TEMP;
+
+
+CREATE TABLE IF NOT EXISTS VALUE_COUPON_ITEM_TEMP
+STORED AS SEQUENCEFILE
+AS
+SELECT 	VCI.*,
+	I2.OLD_NBR AS COUPON_ITEM_NBR
+FROM	
+	VALUE_COUPON_ITEM VCI
+JOIN	US_WC_TABLES.ITEM I2
+ON	VCI.COUPON_MDS_FAM_ID = I2.ITEM_NBR
+;

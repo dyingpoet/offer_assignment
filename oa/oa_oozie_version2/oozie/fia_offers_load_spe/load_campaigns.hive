@@ -1,0 +1,57 @@
+create database if not exists ${mepschema};
+use ${mepschema};
+
+SET hive.exec.compress.output=true ;
+SET hive.exec.compress.intermediate=true ;
+SET mapred.output.compress=true ;
+SET mapred.output.compression.codec=org.apache.hadoop.io.compress.SnappyCodec ;
+SET mapred.map.output.compression.codec=org.apache.hadoop.io.compress.SnappyCodec ;
+SET io.seqfile.compression.type=BLOCK;
+SET io.sort.mb=500 ;
+SET mapred.reduce.slowstart.completed.maps=0.90 ;
+SET dfs.block.size=536870912;
+SET io.file.buffer.size=131072;
+SET mapred.compress.map.output=true;
+SET mapred.output.compression.type=BLOCK;
+
+drop table if exists FIA_CAMPAIGNS;
+
+
+CREATE TABLE FIA_CAMPAIGNS
+STORED AS SEQUENCEFILE
+AS
+SELECT a.*,
+'NOT USED' AS FILE_NAME,
+'NOT USED' AS MEDIA_TYPE_CODE
+from
+(
+SELECT DISTINCT VCAD.CAMPAIGN_SK_ID,
+Trim(VCAD.CAMPAIGN_DESC) AS CAMPAIGN_DESC,
+VCAD.CAMPAIGN_NBR,
+VCAPD.VAL_ASSIGN_TYPE_CD,
+Trim(VCAPD.VAL_ASSIGN_TYPE_DESC) AS VAL_ASSIGN_TYPE_DESC,
+VCAD.SHARED_VALUE_IND,
+VCAPD.PACKAGE_CODE,
+Trim(VCAPD.PACKAGE_DESC) AS PACKAGE_DESC,
+(VCAF.CYCLE_QTY * VCAF.CYCLE_DAY_QTY) AS DAYS_IN_CAMPAIGN,
+VCAF.ITEM_DURATION_DAY_QTY,
+VCAF.COUPON_PER_CYCLE_QTY,
+VCAF.CYCLE_DAY_QTY,
+VCAF.CYCLE_QTY,
+Trim(VCAD.START_DATE) AS START_DATE,
+Trim(
+   CASE WHEN VCAPD.VAL_ASSIGN_TYPE_CD = 5 THEN date_add(VCAD.END_DATE, (VCAF.ITEM_DURATION_DAY_QTY - 1))
+   ELSE VCAD.END_DATE
+   END
+) AS FINAL_REDEMPTION_DATE
+FROM US_WC_PROMO_DM_TABLES.VALUE_CAMPAIGN_DIM VCAD 
+inner join US_WC_PROMO_DM_TABLES.VALUE_CAMPAIGN_FACT VCAF on
+(VCAD.CAMPAIGN_SK_ID = VCAF.CAMPAIGN_SK_ID)
+inner join US_WC_PROMO_DM_TABLES.VAL_CMP_ASSIGN_PKG_DIM VCAPD on
+(VCAD.CAMPAIGN_NBR = VCAPD.CAMPAIGN_NBR)
+where VCAD.BASE_DIV_NBR = 18
+AND VCAD.COUNTRY_CODE = 'US'
+--AND VCAD.CAMPAIGN_NBR IN (${CAMPAIGN_NBR})
+and VCAD.end_date >= to_date(from_unixtime(unix_timestamp()))
+) a
+;

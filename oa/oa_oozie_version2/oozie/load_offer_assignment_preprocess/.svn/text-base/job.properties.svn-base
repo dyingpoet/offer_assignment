@@ -1,0 +1,17 @@
+# Application/workflow settings
+appName=load_offer_assignment_preprocess
+appRoot=etl
+oozie.libpath=/user/${user.name}/${appRoot}/lib
+oozie.wf.application.path=${nameNode}/user/${user.name}/${appRoot}/${appName}
+
+# Cluster settings
+nameNode=${NAMENODE}
+jobTracker=${JOBTRACKER}
+emailTo=vmalaya@email.wal-mart.com
+
+#pool defs
+#etlTdSqoopPoolName=etl-td-sqoop
+etlPoolName=etl
+oozieLauncherPoolName=oozie-launcher
+oozieLauncherJavaOpts=-Xmx2000m
+

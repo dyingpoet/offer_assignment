@@ -1,0 +1,29 @@
+K 25
+svn:wc:ra_dav:version-url
+V 103
+/svn/repos/gci/!svn/ver/37847/MEP/Offer_Assignment_Automation/trunk/src/main/scripts/oozie/update_stats
+END
+job.properties
+K 25
+svn:wc:ra_dav:version-url
+V 118
+/svn/repos/gci/!svn/ver/35988/MEP/Offer_Assignment_Automation/trunk/src/main/scripts/oozie/update_stats/job.properties
+END
+workflow.xml
+K 25
+svn:wc:ra_dav:version-url
+V 116
+/svn/repos/gci/!svn/ver/35988/MEP/Offer_Assignment_Automation/trunk/src/main/scripts/oozie/update_stats/workflow.xml
+END
+README.txt
+K 25
+svn:wc:ra_dav:version-url
+V 114
+/svn/repos/gci/!svn/ver/35988/MEP/Offer_Assignment_Automation/trunk/src/main/scripts/oozie/update_stats/README.txt
+END
+summary_statistics_metrics_n_coreflow.hql
+K 25
+svn:wc:ra_dav:version-url
+V 145
+/svn/repos/gci/!svn/ver/37847/MEP/Offer_Assignment_Automation/trunk/src/main/scripts/oozie/update_stats/summary_statistics_metrics_n_coreflow.hql
+END

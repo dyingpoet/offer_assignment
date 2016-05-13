@@ -1,0 +1,72 @@
+#PYTHON=/home/jli21/lib/canopy/appdata/canopy-1.3.0.1715.rh5-x86_64/bin/python2.7
+
+set -e
+
+[ -d $WORK_DIR ] || mkdir -p $WORK_DIR
+
+echo "DS_RUN=${DS_RUN}"
+echo $RECO_SCORE_FILE
+
+
+oaFile=member_sc_cpn
+memberClusterFile=memberClusterFile
+recoClusterFile=recoClusterFile
+
+
+CustomersPartition=$MEMBERSHIP_DIM_PARTITION_DATE
+fiaFile=$OFFER_FILE
+
+OUTPUT_CKP=offerAssignment_CKP_${OA_PARTITION}
+OUTPUT_CKP_NEW=offerAssignment_CKP_${OA_PARTITION}"_new"
+echo $OUTPUT_CKP_NEW
+
+
+pushd $WORK_DIR
+
+$PYTHON ${SRC_POSTPROCESS_PY_DIR}/add_sc.py sc_coupon_cnt_all offerAssignment > member_sc_cpn
+
+tr '_' ' ' < member_sc_cpn > offerAssignment_member_decouple
+
+hive -hiveconf OfferData=$OA_OUTPUT_LOC -hiveconf OATable=$OA_OUTPUT_TBL -f ${SRC_POSTPROCESS_HIVE_DIR}/create_offerAssignment.hql 
+
+hadoop fs -put offerAssignment_member_decouple ${OA_OUTPUT_LOC}/"campaign_month="${OA_PARTITION}"/offerAssignment_member_decouple"
+
+hive -e "USE $DATABASE; ALTER TABLE $OA_OUTPUT_TBL ADD PARTITION(campaign_month='$OA_PARTITION');"
+
+echo "USE $DATABASE; ALTER TABLE $OA_OUTPUT_TBL ADD PARTITION(campaign_month='$OA_PARTITION'); is done."
+
+
+hive -hiveconf CustomersPartition=$CustomersPartition -hiveconf CampaignNbr=$CAMPAIGN_NBR -hiveconf OATable=$OA_OUTPUT_TBL -hiveconf OApartition=$OA_PARTITION \
+     -hiveconf Database=$DATABASE \
+     -hiveconf SamsMemberXrefTbl=$SAMS_MEMBER_XREF_TBL \
+     -hiveconf SamsMembershipDimTbl=$SAMS_MEMBERSHIP_DIM_TBL \
+     -hiveconf SamsValueCouponDimTbl=$SAMS_VALUE_COUPON_DIM_TBL \
+     -hiveconf SamsValueCouponItemDimTbl=$SAMS_VALUE_COUPON_ITEM_DIM_TBL \
+     -f ${SRC_POSTPROCESS_HIVE_DIR}/joinFields5.hql > offerAssignment_CKP_temporary
+
+echo "OFFER_FILE=${OFFER_FILE}"
+cat offerAssignment_CKP_temporary | $PYTHON ${SRC_POSTPROCESS_PY_DIR}/generateCKP4.py $CAMPAIGN_NBR $OFFER_FILE > $OUTPUT_CKP
+
+$PYTHON ${SRC_POSTPROCESS_PY_DIR}/appendScoreCoupon.py $OUTPUT_CKP $OFFER_FILE scoreFile $SCORE_SOURCE $SCORE_TYPE | sort | uniq | awk -F \| '{printf "%s|1|\n", $0}'> $OUTPUT_CKP_NEW
+
+
+###CKP_INPUT_FILE=$WORK_DIR/${OUTPUT_CKP_NEW}_bak
+###CKP_OUTPUT_FILE=$WORK_DIR/${OUTPUT_CKP_NEW}
+###mv $WORK_DIR/${OUTPUT_CKP_NEW} $CKP_INPUT_FILE
+###$PYTHON ${SRC_POSTPROCESS_PY_DIR}/adjustScoreType.py ${CKP_INPUT_FILE} $WORK_DIR/scoreFileAdj rew > ${CKP_OUTPUT_FILE}
+
+##### add nonoffers
+if [[ "$NON_OFFER" == "Y" ]]
+then
+    OUTPUT_CKP_WITH_NONOFFER=offerAssignment_CKP_${OA_PARTITION}"_with_nonoffer"
+    cut -d \| -f1-10 $WORK_DIR/${OUTPUT_CKP_NEW} | sort | uniq > $WORK_DIR/memberProfile
+    ###1-many
+    $PYTHON ${SRC_POSTPROCESS_PY_DIR}/nonoffer_1-many_desc.py ${CONFIG_FILE_PATH}/nonoffer_1-many ${CONFIG_FILE_PATH}/memberTestClusterId ${CAMPAIGN_FILE} $WORK_DIR/memberProfile > $WORK_DIR/nonoffer_format 
+    ### combine offer and nonoffer
+    cat $WORK_DIR/${OUTPUT_CKP_NEW} $WORK_DIR/nonoffer_format > $WORK_DIR/${OUTPUT_CKP_WITH_NONOFFER}
+fi
+
+
+
+
+

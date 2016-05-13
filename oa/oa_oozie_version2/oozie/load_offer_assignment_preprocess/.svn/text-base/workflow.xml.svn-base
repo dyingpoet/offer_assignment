@@ -1,0 +1,241 @@
+<workflow-app xmlns="uri:oozie:workflow:0.2" name="load_offer_assignment_preprocess">
+
+<start to="fork1"/>
+
+<fork name="fork1">
+  <path start="load_item_info_snapshot"/>
+  <path start="load_transaction_snapshot"/>
+  <path start="load_member_club_preference"/>
+  <path start="load_fia_subcat_item_club"/>
+  <path start="load_fia_extract_files"/>
+</fork>
+
+<action name="load_item_info_snapshot">
+	<sub-workflow>
+    	    <app-path>${nameNode}/user/${wf:user()}/${appRoot}/load_item_info_snapshot</app-path>
+    	    <propagate-configuration/>
+	      <configuration>
+	      	    <property>
+	        	    <name>jobTracker</name>
+	        	    <value>${jobTracker}</value>
+	    	   </property>
+	      </configuration>
+        </sub-workflow>
+	<ok to="join1"/>
+	<error to="join1"/> 
+</action>
+
+<action name="load_transaction_snapshot">
+	<sub-workflow>
+    	    <app-path>${nameNode}/user/${wf:user()}/${appRoot}/load_transaction_snapshot</app-path>
+    	    <propagate-configuration/>
+	      <configuration>
+	      	    <property>
+	        	    <name>jobTracker</name>
+	        	    <value>${jobTracker}</value>
+	    	   </property>
+	      </configuration>
+        </sub-workflow>
+	<ok to="join1"/>
+	<error to="join1"/>
+</action>
+
+
+<action name="load_member_club_preference">
+	<sub-workflow>
+    	    <app-path>${nameNode}/user/${wf:user()}/${appRoot}/load_member_club_preference</app-path>
+    	    <propagate-configuration/>
+	      <configuration>
+	      	    <property>
+	        	    <name>jobTracker</name>
+	        	    <value>${jobTracker}</value>
+	    	   </property>
+	      </configuration>
+        </sub-workflow>
+	<ok to="join1"/>
+	<error to="join1"/> 
+</action>
+
+<action name="load_fia_subcat_item_club">
+	<sub-workflow>
+    	    <app-path>${nameNode}/user/${wf:user()}/${appRoot}/load_fia_subcat_item_club</app-path>
+    	    <propagate-configuration/>
+	      <configuration>
+	      	    <property>
+	        	    <name>jobTracker</name>
+	        	    <value>${jobTracker}</value>
+	    	   </property>
+	      </configuration>
+        </sub-workflow>
+	<ok to="join1"/>
+	<error to="join1"/> 
+</action>
+
+<action name="load_fia_extract_files">
+	<sub-workflow>
+    	    <app-path>${nameNode}/user/${wf:user()}/${appRoot}/load_fia_extract_files</app-path>
+    	    <propagate-configuration/>
+	      <configuration>
+	      	    <property>
+	        	    <name>jobTracker</name>
+	        	    <value>${jobTracker}</value>
+	    	   </property>
+	      </configuration>
+        </sub-workflow>
+	<ok to="join1"/>
+	<error to="join1"/> 
+</action>
+
+<join name="join1" to="checkerror1"/>
+
+<decision name="checkerror1">
+       <switch>
+          
+          <case to="send-email">
+	  	    ${null != wf:lastErrorNode()}          
+	  </case>
+   <!--	  <case to="end"> -->	  
+	  <case to="fork2">
+	  	    ${null == wf:lastErrorNode()}
+	  </case>
+          
+           <default to="end"/>
+           
+       </switch>
+</decision> 
+   
+<fork name="fork2">
+  <path start="load_global_and_member_item_preference"/>
+  <path start="load_pis_member_subcat_item_coupon_score"/>
+</fork>
+
+<action name="load_global_and_member_item_preference">
+
+
+	<sub-workflow>
+    	    <app-path>${nameNode}/user/${wf:user()}/${appRoot}/load_global_and_member_item_preference</app-path>
+    	    <propagate-configuration/>
+	      <configuration>
+	      	    <property>
+	        	    <name>jobTracker</name>
+	        	    <value>${jobTracker}</value>
+	    	   </property>
+	      </configuration>
+        </sub-workflow>
+	<ok to="join2"/>
+	<error to="join2"/>
+  
+</action>
+
+<action name="load_pis_member_subcat_item_coupon_score">
+
+
+	<sub-workflow>
+    	    <app-path>${nameNode}/user/${wf:user()}/${appRoot}/load_pis_member_subcat_item_coupon_score</app-path>
+    	    <propagate-configuration/>
+	      <configuration>
+	      	    <property>
+	        	    <name>jobTracker</name>
+	        	    <value>${jobTracker}</value>
+	    	   </property>
+	      </configuration>
+        </sub-workflow>
+	<ok to="join2"/>
+	<error to="join2"/>
+  
+</action>
+
+
+<join name="join2" to="checkerror2"/>
+
+<decision name="checkerror2">
+       <switch>
+          
+          <case to="send-email">
+	  	    ${null != wf:lastErrorNode()}          
+	  </case>
+	 <!-- <default to="end"/> 	 --> 
+	 <case to="recommend_or_reward_campaign_decision"> 
+	  	    ${null == wf:lastErrorNode()}
+	  </case>
+          
+           <default to="recommend_or_reward_campaign_decision"/> 
+           
+       </switch>
+</decision> 
+   
+ <decision name="recommend_or_reward_campaign_decision">
+       <switch>
+	   <case to="load_recommend_campaign_filtering">
+	     ${campaign_score_type == "RECOMMEND"}
+	   </case>
+	   <case to="load_reward_campaign_filtering">
+	     ${campaign_score_type == "REWARD"}
+	   </case>
+	   <default to="end"/>
+       </switch>
+</decision>
+
+<action name="load_recommend_campaign_filtering">
+
+
+	<sub-workflow>
+    	    <app-path>${nameNode}/user/${wf:user()}/${appRoot}/load_recommend_campaign_filtering</app-path>
+    	    <propagate-configuration/>
+	      <configuration>
+	      	    <property>
+	        	    <name>jobTracker</name>
+	        	    <value>${jobTracker}</value>
+	    	   </property>
+	      </configuration>
+        </sub-workflow>
+	<ok to="end"/>
+	<error to="send-email"/>
+  
+</action>
+
+<action name="load_reward_campaign_filtering">
+
+
+	<sub-workflow>
+    	    <app-path>${nameNode}/user/${wf:user()}/${appRoot}/load_reward_campaign_filtering</app-path>
+    	    <propagate-configuration/>
+	      <configuration>
+	      	    <property>
+	        	    <name>jobTracker</name>
+	        	    <value>${jobTracker}</value>
+	    	   </property>
+	      </configuration>
+        </sub-workflow>
+	<ok to="end"/>
+	<error to="send-email"/>
+  
+</action>
+
+<action name="send-email">
+        <email xmlns="uri:oozie:email-action:0.1">
+            <to>${emailTo}</to>
+            <subject>**MEP** Offer Assignment - Error Loading Preprocess - ${wf:id()}</subject>
+            <body>
+                hostname: hadoop-prod
+                severity: MINOR
+                object: HADOOP
+                modifier: HADOOP
+                group: HADOOP
+                text: Action failed. (ID ${wf:id()}, PATH ${wf:appPath()}) Error Message: ${wf:errorMessage(wf:lastErrorNode())}
+            </body>
+        </email>
+
+        <ok to="kill"/>
+        <error to="kill"/>
+        
+</action>
+ 
+<kill name="kill">
+    <message>FATAL: OA Preprocess Load Job Failed </message>
+</kill>
+
+<end name="end"/>
+
+</workflow-app>
+

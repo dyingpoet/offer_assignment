@@ -1,0 +1,11 @@
+#!/bin/bash
+
+#source offer_assignment_param.sh
+source offer_assignment_utility.sh
+
+source reward_offer_assignment_param.cfg
+
+### preprocess
+bash ${SRC_DIR}/preprocess/oa_preprocess_driver
+
+

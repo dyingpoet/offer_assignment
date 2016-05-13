@@ -1,0 +1,22 @@
+hd -cat  /user/pythia/Workspaces/SamsMEP/offer_assigned_member_base_w_club_preference/campaign_month=Aug2014/* | wc -l
+277577
+
+hive> select count(*) from fia_subcat_item_club where campaign_month='Aug2014' ;        
+120062
+
+wc -l member_base_2014aug 
+277577 member_base_2014aug
+
+###hive -e 'select count(distinct membership_nbr) from pythia.offer_assigned_member_base_w_club_preference where campaign_month="Aug2014";'#276643
+###hive -e 'select count(distinct membership_nbr, cardholder_nbr, membership_create_date) from pythia.offer_assigned_member_base_w_club_preference where campaign_month="Aug2014";'#
+
+wc -l lost_members 
+934 lost_members
+
+648018034 10 2012-09-01
+648018034 22 2012-09-01
+
+
+
+select count(distinct membership_nbr, cardholder_nbr, membership_create_date) from pythia.offer_assigned_member_base_w_club_preference where campaign_month="Aug2014"
+277577

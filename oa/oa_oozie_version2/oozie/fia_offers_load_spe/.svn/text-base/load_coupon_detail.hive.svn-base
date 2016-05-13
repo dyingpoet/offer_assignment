@@ -1,0 +1,48 @@
+create database if not exists ${mepschema};
+use ${mepschema};
+
+SET hive.exec.compress.output=true ;
+SET hive.exec.compress.intermediate=true ;
+SET mapred.output.compress=true ;
+SET mapred.output.compression.codec=org.apache.hadoop.io.compress.SnappyCodec ;
+SET mapred.map.output.compression.codec=org.apache.hadoop.io.compress.SnappyCodec ;
+SET io.seqfile.compression.type=BLOCK;
+SET io.sort.mb=500 ;
+SET mapred.reduce.slowstart.completed.maps=0.90 ;
+SET dfs.block.size=536870912;
+SET io.file.buffer.size=131072;
+SET mapred.compress.map.output=true;
+SET mapred.output.compression.type=BLOCK;
+
+drop table if exists VALUE_COUPON_DETAIL;
+
+CREATE TABLE IF NOT EXISTS VALUE_COUPON_DETAIL
+STORED AS SEQUENCEFILE
+AS
+SELECT 	VCOD.CAMPAIGN_NBR,
+	VCOD.VAL_OFFER_TYPE_CODE, 
+	Trim(VCOD.VAL_OFFER_TYPE_DESC) AS VAL_OFFER_TYPE_DESC,
+	VCOF.INVESTMENT_CNT, 
+	VCOF.VALUE_AMT, 
+	VCOF.VALUE_PCT,
+	VCOF.MAX_REDEMPTION_CNT, 
+	VCOD.PACKAGE_CODE, 
+	Trim(VCOD.PACKAGE_DESC) AS PACKAGE_DESC, 
+	Trim(VCOD.VENDOR_FUNDED_IND) AS VENDOR_FUNDED_IND,
+	VCOD.VALUE_COUPON_NBR,
+	VCOD.COUPON_MDS_FAM_ID,
+	VCOD.PRVDR_COUPON_NBR, 
+	'Y'AS CLUB_AVAIL_IND, 
+	'FILLER'AS FILLER_DATA
+FROM	
+	US_WC_PROMO_DM_TABLES.VALUE_COUPON_DIM VCOD
+JOIN	US_WC_PROMO_DM_TABLES.VALUE_COUPON_FACT VCOF
+ON	VCOD.VALUE_COUPON_SK_ID = VCOF.VALUE_COUPON_SK_ID
+join  US_WC_PROMO_DM_TABLES.value_campaign_dim vcd
+on VCOD.CAMPAIGN_NBR =vcd.CAMPAIGN_NBR
+WHERE 
+	VCOD.BASE_DIV_NBR = 18 AND
+	VCOD.COUNTRY_CODE = 'US' AND
+	vcd.end_date >= to_date(from_unixtime(unix_timestamp()))
+	--VCOD.CAMPAIGN_NBR IN (${CAMPAIGN_NBR}) -- PULL DATA BY CAMPAIGNS
+;

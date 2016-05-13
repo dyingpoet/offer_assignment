@@ -1,0 +1,122 @@
+#*****************************************************************************************
+#    Name         : Properties File for OA – Backfill WorkFlow
+#    Description  : This is a property file for the Offer Assignment Backfill Process
+#
+#   Modification Log:
+#*****************************************************************************************
+#    Author           Version              Date                     Comments
+#*****************************************************************************************
+#    cchan1            1.0              01/08/2015          Backfill Integration with SPE
+#    phala1            2.0              02/23/2015          OA_V3 Backfill Changes
+#*****************************************************************************************
+# Application/workflow settings
+appName=backfill_generation_flow
+appRoot=etl
+oozie.use.system.libpath=true
+oozie.libpath=/user/${user.name}/${appRoot}/mep_spe/lib
+oozie.wf.application.path=${nameNode}/user/${user.name}/${appRoot}/${appName}
+jarpath = ${nameNode}/user/${user.name}/${appRoot}/lib
+queueName=mep
+
+# Cluster settings
+nameNode=${NAMENODE}
+jobTracker=${JOBTRACKER}
+emailTo=${user.name}@wal-mart.com
+#cluster=dev6
+
+#pool defs
+etlTdSqoopPoolName=etl-td-sqoop
+etlPoolName=etl
+oozieLauncherPoolName=oozie-launcher
+oozieLauncherJavaOpts=-Xmx1500m
+
+#Campaign Id and Iteration Number to support multiple runs
+#campaign_id=437
+spe_campaign_id=88
+iteration=1
+#campaign_iter=${campaign_id}_${iteration_nbr}
+campaign_iter=${spe_campaign_id}_${iteration}
+
+#database
+database=mep_spe
+
+#Generic properties
+output_tbl_path=${nameNode}/user/hive/warehouse/${database}.db/files/${campaign_iter}
+
+#JobOrderStatus
+job_id=143
+schema_name=sams_prsnl_eng
+table_name=Job_request
+inprogressstatus=IN-PROGRESS
+completedstatus=COMPLETED
+errorstatus=ERROR
+
+#BUILD FIA_OFFERS FILE(STEP-0)
+FiaOfferFile=${output_tbl_path}/PreprocessedFiaOffer
+FiaTbl=fia_offers
+fia_campaign_no=273
+
+#REFRESH FIA_OFFERS FILE(STEP-1)
+member_sc_cpn=${output_tbl_path}/member_sc_cpn
+fia_offers_file_refresh=${output_tbl_path}/fia_offers_file_refresh
+
+#DROP MEMBERS(STEP-2)
+mem_sc_cpn_final=${output_tbl_path}/mem_sc_cpn_final
+drop_records=999999
+asis_records=0,1,2,3,4,5
+drop_tmp=${output_tbl_path}/drop_tmp
+fia_offers_file_dropped=${output_tbl_path}/fia_offers_file_dropped
+
+#REBUILD FIA FILE(STEP-3)
+value_coupon_nbr=47109,47110
+cpn_tmp=${output_tbl_path}/cpn_tmp
+fia_offers_file_rebuild=${output_tbl_path}/fia_offers_file_rebuild
+
+#OA_BACKFILL_MEMBERS
+campaign_score_type=RECOMMEND
+oaFile=${mem_sc_cpn_final}/part*
+fiaFile=${fia_offers_file_rebuild}/part*
+member_sc_cpn_popularity_backfill=${output_tbl_path}/member_sc_cpn_popularity_backfill
+popularity_fail_backfill=${output_tbl_path}/popularity_fail_backfill
+member_sc_cpn_backfilled=${output_tbl_path}/member_sc_cpn_backfilled
+#member_sc_cpn_backfilled_path=${nameNode}/user/phala1/OA_V3_Backfill_INP/member_sc_cpn_backfilled
+
+gen_backfill_records=1,2,4
+MEMBER_LB=2
+NO_QUALIFY_BACKFILL=Y
+NO_QUALIFY_BACKFILL_POPULARITY=Y
+NO_QUALIFY_BACKFILL_DEFAULT=N
+member_sc_cpn_qualify=${output_tbl_path}/member_sc_cpn_qualify
+memberTest=${nameNode}/user/phala1/OA_V3_Backfill_INP/memberTest
+backfill_offer=${nameNode}/user/phala1/OA_V3_Backfill_INP/backfill_offer
+member_sc_cpn_no_qualify_backfill=${output_tbl_path}/member_sc_cpn_no_qualify_backfill
+member_sc_cpn_no_qualify_fail_backfill=${output_tbl_path}/member_sc_cpn_no_qualify_fail_backfill
+sc_coupon_cnt=${nameNode}/user/hive/warehouse/${database}.db/sc_coupon_cnt/campaign_iter=${campaign_iter}/*
+#sc_coupon_cnt=${nameNode}/user/phala1/OA_V3_Backfill_INP/sc_coupon_cnt_prod
+offerAssignment_member_decouple=${output_tbl_path}/offerAssignment_member_decouple
+offerAssignment_member_decouple_cpy=${output_tbl_path}/offerAssignment_member_decouple_cpy
+
+otherfile=${nameNode}/user/hive/warehouse/${database}.db
+offer_assignment_table=offer_assignment
+
+oa_hdfs_path_copy=${otherfile}/${offer_assignment_table}/job_id=${job_id}/
+
+#update stats
+schema_preprocess=mep
+upperbound=5
+
+#Hive to Oracle update parameters
+
+spe_summary_main_class=com.walmart.mep.hivetooracleupdate.application.HiveToOracleUpdateMain
+spe_hive_table_hdfs_path=/user/hive/warehouse/${database}.db/job_summary_result/
+#use ctrl-a as hive_delimiter if want to use \001 delimiter
+hive_delimiter=ctrl-a
+#Query type use 0 for insert and 1 for overwrite
+query_type=0
+oracle_schema=SAMS_PRSNL_ENG
+oracle_table=job_summary_result
+date_format=yyyy-MM-dd
+timestamp_format=yyyy-MM-dd HH:mm:ss.SSS
+
+
+

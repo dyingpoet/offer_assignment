@@ -1,0 +1,220 @@
+<workflow-app xmlns="uri:oozie:workflow:0.4" name="load_reward_campaign_filtering">
+
+<start to ="cluster_ind_decision"/>
+
+<decision name="cluster_ind_decision">
+       <switch>
+	   <case to="item_reward_and_reco_clustering_filtering">
+	   ${item_level_score_ind == "Y" and clusterind == "Y"}
+	   	   </case>
+	   <case to="item_reward_and_no_reco_clustering_filtering">
+	     ${item_level_score_ind == "Y" and clusterind == "N"}
+	   </case>
+	   <case to="subcat_reward_and_reco_clustering_filtering">
+	     ${item_level_score_ind == "N" and clusterind == "Y"}
+	   </case>
+	   <case to="subcat_reward_and_no_reco_clustering_filtering">
+	    ${item_level_score_ind == "N" and clusterind == "N"}
+	   </case>
+	   <case to="load_strict_reward_campaign_filtering">
+	    ${item_level_score_ind == "N"}
+	   </case>
+	   <default to="load_strict_reward_campaign_filtering"/>
+       </switch>
+</decision>
+
+<action name="item_reward_and_reco_clustering_filtering">
+	<pig>
+	<job-tracker>${jobTracker}</job-tracker>
+	<name-node>${nameNode}</name-node>
+	<prepare>
+		 <delete path="${nameNode}/user/hive/warehouse/${database}.db/files/${campaign_iter}/scoreFile" />
+		<delete path="${nameNode}/user/hive/warehouse/oa_spe_test.db/member_tmp/campaign_iter=${campaign_iter}" />
+		<mkdir path ="${nameNode}/user/hive/warehouse/${database}.db/files/${campaign_iter}/" />
+	</prepare>
+	<job-xml>${nameNode}/user/${wf:user()}/${appRoot}/env/${cluster}/hive-site.xml</job-xml>	
+	<script>item_reward_reco_cluster_flt.pig</script>
+	<param>clusterLabelFile=${memberClusterFile}</param>
+	<param>clusterRecoFile=${recoClusterFile}</param>
+	<param>scoreFltFinal=${nameNode}/user/hive/warehouse/${database}.db/${task_table}/campaign_iter=${campaign_iter}</param>
+	<param>scoreFinal=${nameNode}/user/hive/warehouse/${database}.db/files/${campaign_iter}/scoreFile</param>
+	<param>memberHDFS=${nameNode}/user/hive/warehouse/${database}.db/member_tmp/campaign_iter=${campaign_iter}</param>	
+	</pig>
+        <ok to="load_memberfile"/>
+        <error to="send-email"/>
+</action>
+
+<action name="item_reward_and_no_reco_clustering_filtering">
+	<pig>
+	<job-tracker>${jobTracker}</job-tracker>
+	<name-node>${nameNode}</name-node>
+	<prepare>
+		 <delete path="${nameNode}/user/hive/warehouse/${database}.db/files/${campaign_iter}/scoreFile" />
+		<delete path="${nameNode}/user/hive/warehouse/${database}.db/member_tmp/campaign_iter=${campaign_iter}" />
+		<mkdir path="${nameNode}/user/hive/warehouse/${database}.db/files/${campaign_iter}/"/>
+	</prepare>
+	<job-xml>${nameNode}/user/${wf:user()}/${appRoot}/env/${cluster}/hive-site.xml</job-xml>	
+	<script>item_reward.pig</script>
+	<param>scoreFltFinal=${nameNode}/user/hive/warehouse/${database}.db/${task_table}/campaign_iter=${campaign_iter}</param>
+	<param>scoreFinal=${nameNode}/user/hive/warehouse/${database}.db/files/${campaign_iter}/scoreFile</param>
+	<param>memberHDFS=${nameNode}/user/hive/warehouse/${database}.db/member_tmp/campaign_iter=${campaign_iter}</param>	
+	</pig>
+        <ok to="load_memberfile"/>
+        <error to="send-email"/>
+</action>
+
+<action name="subcat_reward_and_reco_clustering_filtering">
+	<pig>
+	<job-tracker>${jobTracker}</job-tracker>
+	<name-node>${nameNode}</name-node>
+	<prepare>
+		<delete path="${nameNode}/user/hive/warehouse/${database}.db/files/${campaign_iter}/scoreFile" />
+		<delete path="${nameNode}/user/hive/warehouse/${database}.db/member_tmp/campaign_iter=${campaign_iter}" />
+		<mkdir path="${nameNode}/user/hive/warehouse/${database}.db/files/${campaign_iter}/"/>
+	</prepare>
+	<job-xml>${nameNode}/user/${wf:user()}/${appRoot}/env/${cluster}/hive-site.xml</job-xml>	
+	<script>subcat_reward_reco_cluster_flt.pig</script>
+	<param>clusterLabelFile=${memberClusterFile}</param>
+	<param>clusterRecoFile=${recoClusterFile}</param>
+	<param>scoreFltFinal=${nameNode}/user/hive/warehouse/${database}.db/${task_table}/campaign_iter=${campaign_iter}</param>
+	<param>scoreRankDelta=${nameNode}/user/hive/warehouse/${database}.db/files/${campaign_iter}/scoreFile</param>
+	<param>itemMemberPopularity=${nameNode}/user/hive/warehouse/${database}.db/member_subcat_item_pref_final/campaign_iter=${campaign_iter}</param>
+	<param>delta=${delta}</param>
+	<param>memberHDFS=${nameNode}/user/hive/warehouse/${database}.db/member_tmp/campaign_iter=${campaign_iter}</param>	
+	</pig>
+        <ok to="load_memberfile"/>
+        <error to="send-email"/>
+</action>
+
+<action name="subcat_reward_and_no_reco_clustering_filtering">
+	<pig>
+	<job-tracker>${jobTracker}</job-tracker>
+	<name-node>${nameNode}</name-node>
+	<prepare>
+		<delete path="${nameNode}/user/hive/warehouse/${database}.db/files/${campaign_iter}/scoreFile" />
+		<delete path="${nameNode}/user/hive/warehouse/${database}.db/member_tmp/campaign_iter=${campaign_iter}" />
+		<mkdir path="${nameNode}/user/hive/warehouse/${database}.db/files/${campaign_iter}/"/>
+	</prepare>
+	<job-xml>${nameNode}/user/${wf:user()}/${appRoot}/env/${cluster}/hive-site.xml</job-xml>	
+	<script>subcat_reward.pig</script>
+	<param>scoreFltFinal=${nameNode}/user/hive/warehouse/${database}.db/${task_table}/campaign_iter=${campaign_iter}</param>
+	<param>scoreRankDelta=${nameNode}/user/hive/warehouse/${database}.db/files/${campaign_iter}/scoreFile</param>
+	<param>itemMemberPopularity=${nameNode}/user/hive/warehouse/${database}.db/member_subcat_item_pref_final/campaign_iter=${campaign_iter}</param>
+	<param>delta=${delta}</param>
+	<param>memberHDFS=${nameNode}/user/hive/warehouse/${database}.db/member_tmp/campaign_iter=${campaign_iter}</param>	
+	</pig>
+        <ok to="load_memberfile"/>
+        <error to="send-email"/>
+</action>
+
+<action name="load_strict_reward_campaign_filtering">
+	<pig>
+	<job-tracker>${jobTracker}</job-tracker>
+	<name-node>${nameNode}</name-node>
+	<prepare>
+		<delete path="${nameNode}/user/hive/warehouse/${database}.db/${task_table}/campaign_iter=${campaign_iter}_1" />
+	</prepare>
+	<job-xml>${nameNode}/user/${wf:user()}/${appRoot}/env/${cluster}/hive-site.xml</job-xml>
+	<script>strictReward.pig</script>
+	<param>scoreFlt=${nameNode}/user/hive/warehouse/${database}.db/${task_table}/campaign_iter=${campaign_iter}</param>
+	<param>itemMemberPopularity=${nameNode}/user/hive/warehouse/${database}.db/member_subcat_item_pref_final/campaign_iter=${campaign_iter}</param>
+	<param>scoreFlt1=${nameNode}/user/hive/warehouse/${database}.db/${task_table}/campaign_iter=${campaign_iter}_1</param>
+	</pig>
+        <ok to="load_last_reward_campaign_filtering"/>
+        <error to="send-email"/>
+</action>
+
+<action name="load_last_reward_campaign_filtering">
+	<pig>
+	<job-tracker>${jobTracker}</job-tracker>
+	<name-node>${nameNode}</name-node>
+	<prepare>
+		<delete path="${nameNode}/user/hive/warehouse/${database}.db/${task_table}/campaign_iter=${campaign_iter}_2" />
+	</prepare>
+	<job-xml>${nameNode}/user/${wf:user()}/${appRoot}/env/${cluster}/hive-site.xml</job-xml>
+	<script>filterLastRewardJun.pig</script>
+	<param>scoreFlt1=${nameNode}/user/hive/warehouse/${database}.db/${task_table}/campaign_iter=${campaign_iter}_1</param>
+	<param>lastOfferAssignment=${nameNode}/user/hive/warehouse/${database}.db/last_offer_assignment/last_offer_assignment</param>
+	<param>scoreFlt2=${nameNode}/user/hive/warehouse/${database}.db/${task_table}/campaign_iter=${campaign_iter}_2</param>
+	</pig>
+        <ok to="load_reward_rank_delta"/>
+        <error to="send-email"/>
+</action>
+
+<action name="load_reward_rank_delta">
+	<pig>
+	<job-tracker>${jobTracker}</job-tracker>
+	<name-node>${nameNode}</name-node>
+	<prepare>
+		<delete path="${nameNode}/user/hive/warehouse/${database}.db/member_tmp/campaign_iter=${campaign_iter}" />
+		<delete path="${nameNode}/user/hive/warehouse/${database}.db/files/${campaign_iter}/scoreFile" />
+		<mkdir path="${nameNode}/user/hive/warehouse/${database}.db/files/${campaign_iter}/"/>
+	</prepare>
+	<job-xml>${nameNode}/user/${wf:user()}/${appRoot}/env/${cluster}/hive-site.xml</job-xml>	
+	<script>rewardRankDelta.pig</script>
+	<param>scoreFltFinal=${nameNode}/user/hive/warehouse/${database}.db/${task_table}/campaign_iter=${campaign_iter}_2</param>
+	<param>itemMemberPopularity=${nameNode}/user/hive/warehouse/${database}.db/member_subcat_item_pref_final/campaign_iter=${campaign_iter}</param>
+	<param>delta=${delta}</param>
+	<param>memberHDFS=${nameNode}/user/hive/warehouse/${database}.db/member_tmp/campaign_iter=${campaign_iter}</param>
+	<param>scoreHDFS=${nameNode}/user/hive/warehouse/${database}.db/files/${campaign_iter}/scoreFile</param>
+	</pig>
+       <ok to="load_memberfile"/>
+        <error to="send-email"/>
+</action>
+
+<action name="load_memberfile">
+        <hive xmlns="uri:oozie:hive-action:0.2">
+                <job-tracker>${jobTracker}</job-tracker>
+                <name-node>${nameNode}</name-node>
+                <job-xml>${nameNode}/user/${wf:user()}/${appRoot}/env/${cluster}/hive-site.xml</job-xml>
+                <configuration>
+                <property>
+                  <name>oozie.hive.defaults</name>
+                  <value>/user/${wf:user()}/${appRoot}/env/${cluster}/hive-default.xml</value>
+                </property>
+                <property>
+                    <name>pool.name</name>
+                    <value>${etlPoolName}</value>
+                </property>
+                <property>
+                    <name>oozie.launcher.pool.name</name>
+                    <value>${oozieLauncherPoolName}</value>
+                </property>
+                </configuration>
+
+                <script>load_memberfile.hql</script>
+                <param>database=${database}</param>
+                <param>memberHDFS=${nameNode}/user/hive/warehouse/${database}.db/member_tmp/campaign_iter=${campaign_iter}</param>
+               	<param>upperbound=${upperbound}</param>
+		<param>lowerbound=${lowerbound}</param>
+		<param>campaign_iter=${campaign_iter}</param>
+		<param>jarpath=${jarpath}</param>
+        </hive>
+        <ok to="end"/>
+        <error to="send-email"/>
+</action>
+
+<action name="send-email">
+	<email xmlns="uri:oozie:email-action:0.1">
+	 <to>${emailTo}</to>
+	 <subject>**MEP** OA – Pre Processing :  Error Loading Reward Campaign Filtering  - ${wf:id()}</subject>
+	 <body>
+	     hostname: hadoop-prod
+	     severity: MINOR
+	     object: HADOOP
+	     modifier: HADOOP
+	     group: HADOOP
+	     text: Action failed. (ID ${wf:id()}, PATH ${wf:appPath()}) Error Message: ${wf:errorMessage(wf:lastErrorNode())}
+	 </body>
+	</email>
+
+	<ok to="kill"/>
+	<error to="kill"/>
+</action>
+
+<kill name="kill">
+ 	<message>Failed, error message[${wf:errorMessage(wf:lastErrorNode())}]</message>
+</kill>
+
+<end name='end'/>
+</workflow-app>

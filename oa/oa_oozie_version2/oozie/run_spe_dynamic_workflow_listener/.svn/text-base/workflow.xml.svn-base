@@ -1,0 +1,52 @@
+<workflow-app xmlns="uri:oozie:workflow:0.2" name="run_spe_dynamic_workflow_listener">
+	<start to="run_spe_dynamic_workflow_listener_router" />
+
+	<action name="run_spe_dynamic_workflow_listener_router">
+		<java>
+			<job-tracker>${jobTracker}</job-tracker>
+			<name-node>${nameNode}</name-node>
+
+			<configuration>
+				<property>
+					<name>mapred.job.queue.name</name>
+					<value>default</value>
+				</property>
+
+			</configuration>
+			<main-class>${dynamic_workflow_listener_main_class}</main-class>
+			
+		</java>
+
+		<ok to="end" />
+		<error to="send-email" />
+
+	</action>
+
+	
+	<action name="send-email">
+		<email xmlns="uri:oozie:email-action:0.1">
+			<to>${emailTo}</to>
+			<subject>MEP SPE Dynamic Workflow Listener Camel Router - Error running dynamic workflow listener - ${wf:id()}</subject>
+			<body>
+				hostname: hadoop-prod
+				severity: MINOR
+				object: HADOOP
+				modifier: HADOOP
+				group: HADOOP
+				text: Action failed. (ID ${wf:id()}, PATH ${wf:appPath()}) Error Message:
+				${wf:errorMessage(wf:lastErrorNode())}
+			</body>
+		</email>
+
+		<ok to="kill" />
+		<error to="kill" />
+
+	</action>
+
+	<kill name="kill">
+		<message>FATAL: Dynamic Workflow Listener Camel Router Failed </message>
+	</kill>
+
+	<end name="end" />
+
+</workflow-app>

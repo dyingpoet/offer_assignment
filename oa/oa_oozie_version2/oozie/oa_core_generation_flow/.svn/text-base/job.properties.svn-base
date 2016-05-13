@@ -1,0 +1,177 @@
+#*****************************************************************************************
+#    Name         : Properties File for OA – Main WorkFlow
+#        Description  : This is a property file for the Offer Assignment Process
+#
+#    Modification Log:
+#*****************************************************************************************
+#    Author           Version              Date                     Comments
+#*****************************************************************************************
+#    cchan1            1.0              01/08/2015          Integration of SPE
+#*****************************************************************************************
+# Application/workflow settings
+appName=oa_core_generation_flow
+appRoot=etl
+oozie.use.system.libpath=true
+oozie.libpath=/user/${user.name}/${appRoot}/mep_spe/lib
+oozie.wf.application.path=${nameNode}/user/${user.name}/${appRoot}/${appName}
+jarpath = ${nameNode}/user/${user.name}/${appRoot}/lib
+queueName=default
+
+# Cluster settings
+nameNode=${NAMENODE}
+jobTracker=${JOBTRACKER}
+emailTo=${user.name}@wal-mart.com
+#cluster=dev6
+
+#pool defs
+etlTdSqoopPoolName=etl-td-sqoop
+etlPoolName=etl
+oozieLauncherPoolName=oozie-launcher
+oozieLauncherJavaOpts=-Xmx1500m
+
+#database
+database=mep_spe
+#task type
+task_type=OA
+
+#Campaign Id and Iteration Number to support multiple runs
+spe_campaign_id=115
+iteration=1
+campaign_iter=${spe_campaign_id}_${iteration}
+
+#pre processing
+#Properties for Item Info
+itemInfoSourceTbl=common_transaction_model.item_dim
+itemInfoTbl=${database}.item_info_snapshot
+snapshot_dt=${inventory_ds}
+base_div_nbr=18
+
+#Properties for Transaction Info
+StartDate=2014-02-06
+EndDate=2015-02-05
+transTbl=${database}.customer_club_day_item_sales
+visitMemberTbl=us_wc_mb_tables.visit_member
+scanTbl=us_wc_mb_tables.scan
+itemDimTbl=common_transaction_model.item_dim
+country_code=US
+current_ind=Y
+
+#Member Club Preference Parameters
+member_club_pref_table = offer_assigned_member_base_w_club_pref
+offer_assigned_member_base_table=${spe_member_list}
+sams_membership_dim_table = ww_sams_mbrshp_dm_tables.sams_membership_dim
+sams_cardholder_dim_table = ww_sams_mbrshp_dm_tables.sams_mbr_cardholder_dim
+fia_version=1
+ds_obsolete_date_lb = 2015-02-05
+inventory_ds = 2014-10-20
+DataStartT=2014-02-06
+DataEndT=2015-02-05
+filterclub=/user/hive/warehouse/mep_dev.db/mep_pilot_club/
+
+#FIA Subcat Item Club Parameters
+skip_inventory_check_item_ind=N
+offer_assignment_fia_table=${database}.fia_offers
+dept_list=${database}.dept_list
+club_item_inventory_history_table=us_wc_tables.mdse_inventory_history
+
+#FIA Subcat Item club inventory check parameters
+inventory_check_flag=N
+fia_subcat_item_club=fia_subcat_item_club
+fia_campaign_name=2014-02-01-New\/RenewAnnualPkg
+fia_campaign_no=273
+offerCheck=Y
+nonOfferCheck=N
+nonofferlistid=NULL
+nonoffersupperbound=0
+OUTMEMCOMBINED=${member_pool}
+
+#OA-Parameters for Item_level_score_ind
+task_table = pis_member_subcat_item_coupon_score
+#reco_table = propensity_score
+reco_table = mep_score.subcat_scores
+recoLoc = /user/hive/warehouse/offer_assignment_parameter.db/jun_scores
+item_level_score_ind = N
+clusterind = N
+subcat_item_club_table = ${fia_subcat_item_club}
+
+#Plus Member Subcat Item Coupon Score Parameters
+#reco_table = oa_data_prep.pscore
+#reco_table = mep.propensity_cluster
+#reco_table = oa_data_prep.propensity_score
+score_source = GeC
+
+#FIA Extract
+offerfile = ${database}.offerfile
+offer2subcatfile = ${database}.offer2subcatfile
+sc_coupon_cnt_tbl = ${database}.sc_coupon_cnt
+FiaTbl=${offer_assignment_fia_table}
+
+#member_pool
+member_source_ind=INTERNAL
+member_list_nbr=1004
+member_list_ts=NULL
+spe_member_list=sams_personalization_engine.spe_predefined_member_pool
+unica_predefined_member_list=
+
+#Recommend Filter
+campaign_score_type=REWARD
+
+#Reward Filter
+#CAMPAIGN_SCORE_TYPE=REWARD
+delta=0.01
+upperbound=5
+lowerbound=1
+nonofferslowerbound=0
+#offer assignment part
+scoreFile=scoreFile
+memberFile=memberFile
+offerFile=offerFile
+offer2subcatFile=offer2subcatFile
+
+subcatfile=${nameNode}/user/hive/warehouse/${database}.db/offer2subcatFile/campaign_iter=${campaign_iter}/*
+scorefile=${nameNode}/user/hive/warehouse/${database}.db/files/${campaign_iter}/scoreFile/*
+otherfile=${nameNode}/user/hive/warehouse/${database}.db/
+outputfile=${nameNode}/user/hive/warehouse/${database}.db/files/${campaign_iter}/offerAssignment
+
+file_path=${nameNode}/user/hive/warehouse/${database}.db/files
+output_path=${nameNode}/user/hive/warehouse/${database}.db/files/${campaign_iter}/
+sc_coupon_cnt=${nameNode}/user/hive/warehouse/${database}.db/sc_coupon_cnt/campaign_iter=${campaign_iter}/*
+offerassignment=${nameNode}/user/hive/warehouse/${database}.db/files/${campaign_iter}/offerAssignment
+member_sc_cpn=${output_path}/member_sc_cpn
+FiaOfferFile=${file_path}/PreprocessedFiaOffer
+offerassignment_ckp=${output_path}/offerAssignment_CKP
+offerassignment_ckp_new=${mkdir_hdfs_output}/offerAssignment_CKP_NEW
+
+#Input files
+oaFile=${member_sc_cpn}
+fiaFile=${file_path}/fiaFile
+
+
+#JobOrderStatus
+job_id=185
+#table_name=Job_order_trigger
+schema_name=SAMS_PRSNL_ENG
+table_name=JOB_REQUEST
+inprogressstatus=IN-PROGRESS
+completedstatus=COMPLETED
+errorstatus=ERROR
+
+#update stats
+schema_preprocess=mep
+coupon_cnt_upper_lmt=${upperbound}
+oa_hdfs_path=${member_sc_cpn}
+offer_assignment_table=offer_assignment
+oa_hdfs_path_copy=${nameNode}/user/hive/warehouse/${database}.db/${offer_assignment_table}/job_id=${job_id}/
+
+#Hive to Oracle update parameters
+
+spe_summary_main_class=com.walmart.mep.hivetooracleupdate.application.HiveToOracleUpdateMain
+spe_hive_table_hdfs_path=/user/hive/warehouse/${database}.db/job_summary_result/
+#use ctrl-a as hive_delimiter if want to use \001 delimiter
+hive_delimiter=ctrl-a
+#Query type use 0 for insert and 1 for overwrite
+query_type=0
+oracle_schema=SAMS_PRSNL_ENG
+oracle_table=job_summary_result
+date_format=yyyy-MM-dd
+timestamp_format=yyyy-MM-dd HH:mm:ss.SSS

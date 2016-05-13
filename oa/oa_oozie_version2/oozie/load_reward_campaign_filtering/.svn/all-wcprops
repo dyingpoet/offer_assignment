@@ -1,0 +1,71 @@
+K 25
+svn:wc:ra_dav:version-url
+V 121
+/svn/repos/gci/!svn/ver/37816/MEP/Offer_Assignment_Automation/trunk/src/main/scripts/oozie/load_reward_campaign_filtering
+END
+item_reward.pig
+K 25
+svn:wc:ra_dav:version-url
+V 137
+/svn/repos/gci/!svn/ver/35987/MEP/Offer_Assignment_Automation/trunk/src/main/scripts/oozie/load_reward_campaign_filtering/item_reward.pig
+END
+subcat_reward_reco_cluster_flt.pig
+K 25
+svn:wc:ra_dav:version-url
+V 156
+/svn/repos/gci/!svn/ver/35987/MEP/Offer_Assignment_Automation/trunk/src/main/scripts/oozie/load_reward_campaign_filtering/subcat_reward_reco_cluster_flt.pig
+END
+subcat_reward.pig
+K 25
+svn:wc:ra_dav:version-url
+V 139
+/svn/repos/gci/!svn/ver/35987/MEP/Offer_Assignment_Automation/trunk/src/main/scripts/oozie/load_reward_campaign_filtering/subcat_reward.pig
+END
+job.properties
+K 25
+svn:wc:ra_dav:version-url
+V 136
+/svn/repos/gci/!svn/ver/25055/MEP/Offer_Assignment_Automation/trunk/src/main/scripts/oozie/load_reward_campaign_filtering/job.properties
+END
+rewardRankDelta.pig
+K 25
+svn:wc:ra_dav:version-url
+V 141
+/svn/repos/gci/!svn/ver/35987/MEP/Offer_Assignment_Automation/trunk/src/main/scripts/oozie/load_reward_campaign_filtering/rewardRankDelta.pig
+END
+filterLastRewardJun.pig
+K 25
+svn:wc:ra_dav:version-url
+V 145
+/svn/repos/gci/!svn/ver/26237/MEP/Offer_Assignment_Automation/trunk/src/main/scripts/oozie/load_reward_campaign_filtering/filterLastRewardJun.pig
+END
+load_memberfile.hql
+K 25
+svn:wc:ra_dav:version-url
+V 141
+/svn/repos/gci/!svn/ver/37816/MEP/Offer_Assignment_Automation/trunk/src/main/scripts/oozie/load_reward_campaign_filtering/load_memberfile.hql
+END
+workflow.xml
+K 25
+svn:wc:ra_dav:version-url
+V 134
+/svn/repos/gci/!svn/ver/37505/MEP/Offer_Assignment_Automation/trunk/src/main/scripts/oozie/load_reward_campaign_filtering/workflow.xml
+END
+README.txt
+K 25
+svn:wc:ra_dav:version-url
+V 132
+/svn/repos/gci/!svn/ver/29629/MEP/Offer_Assignment_Automation/trunk/src/main/scripts/oozie/load_reward_campaign_filtering/README.txt
+END
+strictReward.pig
+K 25
+svn:wc:ra_dav:version-url
+V 138
+/svn/repos/gci/!svn/ver/29447/MEP/Offer_Assignment_Automation/trunk/src/main/scripts/oozie/load_reward_campaign_filtering/strictReward.pig
+END
+item_reward_reco_cluster_flt.pig
+K 25
+svn:wc:ra_dav:version-url
+V 154
+/svn/repos/gci/!svn/ver/35987/MEP/Offer_Assignment_Automation/trunk/src/main/scripts/oozie/load_reward_campaign_filtering/item_reward_reco_cluster_flt.pig
+END

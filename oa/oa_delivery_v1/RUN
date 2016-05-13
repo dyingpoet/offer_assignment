@@ -1,0 +1,40 @@
+source offer_assignment_param.sh
+source offer_assignment_utility.sh
+
+### preprocess
+pushd ./src/preprocess
+    pushd step0_itemInfoSnapshot
+    bash RUN
+    popd
+    pushd step1_transaction
+    bash RUN
+    popd
+    pushd step2_preference
+    bash RUN
+    popd
+    pushd step3_clubItem
+    bash RUN
+    popd
+    pushd step4_rewardFiltering
+    bash RUN
+    popd
+    pushd step5_rankDelta
+    bash RUN
+    popd
+    pushd step6_extractFIA
+    bash RUN
+    popd
+popd
+
+### offer assignment
+pushd ./src/offerAssignmentPart
+bash RUN
+popd
+
+### postprocess
+pushd ./src/postprocess
+bash RUN
+popd
+
+
+

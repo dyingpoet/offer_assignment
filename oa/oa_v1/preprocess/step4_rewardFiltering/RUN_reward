@@ -1,0 +1,34 @@
+
+PIG=/usr/bin/pig
+Pig=$PIG
+MEMBER_ITEM_PREF_LOC=/user/pythia/Workspaces/SamsMEP/subcatItemPref/member/ds=2014-04-14
+SCORE_FLT_LOC=/user/pythia/Workspaces/SamsMEP/pis_member_subcat_item_coupon_score/campaign_month=Apr2014-gec
+SCORE_FLT_FINAL_LOC=/user/pythia/Workspaces/SamsMEP/pis_member_subcat_item_coupon_score_final/campaign_month=Apr2014-gec
+LAST_OFFER_ASSIGNMENT_LOC=/user/pythia/Workspaces/SamsMEP/offer_assignment_output/campaign_month=2014feb
+
+CAMPAIGN_TYPE=REWARD
+LastOfferAssignmentLoc=$LAST_OFFER_ASSIGNMENT_LOC
+ItemMemberPopularityLoc=$MEMBER_ITEM_PREF_LOC
+
+#/user/pythia/Workspaces/SamsMEP/pis_member_subcat_item_coupon_score/campaign_month=Apr2014-gec
+
+scoreFlt=$SCORE_FLT_LOC
+scoreFlt1=$scoreFlt"_flt1"
+scoreFlt2=$scoreFlt"_flt2"
+scoreFltFinal=$SCORE_FLT_FINAL_LOC
+
+
+if [ $CAMPAIGN_TYPE == "RECOMMEND" ]
+    then 
+    $Pig -p scoreFlt=$scoreFlt -p itemMemberPopularity=$ItemMemberPopularityLoc -p scoreFlt1=$scoreFltFinal -f recommendFilter.pig
+fi
+
+if [ $CAMPAIGN_TYPE == "REWARD" ]
+    then 
+    $Pig -c -p scoreFlt=$scoreFlt -p itemMemberPopularity=$ItemMemberPopularityLoc -p scoreFlt1=$scoreFlt1 -f strictReward.pig
+    $Pig -c -p scoreFlt1=$scoreFlt1 -p lastOfferAssignment=$LastOfferAssignmentLoc -p scoreFlt2=$scoreFltFinal -f filterLastReward.pig
+fi
+
+
+
+

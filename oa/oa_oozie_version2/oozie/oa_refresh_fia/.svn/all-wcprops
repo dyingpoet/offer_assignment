@@ -1,0 +1,29 @@
+K 25
+svn:wc:ra_dav:version-url
+V 105
+/svn/repos/gci/!svn/ver/36375/MEP/Offer_Assignment_Automation/trunk/src/main/scripts/oozie/oa_refresh_fia
+END
+Refresh_fia_offers.pig
+K 25
+svn:wc:ra_dav:version-url
+V 128
+/svn/repos/gci/!svn/ver/36375/MEP/Offer_Assignment_Automation/trunk/src/main/scripts/oozie/oa_refresh_fia/Refresh_fia_offers.pig
+END
+job.properties
+K 25
+svn:wc:ra_dav:version-url
+V 120
+/svn/repos/gci/!svn/ver/35988/MEP/Offer_Assignment_Automation/trunk/src/main/scripts/oozie/oa_refresh_fia/job.properties
+END
+workflow.xml
+K 25
+svn:wc:ra_dav:version-url
+V 118
+/svn/repos/gci/!svn/ver/35988/MEP/Offer_Assignment_Automation/trunk/src/main/scripts/oozie/oa_refresh_fia/workflow.xml
+END
+README.txt
+K 25
+svn:wc:ra_dav:version-url
+V 116
+/svn/repos/gci/!svn/ver/35988/MEP/Offer_Assignment_Automation/trunk/src/main/scripts/oozie/oa_refresh_fia/README.txt
+END

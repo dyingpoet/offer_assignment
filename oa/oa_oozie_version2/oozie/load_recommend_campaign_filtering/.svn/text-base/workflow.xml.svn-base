@@ -1,0 +1,97 @@
+<workflow-app xmlns="uri:oozie:workflow:0.4" name="load_recommend_campaign_filtering">
+<start to ="load_recommend_campaign_filtering"/>
+
+<action name="load_recommend_campaign_filtering">
+	<pig>
+	<job-tracker>${jobTracker}</job-tracker>
+	<name-node>${nameNode}</name-node>
+	<prepare>
+		<delete path="${nameNode}/user/hive/warehouse/${database}.db/${task_table}/campaign_iter=${campaign_iter}_1" />
+	</prepare>
+	<job-xml>${nameNode}/user/${wf:user()}/${appRoot}/env/${cluster}/hive-site.xml</job-xml>
+	<script>recommendFilter.pig</script>
+	<param>scoreFlt=${nameNode}/user/hive/warehouse/${database}.db/${task_table}/campaign_iter=${campaign_iter}</param>
+	<param>scoreFlt1=${nameNode}/user/hive/warehouse/${database}.db/${task_table}/campaign_iter=${campaign_iter}_1</param>
+	<param>itemMemberPopularity=${nameNode}/user/hive/warehouse/${database}.db/member_subcat_item_pref_final/campaign_iter=${campaign_iter}</param>
+	</pig>
+        <ok to="load_recommend_rank_delta"/>
+        <error to="send-email"/>
+</action>
+
+<action name="load_recommend_rank_delta">
+	<pig>
+	<job-tracker>${jobTracker}</job-tracker>
+	<name-node>${nameNode}</name-node>
+	<prepare>
+		<delete path="${nameNode}/user/hive/warehouse/${database}.db/member_tmp/campaign_iter=${campaign_iter}" />
+		<delete path="${nameNode}/user/hive/warehouse/${database}.db/files/${campaign_iter}/scoreFile" />
+		<mkdir path="${nameNode}/user/hive/warehouse/${database}.db/files/${campaign_iter}/"/>
+	</prepare>
+	<job-xml>${nameNode}/user/${wf:user()}/${appRoot}/env/${cluster}/hive-site.xml</job-xml>
+	<script>recommendRankDelta.pig</script>
+	<param>scoreFltFinal=${nameNode}/user/hive/warehouse/${database}.db/pis_member_subcat_item_coupon_score/campaign_iter=${campaign_iter}</param>
+	<param>delta=${delta}</param>
+	<param>itemGlobalPopularity=${nameNode}/user/hive/warehouse/${database}.db/global_subcat_item_pref_final/campaign_iter=${campaign_iter}</param>
+	<param>memberHDFS=${nameNode}/user/hive/warehouse/${database}.db/member_tmp/campaign_iter=${campaign_iter}</param>
+	<param>scoreHDFS=${nameNode}/user/hive/warehouse/${database}.db/files/${campaign_iter}/scoreFile</param>
+	</pig>
+        <ok to="load_memberfile"/>
+        <error to="send-email"/>
+</action>
+
+<action name="load_memberfile">
+        <hive xmlns="uri:oozie:hive-action:0.2">
+                <job-tracker>${jobTracker}</job-tracker>
+                <name-node>${nameNode}</name-node>
+                <job-xml>${nameNode}/user/${wf:user()}/${appRoot}/env/${cluster}/hive-site.xml</job-xml>
+                <configuration>
+                <property>
+                  <name>oozie.hive.defaults</name>
+                  <value>/user/${wf:user()}/${appRoot}/env/${cluster}/hive-default.xml</value>
+                </property>
+                <property>
+                    <name>pool.name</name>
+                    <value>${etlPoolName}</value>
+                </property>
+                <property>
+                    <name>oozie.launcher.pool.name</name>
+                    <value>${oozieLauncherPoolName}</value>
+                </property>
+                </configuration>
+
+                <script>load_memberfile.hql</script>
+                <param>database=${database}</param>
+                <param>memberHDFS=${nameNode}/user/hive/warehouse/${database}.db/member_tmp/campaign_iter=${campaign_iter}</param>
+               	<param>upperbound=${upperbound}</param>
+		<param>lowerbound=${lowerbound}</param>
+		<param>campaign_iter=${campaign_iter}</param>
+		</hive>
+        <ok to="end"/>
+        <error to="send-email"/>
+</action>
+   
+<action name="send-email">
+        <email xmlns="uri:oozie:email-action:0.1">
+            <to>${emailTo}</to>
+            <subject> **MEP** OA : Error Loading Recommend Campaign Filtering - ${wf:id()}</subject>
+            <body>
+                hostname: hadoop-prod
+                severity: MINOR
+                object: HADOOP
+                modifier: HADOOP
+                group: HADOOP
+                text: Action failed. (ID ${wf:id()}, PATH ${wf:appPath()}) Error Message: ${wf:errorMessage(wf:lastErrorNode())}
+            </body>
+        </email>
+
+        <ok to="kill"/>
+        <error to="kill"/>
+        
+</action>
+
+
+<kill name="kill">
+ 	<message>Failed, error message[${wf:errorMessage(wf:lastErrorNode())}]</message>
+</kill>
+<end name='end'/>
+</workflow-app>

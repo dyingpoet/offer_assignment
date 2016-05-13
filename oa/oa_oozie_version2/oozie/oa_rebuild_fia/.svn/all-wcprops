@@ -1,0 +1,41 @@
+K 25
+svn:wc:ra_dav:version-url
+V 105
+/svn/repos/gci/!svn/ver/36898/MEP/Offer_Assignment_Automation/trunk/src/main/scripts/oozie/oa_rebuild_fia
+END
+fia_coupons.pig
+K 25
+svn:wc:ra_dav:version-url
+V 121
+/svn/repos/gci/!svn/ver/35988/MEP/Offer_Assignment_Automation/trunk/src/main/scripts/oozie/oa_rebuild_fia/fia_coupons.pig
+END
+job.properties
+K 25
+svn:wc:ra_dav:version-url
+V 120
+/svn/repos/gci/!svn/ver/35988/MEP/Offer_Assignment_Automation/trunk/src/main/scripts/oozie/oa_rebuild_fia/job.properties
+END
+workflow.xml
+K 25
+svn:wc:ra_dav:version-url
+V 118
+/svn/repos/gci/!svn/ver/35988/MEP/Offer_Assignment_Automation/trunk/src/main/scripts/oozie/oa_rebuild_fia/workflow.xml
+END
+copy_files.pig
+K 25
+svn:wc:ra_dav:version-url
+V 120
+/svn/repos/gci/!svn/ver/35988/MEP/Offer_Assignment_Automation/trunk/src/main/scripts/oozie/oa_rebuild_fia/copy_files.pig
+END
+README.txt
+K 25
+svn:wc:ra_dav:version-url
+V 116
+/svn/repos/gci/!svn/ver/35988/MEP/Offer_Assignment_Automation/trunk/src/main/scripts/oozie/oa_rebuild_fia/README.txt
+END
+cpn_inp.py
+K 25
+svn:wc:ra_dav:version-url
+V 116
+/svn/repos/gci/!svn/ver/36898/MEP/Offer_Assignment_Automation/trunk/src/main/scripts/oozie/oa_rebuild_fia/cpn_inp.py
+END

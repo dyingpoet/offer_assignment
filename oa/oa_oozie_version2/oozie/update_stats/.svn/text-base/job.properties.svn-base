@@ -1,0 +1,19 @@
+# Application/workflow settings
+appName=ss
+genericAppDir=ckp-mep
+appRoot=etl
+oozie.libpath=/user/${user.name}/${appRoot}/lib
+oozie.wf.application.path=${nameNode}/user/${user.name}/${appRoot}/${appName}
+oozie.use.system.libpath=true
+
+# Cluster settings
+nameNode=${NAMENODE}
+jobTracker=${JOBTRACKER}
+emailTo=${user.name}@wal-mart.com
+cluster=${CLUSTER}
+
+#pool defs
+#etlTdSqoopPoolName=etl-td-sqoop
+etlPoolName=etl
+oozieLauncherPoolName=oozie-launcher
+oozieLauncherJavaOpts=-Xmx1500m

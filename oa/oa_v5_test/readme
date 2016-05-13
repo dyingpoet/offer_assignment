@@ -1,0 +1,46 @@
+
+Please modify the configuration file *.cfg and *init (used in the mixed offer assignment), and generate some small configuration data in ${CONFIG_FILE_PATH}/.
+
+
+
+Below are some features we have added in V4 release.
+
+1). Resolving the issue of offers falling in multiple subcats.
+
+2). Backfilling logic enhancement.
+
+3). 1-many OA included.
+
+4). Make the script appending meta info scalable.
+
+5). Better organize the preprocessing logic.
+
+--6). not assign offers if assigned within 30 days (redemption table)
+
+
+
+Below are some features we have added in V3 release.
+
+1). Be able to backfill offers to any lower bould.
+
+2). Be able to backfill offers to member without any scores.
+
+3). Be able to add nonoffers in the output
+
+4). Be able to turn on / off  the inventory check 
+
+5). Support mixed type offer assignment offers. Please specify the types of offers in the file mixed_offer_assignment.init. The current implenmetation assigns offer sequentially based on the order of types specified in the init file.
+
+
+[jli21@sg-dev01 oa_v3_test]$ ls mixed_offer_assignment/
+mixed_offer_assignment_driver  mixed_offer_assignment.init  mixed_offer_assignment_param.cfg  offer_assignment_utility.sh
+[jli21@sg-dev01 oa_v3_test]$ ls single_offer_assignment/
+offer_assignment_driver  offer_assignment_param.cfg  offer_assignment_utility.sh
+
+
+
+
+
+
+
+

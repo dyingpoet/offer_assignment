@@ -1,0 +1,29 @@
+#!/bin/bash
+
+
+echo "Start the preprocessing!"
+
+[ -d $WORK_DIR ] || mkdir -p $WORK_DIR
+
+#$PYTHON py ${LAST_WORK_DIR}/scoreFile ${LAST_WORK_DIR}/offerAssignment_member_decouple ${WORK_DIR}/scoreFile ${WORK_DIR}/memberFile
+#cp ${LAST_WORK_DIR}/offerFile_all ${WORK_DIR}/
+#cp ${LAST_WORK_DIR}/offer2subcatFile ${WORK_DIR}/
+cp ${LAST_WORK_DIR}/sc_coupon_cnt_all ${WORK_DIR}/
+cp ${LAST_WORK_DIR}/sc_coupon_cnt ${WORK_DIR}/
+
+###offerAssignment_member_decouple
+###187881750 10 0001-01-01 5612 54437
+
+### adjust the investment count
+$PYTHON ${SRC_PREPROCESS_PY_DIR}/adjInvestmentV2.py ${LAST_WORK_DIR}/offerAssignment_member_decouple ${LAST_WORK_DIR}/offerFile 1>${WORK_DIR}/offerFile
+
+### adjust scoreFile and memberFile
+$PYTHON ${SRC_PREPROCESS_PY_DIR}/adjInputV2.py ${WORK_DIR}/offerFile ${LAST_WORK_DIR}/scoreFile ${LAST_WORK_DIR}/offer2subcatFile ${LAST_WORK_DIR}/offerAssignment_member_decouple 1>$WORK_DIR/scoreFile 2>$WORK_DIR/offer2subcatFile
+
+### memberFile
+cut -d ' ' -f2 $WORK_DIR/scoreFile | sort | uniq | sed "s/$/ 1 $MEMBER_UB/" > $WORK_DIR/memberFile
+###cut -d ' ' -f2 $WORK_DIR/scoreFile | sort | uniq | $PYTHON ${SRC_PREPROCESS_PY_DIR}/adjMemberFile.py $FINAL_DIR/offerAssignment $MEMBER_UB $MEMBER_UB_ALL > $WORK_DIR/memberFile
+
+
+
+

@@ -1,0 +1,145 @@
+<workflow-app xmlns="uri:oozie:workflow:0.2" name="load_fia_subcat_item_club">
+
+<start to="inventory_ind_chck_decision"/>
+
+<decision name="inventory_ind_chck_decision">
+               <switch>
+                  <case to="load_fia_subcat_item_club">
+                        ${inventory_check_flag == "N" }
+                  </case>
+                  <case to="load_fia_subcat_item_club_with_item_check">
+						${inventory_check_flag == "Y" and skip_inventory_check_item_ind == "Y"}                    
+                  </case>
+                  <case to="load_fia_subcat_item_club_with_subcat_check">
+                         ${inventory_check_flag == "Y" and skip_inventory_check_item_ind == "N"}
+                  </case>
+                  <default to="load_fia_subcat_item_club"/>
+              </switch>
+</decision>
+
+<action name="load_fia_subcat_item_club">
+        <hive xmlns="uri:oozie:hive-action:0.2">
+                <job-tracker>${jobTracker}</job-tracker>
+                <name-node>${nameNode}</name-node>
+                <job-xml>${nameNode}/user/${wf:user()}/${appRoot}/env/${cluster}/hive-site.xml</job-xml>
+                <configuration>
+                <property>
+                  <name>oozie.hive.defaults</name>
+                  <value>/user/${wf:user()}/${appRoot}/env/${cluster}/hive-default.xml</value>
+                </property>
+                <property>
+                    <name>pool.name</name>
+                    <value>${etlPoolName}</value>
+                </property>
+                <property>
+                    <name>oozie.launcher.pool.name</name>
+                    <value>${oozieLauncherPoolName}</value>
+                </property>
+                </configuration>
+
+                <script>step1_skip_all.hql</script>
+                <param>database=${database}</param>
+                <param>inventory_ds=${inventory_ds}</param>
+                <param>campaign_iter=${campaign_iter}</param>
+                <param>campaign_id=${fia_campaign_no}</param>
+                <param>fia_subcat_item_club=${fia_subcat_item_club}</param>
+                <param>offer_assignment_fia_table=${offer_assignment_fia_table}</param>
+                <param>club_item_inventory_history_table=${club_item_inventory_history_table}</param>
+        </hive>
+        <ok to="end"/>
+        <error to="send-email"/>
+</action>
+
+<action name="load_fia_subcat_item_club_with_item_check">
+        <hive xmlns="uri:oozie:hive-action:0.2">
+                <job-tracker>${jobTracker}</job-tracker>
+                <name-node>${nameNode}</name-node>
+                <job-xml>${nameNode}/user/${wf:user()}/${appRoot}/env/${cluster}/hive-site.xml</job-xml>
+                <configuration>
+                <property>
+                  <name>oozie.hive.defaults</name>
+                  <value>/user/${wf:user()}/${appRoot}/env/${cluster}/hive-default.xml</value>
+                </property>
+                <property>
+                    <name>pool.name</name>
+                    <value>${etlPoolName}</value>
+                </property>
+                <property>
+                    <name>oozie.launcher.pool.name</name>
+                    <value>${oozieLauncherPoolName}</value>
+                </property>
+                </configuration>
+
+                <script>step1_skip_item.hql</script>
+                <param>database=${database}</param>
+                <param>inventory_ds=${inventory_ds}</param>
+                <param>campaign_iter=${campaign_iter}</param>
+                <param>campaign_id=${fia_campaign_no}</param>
+                <param>fia_subcat_item_club=${fia_subcat_item_club}</param>
+                <param>offer_assignment_fia_table=${offer_assignment_fia_table}</param>
+                <param>club_item_inventory_history_table=${club_item_inventory_history_table}</param>
+        </hive>
+        <ok to="end"/>
+        <error to="send-email"/>
+</action>
+
+<action name="load_fia_subcat_item_club_with_subcat_check">
+        <hive xmlns="uri:oozie:hive-action:0.2">
+                <job-tracker>${jobTracker}</job-tracker>
+                <name-node>${nameNode}</name-node>
+                <job-xml>${nameNode}/user/${wf:user()}/${appRoot}/env/${cluster}/hive-site.xml</job-xml>
+                <configuration>
+                <property>
+                  <name>oozie.hive.defaults</name>
+                  <value>/user/${wf:user()}/${appRoot}/env/${cluster}/hive-default.xml</value>
+                </property>
+                <property>
+                    <name>pool.name</name>
+                    <value>${etlPoolName}</value>
+                </property>
+                <property>
+                    <name>oozie.launcher.pool.name</name>
+                    <value>${oozieLauncherPoolName}</value>
+                </property>
+                </configuration>
+
+                <script>step1.hql</script>
+                <param>database=${database}</param>
+                <param>fia_subcat_item_club=${fia_subcat_item_club}</param>
+                <param>inventory_ds=${inventory_ds}</param>
+                <param>campaign_id=${fia_campaign_no}</param>
+                <param>dept_list=${dept_list}</param>
+                <param>campaign_iter=${campaign_iter}</param>
+                <param>offer_assignment_fia_table=${offer_assignment_fia_table}</param>
+                <param>club_item_inventory_history_table=${club_item_inventory_history_table}</param>
+        </hive>
+        <ok to="end"/>
+        <error to="send-email"/>
+</action>
+
+<action name="send-email">
+        <email xmlns="uri:oozie:email-action:0.1">
+            <to>${emailTo}</to>
+            <subject>**MEP** OA – Pre Processing :  Error Loading  Fia subcat item check - ${wf:id()}</subject>
+            <body>
+                hostname: hadoop-prod
+                severity: MINOR
+                object: HADOOP
+                modifier: HADOOP
+                group: HADOOP
+                text: Action failed. (ID ${wf:id()}, PATH ${wf:appPath()}) Error Message: ${wf:errorMessage(wf:lastErrorNode())}
+            </body>
+        </email>
+
+        <ok to="kill"/>
+        <error to="kill"/>
+
+</action>
+
+<kill name="kill">
+    <message>FATAL: OA Fia subcat item table Load Job Failed </message>
+</kill>
+
+<end name="end"/>
+
+</workflow-app>

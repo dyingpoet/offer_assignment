@@ -1,0 +1,91 @@
+10
+
+dir
+40561
+https://svn01.wal-mart.com/svn/repos/gci/MEP/Offer_Assignment_Automation/trunk/src/main/scripts/oozie
+https://svn01.wal-mart.com/svn/repos/gci
+
+
+
+2015-02-23T13:04:16.054751Z
+40128
+sgopa4
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+0e782e41-e3ff-429f-94f3-e40512d67caf
+
+load_fia_subcat_item_club
+dir
+
+load_global_and_member_item_preference
+dir
+
+oa_rebuild_fia
+dir
+
+load_reward_campaign_filtering
+dir
+
+load_item_info_snapshot
+dir
+
+oa_refresh_fia
+dir
+
+oa_drop_members
+dir
+
+oa_build_fia
+dir
+
+load_offer_assignment_preprocess
+dir
+
+oa_offerassignment_part
+dir
+
+oa_backfill_members
+dir
+
+update_stats
+dir
+
+load_transaction_snapshot
+dir
+
+load_member_club_preference
+dir
+
+fia_offers_load_spe
+dir
+
+oa_core_generation_flow
+dir
+
+backfill_generation_flow
+dir
+
+load_recommend_campaign_filtering
+dir
+
+load_fia_extract_files
+dir
+
+load_pis_member_subcat_item_coupon_score
+dir
+
+run_spe_dynamic_workflow_listener
+dir
+

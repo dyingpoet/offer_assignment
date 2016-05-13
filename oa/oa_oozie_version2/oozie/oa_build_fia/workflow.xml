@@ -1,0 +1,55 @@
+<workflow-app xmlns="uri:oozie:workflow:0.4" name="oa_build_fia">
+
+<start to ="build_fia"/> 
+
+<action name="build_fia">
+	      <hive xmlns="uri:oozie:hive-action:0.2">
+                        <job-tracker>${jobTracker}</job-tracker>
+                        <name-node>${nameNode}</name-node>
+                        <job-xml>${nameNode}/user/${wf:user()}/${appRoot}/env/${cluster}/hive-site.xml</job-xml>
+                        <configuration>
+                        <property>
+                          <name>oozie.hive.defaults</name>
+                          <value>/user/${wf:user()}/${appRoot}/env/${cluster}/hive-default.xml</value>
+                        </property>
+                        <property>
+                            <name>pool.name</name>
+                            <value>${etlPoolName}</value>
+                        </property>
+                        <property>
+                            <name>oozie.launcher.pool.name</name>
+                            <value>${oozieLauncherPoolName}</value>
+                        </property>
+                </configuration>
+
+                <script>offer_file_preparation.hql</script>
+                        <param>FiaOfferFile=${FiaOfferFile}</param>
+                        <param>FiaTbl=${FiaTbl}</param>
+						<param>fia_campaign_no=${fia_campaign_no}</param>
+	            </hive>
+                <ok to="end"/>
+                <error to="send-email"/>
+</action>
+<action name="send-email">
+	<email xmlns="uri:oozie:email-action:0.1">
+	 <to>${emailTo}</to>
+	 <subject>**MEP** OFFER ASSIGNMENT Backfill : Error Loading build_fia_offers - ${wf:id()}</subject>
+	 <body>
+	     hostname: hadoop-prod
+	     severity: MINOR
+	     object: HADOOP
+	     modifier: HADOOP
+	     group: HADOOP
+	     text: Action failed. (ID ${wf:id()}, PATH ${wf:appPath()}) Error Message: ${wf:errorMessage(wf:lastErrorNode())}
+	 </body>
+	</email>
+
+	<ok to="kill"/>
+	<error to="kill"/>
+</action>
+
+<kill name="kill">
+ 	<message>Failed, error message[${wf:errorMessage(wf:lastErrorNode())}]</message>
+</kill>
+<end name="end"/>
+</workflow-app>

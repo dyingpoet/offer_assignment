@@ -1,0 +1,43 @@
+* feb 7
+448	72	94	1	OR $ off	2252057	75000	1.0	0.0	1	1	31	REWARD	N	440457	1	Core	53577	1013697	Y	FILLER
+
+* data in march 79
+0108|467|1|8|1|OR $ off|5961273|75000|1.5|0.0|1|1|31|REWARD|N|418037|1|Core|54406|1014497|Y|FILLER
+
+Product Item #	System Item #	Instant Savings #	Deal #	Value Coupon #
+323973	 	332487	1013423	53438
+9410    PAPER GOODS|Paper Towels-Consumer       31459826        323973  MM PRINTED TOWEL|12 ROLLS/170 SHEETS    15.98
+
+
+467	94	10	1	OR $ off	31459826	75000	1.0	0.0	1	1	31	REWARD	N	440457	1	Core	53438	1013423	Y	FILLER
+
+
+
+hive> desc value_coupon_dim;
+value_coupon_sk_id	int	
+value_coupon_nbr	int	
+country_code	string	
+base_div_nbr	int	
+coupon_system_item_nbr	bigint	
+start_date	string	
+end_date	string	
+start_time	string	
+end_time	string	
+coupon_status_desc	string	
+package_code	int	
+package_desc	string	
+duration_code	int	
+duration_desc	string	
+vendor_funded_ind	string	
+shared_value_ind	string	
+campaign_nbr	int	
+manual_load_ind	string	
+dw_last_change_date	string	
+val_assign_type_cd	int	
+val_assign_type_desc	string	
+val_offer_type_code	int	
+val_offer_type_desc	string	
+prvdr_coupon_nbr	int	
+
+35862	53438	US	18	44999598	2015-01-10	2015-01-31	00:00:00	23:59:00	ACTIVE	31	REWARD	0	000 DAYS	N	Y	437	0	2015-01-1Analytic	1	OR $ off	1013423
+

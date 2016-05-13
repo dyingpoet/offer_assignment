@@ -1,0 +1,124 @@
+<workflow-app xmlns="uri:oozie:workflow:0.4" name="OA_OfferAssignmentPart">
+	<start to ="clean_up"/>
+
+ <action name="clean_up">
+   <fs>
+      <delete path="${oa_hdfs_path_copy}"/>
+      <delete path="${member_sc_cpn}"/>
+      <delete path="${offerassignment}"/>
+      <mkdir path="${oa_hdfs_path_copy}"/>
+   </fs>
+      <ok to="auctionFast_with_SubcatConstraints"/>
+      <error to="kill" />
+ </action>
+
+ <action name="auctionFast_with_SubcatConstraints">
+	<shell xmlns="uri:oozie:shell-action:0.1">
+	                <job-tracker>${jobTracker}</job-tracker>
+	                <name-node>${nameNode}</name-node>
+					<job-xml>${nameNode}/user/${wf:user()}/${appRoot}/env/${cluster}/hive-site.xml</job-xml>
+	                    <configuration>
+	                        <property>
+	                                 <name>mapred.job.queue.name</name>
+	                                 <value>${queueName}</value>
+	                        </property>
+							<property>
+	                                  <name>oozie.hive.defaults</name>
+	                                  <value>${nameNode}/user/${wf:user()}/${appRoot}/env/${cluster}/hive-default.xml</value>
+	                        </property>
+	                        <property>
+	                                    <name>pool.name</name>
+	                                    <value>${etlPoolName}</value>
+	                        </property>
+	                        <property>
+	                                    <name>oozie.launcher.pool.name</name>
+	                                    <value>${oozieLauncherPoolName}</value>
+	                        </property>
+					    </configuration>
+                          <exec>auctionFastWithSubcatConstraints2.py</exec>
+                          <argument>${scoreFile}</argument>
+                          <argument>${offerFile}</argument>
+                          <argument>${memberFile}</argument>
+                          <argument>${offer2subcatFile}</argument>
+						  <argument>${subcatfile}</argument>
+						  <argument>${scorefile}</argument>
+						  <argument>${otherfile}</argument>
+						  <argument>${outputfile}</argument>
+						  <argument>${campaign_iter}</argument>
+                          <file>auctionFastWithSubcatConstraints2.py</file>
+   </shell>
+	                        <ok to="add_sc_py" />
+	                        <error to="kill" />
+ </action>
+
+ <action name="add_sc_py">
+	<shell xmlns="uri:oozie:shell-action:0.1">
+             <job-tracker>${jobTracker}</job-tracker>
+             <name-node>${nameNode}</name-node>
+		    <job-xml>${nameNode}/user/${wf:user()}/${appRoot}/env/${cluster}/hive-site.xml</job-xml>
+            <configuration>
+               <property>
+                        <name>mapred.job.queue.name</name>
+                        <value>${queueName}</value>
+               </property>
+			   <property>
+                         <name>oozie.hive.defaults</name>
+                         <value>${nameNode}/user/${wf:user()}/${appRoot}/env/${cluster}/hive-default.xml</value>
+               </property>
+               <property>
+                         <name>pool.name</name>
+                         <value>${etlPoolName}</value>
+               </property>
+               <property>
+                         <name>oozie.launcher.pool.name</name>
+                         <value>${oozieLauncherPoolName}</value>
+               </property>	
+
+            </configuration>
+               <exec>add_sc.py</exec>
+	       <argument>${sc_coupon_cnt}</argument>
+           <argument>${offerassignment}</argument>
+	       <argument>${member_sc_cpn}</argument>	
+	       <file>add_sc.py</file>                 
+	        
+         </shell>
+         <ok to="load_offer_assignment_table"/>
+         <error to="kill" />
+ </action>
+ 
+ <action name="load_offer_assignment_table">
+        <hive xmlns="uri:oozie:hive-action:0.2">
+                <job-tracker>${jobTracker}</job-tracker>
+                <name-node>${nameNode}</name-node>
+                <job-xml>${nameNode}/user/${wf:user()}/${appRoot}/env/${cluster}/hive-site.xml</job-xml>
+                <configuration>
+                <property>
+                  <name>oozie.hive.defaults</name>
+                  <value>/user/${wf:user()}/${appRoot}/env/${cluster}/hive-default.xml</value>
+                </property>
+                <property>
+                    <name>pool.name</name>
+                    <value>${etlPoolName}</value>
+                </property>
+                <property>
+                    <name>oozie.launcher.pool.name</name>
+                    <value>${oozieLauncherPoolName}</value>
+                </property>
+                </configuration>
+
+                <script>load_offer_assignment.hql</script>
+								<param>job_id=${job_id}</param>
+                                <param>database=${database}</param>
+                                <param>oa_hdfs_path=${oa_hdfs_path}</param>
+                                <param>oa_hdfs_path_copy=${oa_hdfs_path_copy}</param>
+								<param>offer_assignment_table=${offer_assignment_table}</param>
+        </hive>
+       <ok to="end"/>
+        <error to="kill"/>
+ </action>
+
+ <kill name="kill">
+	                <message>Script failed, error message[${wf:errorMessage(wf:lastErrorNode())}]</message>
+ </kill>
+<end name='end'/>
+</workflow-app>

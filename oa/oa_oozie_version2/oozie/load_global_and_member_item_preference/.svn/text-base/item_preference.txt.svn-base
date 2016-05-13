@@ -1,0 +1,25 @@
+
+Pig=/usr/bin/pig
+TaskDir=hdfs://Dev6HA/user/svcckpdv/etl/load_global_and_member_item_preference
+#Python=${nameNode}/user/${user.name}/${appRoot}/bin
+Python=/usr/bin/python
+
+database = offer_assignment_model
+jarpath = ${nameNode}/user/${user.name}/${appRoot}/lib
+FilterClub=/user/hive/warehouse/mep.db/mep_pilot_club/
+MemCombined=/user/hive/warehouse/offer_assignment_gec.db/sams_crd_linking_final_groups_text/
+TransData=/user/hive/warehouse/offer_assignment_model.db/customer_club_day_item_sales/ds=2014-04-29
+ItemSubCatMapping=/user/hive/warehouse/offer_assignment_model.db/item_info_snapshot/ds=2014-04-29
+PrefLoc=/user/hive/warehouse/offer_assignment_model.db/subcatItemPref
+
+DS=2014-04-29
+DataStartT=2014-04-01
+DataEndT=2014-04-30
+EligibleStartT=2014-04-01
+EligibleEndT=2014-04-30
+DateLB=2014-04-01
+DateUB=2014-04-30
+
+OutputGlobalPref=$PrefLoc/global
+OutputMemberPref=$PrefLoc/member
+

@@ -1,0 +1,476 @@
+<workflow-app xmlns="uri:oozie:workflow:0.2" name="fia_load_new">
+
+<start to="load_campaigns"/>
+
+<action name="load_assigned_offers">
+        <hive xmlns="uri:oozie:hive-action:0.2">
+                <job-tracker>${jobTracker}</job-tracker>
+                <name-node>${nameNode}</name-node>
+                <job-xml>${nameNode}/user/${wf:user()}/${appRoot}/env/${cluster}/hive-site.xml</job-xml>
+                <configuration>
+                <property>
+                  <name>oozie.hive.defaults</name>
+                  <value>/user/${wf:user()}/${appRoot}/env/${cluster}/hive-default.xml</value>
+                </property>
+                <property>
+                  <name>mapred.child.java.opts</name>
+                  <value>-Xmx1500m</value>
+                </property>
+                <property>
+                  <name>io.sort.mb</name>
+                  <value>500</value>
+                </property>
+                <property>
+                  <name>dfs.block.size</name>
+                  <value>536870912</value>
+                </property>
+                <property>
+                    <name>pool.name</name>
+                    <value>${etlPoolName}</value>
+                </property>
+                <property>
+                    <name>oozie.launcher.pool.name</name>
+                    <value>${oozieLauncherPoolName}</value>
+                </property>
+                </configuration>
+
+                <script>load_assigned_offers.hive</script>
+		<param>mepschema=${MEP_SCHEMA}</param>
+		<param>campaign_nbr=${CAMPAIGN_NBR}</param>
+        </hive>
+        <ok to="load_campaigns"/>
+        <error to="send-email"/>
+</action>
+
+<action name="create_assigned_offers_trigger">
+     <shell xmlns="uri:oozie:shell-action:0.1">
+          <job-tracker>${jobTracker}</job-tracker>
+          <name-node>${nameNode}</name-node>
+          <job-xml>${nameNode}/user/${wf:user()}/${appRoot}/env/${cluster}/hive-site.xml</job-xml>
+           <configuration>
+                        <property>
+                                  <name>oozie.hive.defaults</name>
+                                  <value>${nameNode}/user/${wf:user()}/${appRoot}/env/${cluster}/hive-default.xml</value>
+                        </property>
+                        <property>
+                                  <name>mapred.child.java.opts</name>
+                                  <value>-Xmx1500m</value>
+                        </property>
+                        <property>
+                                  <name>io.sort.mb</name>
+                                  <value>500</value>
+                        </property>
+                        <property>
+                                  <name>dfs.block.size</name>
+                                  <value>536870912</value>
+                        </property>
+                        <property>
+                                    <name>pool.name</name>
+                                    <value>${etlPoolName}</value>
+                        </property>
+                        <property>
+                                    <name>oozie.launcher.pool.name</name>
+                                    <value>${oozieLauncherPoolName}</value>
+                        </property>
+                        </configuration>
+                    <exec>create_trigger.sh</exec>
+                    <argument>${emailTo}</argument>
+                    <argument>${keyword}</argument>
+                    <argument>${notificationdir}</argument>
+                    <argument>${load1}</argument>
+                    <file>create_trigger.sh</file>
+     </shell>
+        <ok to="load_campaigns"/>
+        <error to="send-email"/>
+</action>
+
+
+<action name="load_campaigns">
+        <hive xmlns="uri:oozie:hive-action:0.2">
+                <job-tracker>${jobTracker}</job-tracker>
+                <name-node>${nameNode}</name-node>
+                <job-xml>${nameNode}/user/${wf:user()}/${appRoot}/env/${cluster}/hive-site.xml</job-xml>
+                <configuration>
+                <property>
+                  <name>oozie.hive.defaults</name>
+                  <value>/user/${wf:user()}/${appRoot}/env/${cluster}/hive-default.xml</value>
+                </property>
+                <property>
+                  <name>mapred.child.java.opts</name>
+                  <value>-Xmx1500m</value>
+                </property>
+                <property>
+                  <name>io.sort.mb</name>
+                  <value>500</value>
+                </property>
+                <property>
+                  <name>dfs.block.size</name>
+                  <value>536870912</value>
+                </property>
+                <property>
+                    <name>pool.name</name>
+                    <value>${etlPoolName}</value>
+                </property>
+                <property>
+                    <name>oozie.launcher.pool.name</name>
+                    <value>${oozieLauncherPoolName}</value>
+                </property>
+                </configuration>
+
+                <script>load_campaigns.hive</script>
+		<param>mepschema=${MEP_SCHEMA}</param>
+		<param>CAMPAIGN_NBR=${CAMPAIGN_NBR}</param>
+        </hive>
+        <ok to="load_item"/>
+        <error to="send-email"/>
+</action>
+
+<action name="create_campaigns_trigger">
+     <shell xmlns="uri:oozie:shell-action:0.1">
+          <job-tracker>${jobTracker}</job-tracker>
+          <name-node>${nameNode}</name-node>
+          <job-xml>${nameNode}/user/${wf:user()}/${appRoot}/env/${cluster}/hive-site.xml</job-xml>
+           <configuration>
+                        <property>
+                                  <name>oozie.hive.defaults</name>
+                                  <value>${nameNode}/user/${wf:user()}/${appRoot}/env/${cluster}/hive-default.xml</value>
+                        </property>
+                        <property>
+                                  <name>mapred.child.java.opts</name>
+                                  <value>-Xmx1500m</value>
+                        </property>
+                        <property>
+                                  <name>io.sort.mb</name>
+                                  <value>500</value>
+                        </property>
+                        <property>
+                                  <name>dfs.block.size</name>
+                                  <value>536870912</value>
+                        </property>
+                        <property>
+                                    <name>pool.name</name>
+                                    <value>${etlPoolName}</value>
+                        </property>
+                        <property>
+                                    <name>oozie.launcher.pool.name</name>
+                                    <value>${oozieLauncherPoolName}</value>
+                        </property>
+                        </configuration>
+                    <exec>create_trigger.sh</exec>
+                    <argument>${emailTo}</argument>
+                    <argument>${keyword}</argument>
+                    <argument>${notificationdir}</argument>
+                    <argument>${load2}</argument>
+                    <file>create_trigger.sh</file>
+     </shell>
+        <ok to="load_item"/>
+        <error to="send-email"/>
+</action>
+
+<action name="load_item">
+        <hive xmlns="uri:oozie:hive-action:0.2">
+                <job-tracker>${jobTracker}</job-tracker>
+                <name-node>${nameNode}</name-node>
+                <job-xml>${nameNode}/user/${wf:user()}/${appRoot}/env/${cluster}/hive-site.xml</job-xml>
+                <configuration>
+                <property>
+                  <name>oozie.hive.defaults</name>
+                  <value>/user/${wf:user()}/${appRoot}/env/${cluster}/hive-default.xml</value>
+                </property>
+                <property>
+                  <name>mapred.child.java.opts</name>
+                  <value>-Xmx1500m</value>
+                </property>
+                <property>
+                  <name>io.sort.mb</name>
+                  <value>500</value>
+                </property>
+                <property>
+                  <name>dfs.block.size</name>
+                  <value>536870912</value>
+                </property>
+                <property>
+                    <name>pool.name</name>
+                    <value>${etlPoolName}</value>
+                </property>
+                <property>
+                    <name>oozie.launcher.pool.name</name>
+                    <value>${oozieLauncherPoolName}</value>
+                </property>
+                </configuration>
+
+                <script>load_item.hive</script>
+		<param>mepschema=${MEP_SCHEMA}</param>
+		<param>item_snapshot_dt=${ITEM_SNAPSHOT_DATE}</param>
+        </hive>
+        <ok to="load_coupon_detail"/>
+        <error to="send-email"/>
+</action>
+
+<action name="load_coupon_detail">
+        <hive xmlns="uri:oozie:hive-action:0.2">
+                <job-tracker>${jobTracker}</job-tracker>
+                <name-node>${nameNode}</name-node>
+                <job-xml>${nameNode}/user/${wf:user()}/${appRoot}/env/${cluster}/hive-site.xml</job-xml>
+                <configuration>
+                <property>
+                  <name>oozie.hive.defaults</name>
+                  <value>/user/${wf:user()}/${appRoot}/env/${cluster}/hive-default.xml</value>
+                </property>
+                <property>
+                  <name>mapred.child.java.opts</name>
+                  <value>-Xmx1500m</value>
+                </property>
+                <property>
+                  <name>io.sort.mb</name>
+                  <value>500</value>
+                </property>
+                <property>
+                  <name>dfs.block.size</name>
+                  <value>536870912</value>
+                </property>
+                <property>
+                    <name>pool.name</name>
+                    <value>${etlPoolName}</value>
+                </property>
+                <property>
+                    <name>oozie.launcher.pool.name</name>
+                    <value>${oozieLauncherPoolName}</value>
+                </property>
+                </configuration>
+
+                <script>load_coupon_detail.hive</script>
+		<param>mepschema=${MEP_SCHEMA}</param>
+		<param>CAMPAIGN_NBR=${CAMPAIGN_NBR}</param>
+        </hive>
+        <ok to="load_coupon_detail_item"/>
+        <error to="send-email"/>
+</action>
+
+<action name="load_coupon_detail_item">
+        <hive xmlns="uri:oozie:hive-action:0.2">
+                <job-tracker>${jobTracker}</job-tracker>
+                <name-node>${nameNode}</name-node>
+                <job-xml>${nameNode}/user/${wf:user()}/${appRoot}/env/${cluster}/hive-site.xml</job-xml>
+                <configuration>
+                <property>
+                  <name>oozie.hive.defaults</name>
+                  <value>/user/${wf:user()}/${appRoot}/env/${cluster}/hive-default.xml</value>
+                </property>
+                <property>
+                  <name>mapred.child.java.opts</name>
+                  <value>-Xmx1500m</value>
+                </property>
+                <property>
+                  <name>io.sort.mb</name>
+                  <value>500</value>
+                </property>
+                <property>
+                  <name>dfs.block.size</name>
+                  <value>536870912</value>
+                </property>
+                <property>
+                    <name>pool.name</name>
+                    <value>${etlPoolName}</value>
+                </property>
+                <property>
+                    <name>oozie.launcher.pool.name</name>
+                    <value>${oozieLauncherPoolName}</value>
+                </property>
+                </configuration>
+
+                <script>load_coupon_detail_item.hive</script>
+		<param>mepschema=${MEP_SCHEMA}</param>
+        </hive>
+        <ok to="load_coupon_item_dim"/>
+        <error to="send-email"/>
+</action>
+
+<action name="load_coupon_item_dim">
+        <hive xmlns="uri:oozie:hive-action:0.2">
+                <job-tracker>${jobTracker}</job-tracker>
+                <name-node>${nameNode}</name-node>
+                <job-xml>${nameNode}/user/${wf:user()}/${appRoot}/env/${cluster}/hive-site.xml</job-xml>
+                <configuration>
+                <property>
+                  <name>oozie.hive.defaults</name>
+                  <value>/user/${wf:user()}/${appRoot}/env/${cluster}/hive-default.xml</value>
+                </property>
+                <property>
+                  <name>mapred.child.java.opts</name>
+                  <value>-Xmx1500m</value>
+                </property>
+                <property>
+                  <name>io.sort.mb</name>
+                  <value>500</value>
+                </property>
+                <property>
+                  <name>dfs.block.size</name>
+                  <value>536870912</value>
+                </property>
+                <property>
+                    <name>pool.name</name>
+                    <value>${etlPoolName}</value>
+                </property>
+                <property>
+                    <name>oozie.launcher.pool.name</name>
+                    <value>${oozieLauncherPoolName}</value>
+                </property>
+                </configuration>
+
+                <script>load_coupon_item_dim.hive</script>
+		<param>mepschema=${MEP_SCHEMA}</param>
+        </hive>
+        <ok to="load_coupon_item_final"/>
+        <error to="send-email"/>
+</action>
+
+<action name="load_coupon_item_final">
+        <hive xmlns="uri:oozie:hive-action:0.2">
+                <job-tracker>${jobTracker}</job-tracker>
+                <name-node>${nameNode}</name-node>
+                <job-xml>${nameNode}/user/${wf:user()}/${appRoot}/env/${cluster}/hive-site.xml</job-xml>
+                <configuration>
+                <property>
+                  <name>oozie.hive.defaults</name>
+                  <value>/user/${wf:user()}/${appRoot}/env/${cluster}/hive-default.xml</value>
+                </property>
+                <property>
+                  <name>mapred.child.java.opts</name>
+                  <value>-Xmx1500m</value>
+                </property>
+                <property>
+                  <name>io.sort.mb</name>
+                  <value>500</value>
+                </property>
+                <property>
+                  <name>dfs.block.size</name>
+                  <value>536870912</value>
+                </property>
+                <property>
+                    <name>pool.name</name>
+                    <value>${etlPoolName}</value>
+                </property>
+                <property>
+                    <name>oozie.launcher.pool.name</name>
+                    <value>${oozieLauncherPoolName}</value>
+                </property>
+                </configuration>
+
+                <script>load_coupon_item_final.hive</script>
+		<param>mepschema=${MEP_SCHEMA}</param>
+        </hive>
+        <ok to="load_offers"/>
+        <error to="send-email"/>
+</action>
+
+<action name="load_offers">
+        <hive xmlns="uri:oozie:hive-action:0.2">
+                <job-tracker>${jobTracker}</job-tracker>
+                <name-node>${nameNode}</name-node>
+                <job-xml>${nameNode}/user/${wf:user()}/${appRoot}/env/${cluster}/hive-site.xml</job-xml>
+                <configuration>
+                <property>
+                  <name>oozie.hive.defaults</name>
+                  <value>/user/${wf:user()}/${appRoot}/env/${cluster}/hive-default.xml</value>
+                </property>
+                <property>
+                  <name>mapred.child.java.opts</name>
+                  <value>-Xmx1500m</value>
+                </property>
+                <property>
+                  <name>io.sort.mb</name>
+                  <value>500</value>
+                </property>
+                <property>
+                  <name>dfs.block.size</name>
+                  <value>536870912</value>
+                </property>
+                <property>
+                    <name>pool.name</name>
+                    <value>${etlPoolName}</value>
+                </property>
+                <property>
+                    <name>oozie.launcher.pool.name</name>
+                    <value>${oozieLauncherPoolName}</value>
+                </property>
+                </configuration>
+
+                <script>load_offers.hive</script>
+		<param>mepschema=${MEP_SCHEMA}</param>
+                <param>campaign_month=${CAMPAIGN_MONTH}</param>
+				<param>campaign_nbr=${CAMPAIGN_NBR}</param>
+				 <param>run=${RUN}</param>
+        </hive>
+        <ok to="end"/>
+        <error to="send-email"/>
+</action>
+
+<action name="create_offers_trigger">
+     <shell xmlns="uri:oozie:shell-action:0.1">
+          <job-tracker>${jobTracker}</job-tracker>
+          <name-node>${nameNode}</name-node>
+          <job-xml>${nameNode}/user/${wf:user()}/${appRoot}/env/${cluster}/hive-site.xml</job-xml>
+           <configuration>
+                        <property>
+                                  <name>oozie.hive.defaults</name>
+                                  <value>${nameNode}/user/${wf:user()}/${appRoot}/env/${cluster}/hive-default.xml</value>
+                        </property>
+                        <property>
+                                  <name>mapred.child.java.opts</name>
+                                  <value>-Xmx1500m</value>
+                        </property>
+                        <property>
+                                  <name>io.sort.mb</name>
+                                  <value>500</value>
+                        </property>
+                        <property>
+                                  <name>dfs.block.size</name>
+                                  <value>536870912</value>
+                        </property>
+                        <property>
+                                    <name>pool.name</name>
+                                    <value>${etlPoolName}</value>
+                        </property>
+                        <property>
+                                    <name>oozie.launcher.pool.name</name>
+                                    <value>${oozieLauncherPoolName}</value>
+                        </property>
+                        </configuration>
+                    <exec>create_trigger.sh</exec>
+                    <argument>${emailTo}</argument>
+                    <argument>${keyword}</argument>
+                    <argument>${notificationdir}</argument>
+                    <argument>${load3}</argument>
+                    <file>create_trigger.sh</file>
+     </shell>
+        <ok to="end"/>
+        <error to="send-email"/>
+</action>
+
+<action name="send-email">
+        <email xmlns="uri:oozie:email-action:0.1">
+            <to>${emailTo}</to>
+            <subject>Error Creating MEP FIA Tables - ${wf:id()}</subject>
+            <body>
+                hostname: hadoop-prod
+                severity: MINOR
+                object: HADOOP
+                modifier: HADOOP
+                group: HADOOP
+                text: Action failed. (ID ${wf:id()}, PATH ${wf:appPath()}) Error Message: ${wf:errorMessage(wf:lastErrorNode())}
+            </body>
+        </email>
+
+        <ok to="kill"/>
+        <error to="kill"/>
+        
+</action>
+ 
+<kill name="kill">
+    <message>FATAL: MEP FIA Load Job Failed </message>
+</kill>
+
+<end name="end"/>
+
+</workflow-app>

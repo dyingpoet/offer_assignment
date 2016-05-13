@@ -1,0 +1,83 @@
+DS=2014-09-05
+
+PIG=/usr/bin/pig
+Pig=$PIG
+DELTA=0.01
+MEMBER_LB=1
+MEMBER_UB=4
+WORK_DIR=/home/jli21/sams/working_session/Oct2014/gec-v3
+MEMBER_ITEM_PREF_LOC=/user/pythia/Workspaces/SamsMEP/subcatItemPref/member/ds=$DS
+GLOBAL_ITEM_PREF_LOC=/user/pythia/Workspaces/SamsMEP/subcatItemPref/global/ds=$DS
+
+CampaignMonthType=Oct2014-v3
+SCORE_FLT_LOC=/user/pythia/Workspaces/SamsMEP/pis_member_subcat_item_coupon_score/campaign_month=$CampaignMonthType
+SCORE_FLT_FINAL_LOC=/user/pythia/Workspaces/SamsMEP/pis_member_subcat_item_coupon_score_final/campaign_month=$CampaignMonthType
+LAST_OFFER_ASSIGNMENT_LOC=/user/pythia/Workspaces/SamsMEP/offer_assignment_output/campaign_month=2014feb
+
+SCORE_FILE_LOC=/user/pythia/Workspaces/SamsMEP/pis_offer_assignment_score_file/campaign_month=$CampaignMonthType
+MEMBER_FILE_LOC=/user/pythia/Workspaces/SamsMEP/pis_offer_assignment_member_file/campaign_month=$CampaignMonthType
+#CAMPAIGN_TYPE=RECOMMEND
+CAMPAIGN_TYPE=REWARD
+
+
+LastOfferAssignmentLoc=$LAST_OFFER_ASSIGNMENT_LOC
+ItemMemberPopularityLoc=$MEMBER_ITEM_PREF_LOC
+ItemGlobalPopularityLoc=$GLOBAL_ITEM_PREF_LOC
+delta=$DELTA
+
+ClusterInd=N
+ItemLevelScoreInd=Y
+
+#ClusterRecoLoc=/user/pythia/Workspaces/SamsMEP/offerAssignment/2014sep/recoClusterId
+##ClusterLabelLoc=/user/pythia/Workspaces/SamsMEP/MNScoring/Aug2014/clu/2014-06-27/clustering_results_reassigned
+#ClusterLabelLoc=/user/pythia/Workspaces/SamsMEP/offerAssignment/2014sep/clustering_results_reassigned/
+
+[ -d $WORK_DIR ] || mkdir -p $WORK_DIR
+
+####need to filter lower bound if lower bound is greater than 1
+###RECOMMEND
+if [ $CAMPAIGN_TYPE == "RECOMMEND" ]
+    then 
+    $Pig -p scoreFltFinal=$SCORE_FLT_FINAL_LOC -p itemGlobalPopularity=$ItemGlobalPopularityLoc -p scoreRankDelta=$SCORE_FILE_LOC \
+         -p delta=$delta -p memberHDFS=$MEMBER_FILE_LOC -f recommendRankDelta.pig 1>recommendRankDelta.log 2>&1
+fi
+
+
+###REWARD
+if [ "$CAMPAIGN_TYPE" == "REWARD" ]
+    then 
+    ### item reward [reco clustering filtering]
+    if [[ $ItemLevelScoreInd == "Y" && $ClusterInd == "Y" ]] 
+    then
+        $Pig -p scoreFltFinal=$SCORE_FLT_LOC -p clusterRecoFile=$ClusterRecoLoc -p clusterLabelFile=$ClusterLabelLoc  -p scoreFinal=$SCORE_FILE_LOC -p memberHDFS=$MEMBER_FILE_LOC  -f item_reward_reco_cluster_flt.pig 1>item_reward_reco_cluster_flt.log 2>&1
+    fi
+    ### item reward [no reco clustering filtering]
+    if [[ "$ItemLevelScoreInd" == "Y" && "$ClusterInd" == "N" ]] 
+    then
+        $Pig -p scoreFltFinal=$SCORE_FLT_LOC -p scoreFinal=$SCORE_FILE_LOC -p memberHDFS=$MEMBER_FILE_LOC  -f item_reward.pig 1>item_reward.log 2>&1
+    fi
+    ### subcat reward [reco clustering filtering]
+    if [[ "$ItemLevelScoreInd" == "N" && "$ClusterInd" == "Y" ]] 
+    then
+        $Pig -p scoreFltFinal=$SCORE_FLT_LOC -p clusterRecoFile=$ClusterRecoLoc -p clusterLabelFile=$ClusterLabelLoc  -p scoreRankDelta=$SCORE_FILE_LOC -p itemMemberPopularity=$ItemMemberPopularityLoc -p delta=$delta -p memberHDFS=$MEMBER_FILE_LOC -f subcat_reward_reco_cluster_flt.pig 1>subcat_reward_reco_cluster_flt.log 2>&1
+    fi
+    ### subcat reward [no reco clustering filtering]
+    if [[ "$ItemLevelScoreInd" == "N" && "$ClusterInd" == "N" ]] 
+    then
+        $Pig -p scoreFltFinal=$SCORE_FLT_LOC -p scoreRankDelta=$SCORE_FILE_LOC -p itemMemberPopularity=$ItemMemberPopularityLoc -p memberHDFS=$MEMBER_FILE_LOC  -p delta=$delta -f subcat_reward.pig 1>subcat_reward.log 2>&1
+    fi
+fi
+
+wait
+
+hadoop fs -getmerge $SCORE_FILE_LOC $WORK_DIR/scoreFile
+hadoop fs -getmerge $MEMBER_FILE_LOC $WORK_DIR/memberFile
+
+sed -i "s/$/ $MEMBER_LB $MEMBER_UB/"  $WORK_DIR/memberFile 
+sed -i 's/\x01/_/' $WORK_DIR/scoreFile
+sed -i 's/\x01/_/' $WORK_DIR/scoreFile
+sed -i 's/\x01/ /g' $WORK_DIR/scoreFile
+
+
+
+

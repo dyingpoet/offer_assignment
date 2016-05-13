@@ -1,0 +1,9 @@
+export MIXED_TYPE_LIST=("REWARD" "RECOMMEND" "LAPSED")
+export MEMBER_UB_LIST=(2 2 2)
+export SCORE_LIST=("/user/jli21/pythia/Workspaces/SamsMEP/MNScoring/Mar2015FY79/est/2015-01-28/score_items_tenure_season_test_decile_5_plus" "/user/jli21/pythia/Workspaces/SamsMEP/Recommend/Scoring/79/2014-01-28/Decay/recommend_score_cobought_no_smoothing_max_cosine_cobought_transaction_debug_adj_study_scaled_test_4_minus" "/user/jli21/pythia/Workspaces/SamsMEP/MNScoring/Mar2015FY79/lapsed/2015-01-28/score_item_level")
+export ITEM_LEVEL_SCORE_LIST=(Y N Y)
+
+export CAMPAIGN_MONTH=Mar2015-79-test
+export MEMBER_LB_ALL=2
+export MEMBER_UB_ALL=6
+

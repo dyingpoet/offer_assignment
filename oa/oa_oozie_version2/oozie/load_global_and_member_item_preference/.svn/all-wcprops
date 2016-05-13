@@ -1,0 +1,65 @@
+K 25
+svn:wc:ra_dav:version-url
+V 129
+/svn/repos/gci/!svn/ver/37505/MEP/Offer_Assignment_Automation/trunk/src/main/scripts/oozie/load_global_and_member_item_preference
+END
+load_global_sbcat_item_pref_final.hql
+K 25
+svn:wc:ra_dav:version-url
+V 167
+/svn/repos/gci/!svn/ver/35987/MEP/Offer_Assignment_Automation/trunk/src/main/scripts/oozie/load_global_and_member_item_preference/load_global_sbcat_item_pref_final.hql
+END
+member_item_preference.pig
+K 25
+svn:wc:ra_dav:version-url
+V 156
+/svn/repos/gci/!svn/ver/35987/MEP/Offer_Assignment_Automation/trunk/src/main/scripts/oozie/load_global_and_member_item_preference/member_item_preference.pig
+END
+job.properties
+K 25
+svn:wc:ra_dav:version-url
+V 144
+/svn/repos/gci/!svn/ver/25048/MEP/Offer_Assignment_Automation/trunk/src/main/scripts/oozie/load_global_and_member_item_preference/job.properties
+END
+member_source_internal.hql
+K 25
+svn:wc:ra_dav:version-url
+V 156
+/svn/repos/gci/!svn/ver/35988/MEP/Offer_Assignment_Automation/trunk/src/main/scripts/oozie/load_global_and_member_item_preference/member_source_internal.hql
+END
+workflow.xml
+K 25
+svn:wc:ra_dav:version-url
+V 142
+/svn/repos/gci/!svn/ver/37505/MEP/Offer_Assignment_Automation/trunk/src/main/scripts/oozie/load_global_and_member_item_preference/workflow.xml
+END
+global_item_preference.pig
+K 25
+svn:wc:ra_dav:version-url
+V 156
+/svn/repos/gci/!svn/ver/29424/MEP/Offer_Assignment_Automation/trunk/src/main/scripts/oozie/load_global_and_member_item_preference/global_item_preference.pig
+END
+item_preference.txt
+K 25
+svn:wc:ra_dav:version-url
+V 149
+/svn/repos/gci/!svn/ver/25048/MEP/Offer_Assignment_Automation/trunk/src/main/scripts/oozie/load_global_and_member_item_preference/item_preference.txt
+END
+README.txt
+K 25
+svn:wc:ra_dav:version-url
+V 140
+/svn/repos/gci/!svn/ver/35987/MEP/Offer_Assignment_Automation/trunk/src/main/scripts/oozie/load_global_and_member_item_preference/README.txt
+END
+member_source_external.hql
+K 25
+svn:wc:ra_dav:version-url
+V 156
+/svn/repos/gci/!svn/ver/35988/MEP/Offer_Assignment_Automation/trunk/src/main/scripts/oozie/load_global_and_member_item_preference/member_source_external.hql
+END
+load_member_subcat_item_pref_final.hql
+K 25
+svn:wc:ra_dav:version-url
+V 168
+/svn/repos/gci/!svn/ver/35987/MEP/Offer_Assignment_Automation/trunk/src/main/scripts/oozie/load_global_and_member_item_preference/load_member_subcat_item_pref_final.hql
+END

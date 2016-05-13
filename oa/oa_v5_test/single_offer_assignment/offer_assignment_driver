@@ -1,0 +1,28 @@
+#!/bin/bash
+
+source offer_assignment_utility.sh
+
+source offer_assignment_param.cfg
+
+### preprocess
+#if [[ $REASSIGN -ne 1 ]]; then 
+#    bash ${SRC_DIR}/preprocess/oa_preprocess_driver
+#else
+#    bash ${SRC_DIR}/preprocess/oa_preprocess_reassign
+#fi
+#
+#### optimization
+#bash ${SRC_DIR}/optimization/oa_optimization_driver
+
+### postprocess
+#bash ${SRC_DIR}/postprocess/oa_postprocess_driver 
+
+CustomersPartition=$MEMBERSHIP_DIM_PARTITION_DATE
+echo "hive -hiveconf CustomersPartition=$CustomersPartition -hiveconf CampaignNbr=$CAMPAIGN_NBR -hiveconf OATable=$OA_OUTPUT_TBL -hiveconf OApartition=$OA_PARTITION \
+         -hiveconf Database=$DATABASE \
+         -hiveconf SamsMemberXrefTbl=$SAMS_MEMBER_XREF_TBL \
+         -hiveconf SamsMembershipDimTbl=$SAMS_MEMBERSHIP_DIM_TBL \
+         -hiveconf SamsValueCouponDimTbl=$SAMS_VALUE_COUPON_DIM_TBL \
+         -hiveconf SamsValueCouponItemDimTbl=$SAMS_VALUE_COUPON_ITEM_DIM_TBL \
+         -f ${SRC_POSTPROCESS_HIVE_DIR}/joinFields5.hql > offerAssignment_CKP_temporary"
+

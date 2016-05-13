@@ -1,0 +1,101 @@
+
+#containsElement () {
+#  local e
+#  for e in "${@:2}"; do [[ "$e" == "$1" ]] && return 0; done
+#  return 1
+#}
+
+#NUM_MEMBERS=342713
+#DS_OBSOLETE_DATE=2014-03-14
+#DS_ITEM_MAPPING=2014-03-20
+#DS_INVENTORY=2014-03-20
+CampaignMonth=$CAMPAIGN_MONTH
+CampaignMonthType=$CAMPAIGN_MONTH_TYPE
+
+Database=$DADABASE
+DS=$DS_ITEM_MAPPING
+
+#FiaTbl=pythia.offer_assignment_fia
+#InventoryHistTbl=sams_us_clubs.club_item_inventory_history
+#OfferAssignedMemberBaseTbl=pythia.offer_assigned_member_base
+#SamsMembershipDimTbl=customers.sams_us_clubs_sams_membership_dim
+#SamsCardholderDimTbl=customers.sams_us_clubs_sams_mbr_cardholder_dim
+#TaskTbl=pis_member_subcat_item_coupon_score
+#TaskLoc=/user/pythia/Workspaces/SamsMEP/pis_member_subcat_item_coupon_score
+#RecoTbl=pis_member_reco_score_anchor
+#RecoLoc=/user/pythia/Workspaces/SamsMEP/Recommend/Scoring/plus/init/20140317Decay/recommend_score_cobought_no_smoothing_max_raw_cobought_transaction_debug_12mon
+#MemberClubPrefTbl=offer_assigned_member_base_w_club_preference
+#MemberClubPrefLoc=/user/pythia/Workspaces/SamsMEP/offer_assigned_member_base_w_club_preference
+#SubcatItemClubTbl=fia_subcat_item_club
+#SubcatItemClubLoc=/user/pythia/Workspaces/SamsMEP/fia_subcat_item_club
+
+FiaTbl=$FIA_TBL
+InventoryHistTbl=$INVENTORY_HIST_TBL
+OfferAssignedMemberBaseTbl=$OFFER_ASSIGNED_MEMBER_BASE_TBL
+SamsMembershipDimTbl=$SAMS_MEMBERSHIP_DIM_TBL
+SamsCardholderDimTbl=$SAMS_CARDHOLDER_DIM_TBL
+TaskTbl=$TASK_TBL
+TaskLoc=$TASK_LOC
+RecoTbl=$RECO_TBL
+RecoLoc=$RECO_LOC
+MemberClubPrefTbl=$MEMBER_CLUB_PREF_TBL
+MemberClubPrefLoc=$MEMBER_CLUB_PREF_LOC
+SubcatItemClubTbl=$SUBCAT_ITEM_CLUB_TBL
+SubcatItemClubLoc=$SUBCAT_ITEM_CLUB_LOC
+
+
+
+
+hive -f clubItem_tbl.hql \
+    -hiveconf Database=$Database \
+    -hiveconf task_table=$TaskTbl \
+    -hiveconf task_path=$TaskLoc \
+    -hiveconf subcat_item_club_table=$SubcatItemClubTbl \
+    -hiveconf subcat_item_club_path=$SubcatItemClubLoc \
+    -hiveconf member_club_pref_table=$MemberClubPrefTbl \
+    -hiveconf member_club_pref_path=$MemberClubPrefLoc 
+
+tmp=`hive -e "use $Database; show partitions $RecoTbl" | grep $CampaignMonthType | cut -d = -f2`;
+array=($tmp)
+#echo ${array[@]}
+containsElement $CampaignMonthType "${array[@]}"
+
+if [ $? -eq 1 ]
+    then
+    hive -e "USE $Database; ALTER TABLE $RecoTbl ADD PARTITION(campaign_month='$CampaignMonthType') LOCATION '$RecoLoc'";
+    ###hive -f reco_load.hql -hiveconf reco_table=$RecoTbl -hiveconf reco_loc=$RecoLoc -hiveconf campaign_month_type=$CampaignMonthType;
+    echo "Inserted the Reco partition."
+fi
+
+hive -hiveconf campaign_month=$CampaignMonth -hiveconf campaign_month_type=$CampaignMonthType \
+    -hiveconf ds=$DS_INVENTORY \
+    -hiveconf Database=$Database \
+    -hiveconf member_club_pref_table=$MemberClubPrefTbl \
+    -hiveconf subcat_item_club_table=$SubcatItemClubTbl \
+    -hiveconf offer_assignment_fia_table=$FiaTbl \
+    -hiveconf club_item_inventory_history_table=$InventoryHistTbl \
+    -hiveconf offer_assigned_member_base_table=$OfferAssignedMemberBaseTbl \
+    -hiveconf sams_membership_dim_table=$SamsMembershipDimTbl \
+    -hiveconf sams_cardholder_dim_table=$SamsCardholderDimTbl \
+    -hiveconf ds_obsolete_date_lb=$DS_OBSOLETE_DATE \
+    -f step1.hql
+
+echo "Top 10 records of $MemberClubPrefTbl:"
+hive -e "use $Database; select * from $MemberClubPrefTbl where campaign_month='$CampaignMonth' limit 10";
+
+##hive -e 'select count(distinct membership_nbr) from pythia.offer_assigned_member_base_w_club_preference where campaign_month="Apr2014";'#342713
+tmp=`hive -e "use $Database; select count(distinct membership_nbr) from $MemberClubPrefTbl where campaign_month='$CampaignMonth'";`
+echo $tmp
+if [ $tmp -ne $NUM_MEMBERS ]
+    then
+    echo "Some members don't have the preferred clubs. We should investigate."
+    exit 1
+fi
+
+hive -hiveconf campaign_month=$CampaignMonth -hiveconf campaign_month_type=$CampaignMonthType \
+   -hiveconf task_table=$TaskTbl -hiveconf reco_table=$RecoTbl \
+   -hiveconf Database=$Database \
+   -hiveconf member_club_pref_table=$MemberClubPrefTbl \
+   -hiveconf subcat_item_club_table=$SubcatItemClubTbl \
+   -f step2.hql
+

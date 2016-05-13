@@ -1,0 +1,23 @@
+K 25
+svn:wc:ra_dav:version-url
+V 115
+/svn/repos/gci/!svn/ver/40123/MEP/Offer_Assignment_Automation/trunk/src/main/scripts/oozie/backfill_generation_flow
+END
+job.properties
+K 25
+svn:wc:ra_dav:version-url
+V 130
+/svn/repos/gci/!svn/ver/40123/MEP/Offer_Assignment_Automation/trunk/src/main/scripts/oozie/backfill_generation_flow/job.properties
+END
+workflow.xml
+K 25
+svn:wc:ra_dav:version-url
+V 128
+/svn/repos/gci/!svn/ver/38720/MEP/Offer_Assignment_Automation/trunk/src/main/scripts/oozie/backfill_generation_flow/workflow.xml
+END
+README.txt
+K 25
+svn:wc:ra_dav:version-url
+V 126
+/svn/repos/gci/!svn/ver/36707/MEP/Offer_Assignment_Automation/trunk/src/main/scripts/oozie/backfill_generation_flow/README.txt
+END

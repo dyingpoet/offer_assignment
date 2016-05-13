@@ -1,0 +1,35 @@
+K 25
+svn:wc:ra_dav:version-url
+V 131
+/svn/repos/gci/!svn/ver/37844/MEP/Offer_Assignment_Automation/trunk/src/main/scripts/oozie/load_pis_member_subcat_item_coupon_score
+END
+job.properties
+K 25
+svn:wc:ra_dav:version-url
+V 146
+/svn/repos/gci/!svn/ver/25053/MEP/Offer_Assignment_Automation/trunk/src/main/scripts/oozie/load_pis_member_subcat_item_coupon_score/job.properties
+END
+load_pis_member_item_coupon.hql
+K 25
+svn:wc:ra_dav:version-url
+V 163
+/svn/repos/gci/!svn/ver/37835/MEP/Offer_Assignment_Automation/trunk/src/main/scripts/oozie/load_pis_member_subcat_item_coupon_score/load_pis_member_item_coupon.hql
+END
+load_pis_member_subcat_coupon.hql
+K 25
+svn:wc:ra_dav:version-url
+V 165
+/svn/repos/gci/!svn/ver/37844/MEP/Offer_Assignment_Automation/trunk/src/main/scripts/oozie/load_pis_member_subcat_item_coupon_score/load_pis_member_subcat_coupon.hql
+END
+workflow.xml
+K 25
+svn:wc:ra_dav:version-url
+V 144
+/svn/repos/gci/!svn/ver/37835/MEP/Offer_Assignment_Automation/trunk/src/main/scripts/oozie/load_pis_member_subcat_item_coupon_score/workflow.xml
+END
+README.txt
+K 25
+svn:wc:ra_dav:version-url
+V 142
+/svn/repos/gci/!svn/ver/29632/MEP/Offer_Assignment_Automation/trunk/src/main/scripts/oozie/load_pis_member_subcat_item_coupon_score/README.txt
+END

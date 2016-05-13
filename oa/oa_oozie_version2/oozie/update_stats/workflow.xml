@@ -1,0 +1,92 @@
+<workflow-app xmlns="uri:oozie:workflow:0.2" name="update_stats">
+
+<start to ="calculate_core_flow_summarystats"/>
+
+<action name="calculate_core_flow_summarystats">
+        <hive xmlns="uri:oozie:hive-action:0.2">
+                <job-tracker>${jobTracker}</job-tracker>
+                <name-node>${nameNode}</name-node>
+                <job-xml>${nameNode}/user/${wf:user()}/${appRoot}/env/${cluster}/hive-site.xml</job-xml>
+                <configuration>
+                <property>
+                  <name>oozie.hive.defaults</name>
+                  <value>/user/${wf:user()}/${appRoot}/env/${cluster}/hive-default.xml</value>
+                </property>
+                <property>
+                    <name>pool.name</name>
+                    <value>${etlPoolName}</value>
+                </property>
+                <property>
+                    <name>oozie.launcher.pool.name</name>
+                    <value>${oozieLauncherPoolName}</value>
+                </property>
+                </configuration>
+
+                <script>summary_statistics_metrics_n_coreflow.hql</script>
+                                <param>database=${database}</param>
+                                <param>campaign_id=${spe_campaign_id}</param>
+                                <param>job_id=${job_id}</param>
+                                <param>iteration_nbr=${iteration}</param>
+								<param>offer_assignment_table=${offer_assignment_table}</param>
+                                <param>campaign_iter=${campaign_iter}</param>
+                                <param>coupon_cnt_upper_lmt=${upperbound}</param>
+
+        </hive>
+       <ok to="export_statistics"/>
+        <error to="send-email"/>
+</action>
+<action name="export_statistics">
+                <java>
+                        <job-tracker>${jobTracker}</job-tracker>
+                        <name-node>${nameNode}</name-node>
+
+                        <configuration>
+                                <property>
+                                        <name>mapred.job.queue.name</name>
+                                        <value>default</value>
+                                </property>
+
+                        </configuration>
+                        <main-class>${spe_summary_main_class}</main-class>
+                        <arg>${spe_hive_table_hdfs_path}</arg>
+                        <arg>${hive_delimiter}</arg>
+                        <arg>${query_type}</arg>
+                        <arg>${oracle_schema}</arg>
+                        <arg>${oracle_table}</arg>
+                        <arg>${date_format}</arg>
+                        <arg>${timestamp_format}</arg>
+
+                </java>
+
+                <ok to="end" />
+                <error to="send-email" />
+</action>
+
+
+
+<action name="send-email">
+        <email xmlns="uri:oozie:email-action:0.1">
+            <to>${emailTo}</to>
+            <subject>**MEP** OA-UpdateStats - Error in Statistics Process - ${wf:id()}</subject>
+            <body>
+                hostname: hadoop-prod
+                severity: MINOR
+                object: HADOOP
+                modifier: HADOOP
+                group: HADOOP
+                text: Action failed. (ID ${wf:id()}, PATH ${wf:appPath()}) Error Message: ${wf:errorMessage(wf:lastErrorNode())}
+            </body>
+        </email>
+
+        <ok to="kill"/>
+        <error to="kill"/>
+
+</action>
+
+<kill name="kill">
+    <message>FATAL: OA-UpdateStats Job Failed </message>
+</kill>
+
+<end name="end"/>
+
+</workflow-app>

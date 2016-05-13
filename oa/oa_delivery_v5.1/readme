@@ -1,0 +1,8 @@
+Note that this is designed only for Club Insider campaigns.
+
+For club insider: %reward offers assigned less than 20% for each item.
+In the implementation, the %offer type constraint could only be applied to the last assignment of a mixed sequential assignment.
+
+
+Use ./mixed_offer_assignment_flexible_upperbound/
+

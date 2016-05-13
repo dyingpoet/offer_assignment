@@ -1,0 +1,5 @@
+FAILED: Parse Error: line 3:0 cannot recognize input near 'INSERT' 'TABLE' 'pythia' in insert clause
+
+Top 10 records of offer_assigned_member_base_w_club_preference:
+
+
