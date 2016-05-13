@@ -1,0 +1,36 @@
+HadoopVersion	PigVersion	UserId	StartedAt	FinishedAt	Features
+1.0.3	0.13.1-mapr-1507	jli21	2016-01-27 10:24:27	2016-01-27 10:38:39	HASH_JOIN,DISTINCT
+
+Success!
+
+Job Stats (time in seconds):
+JobId	Maps	Reduces	MaxMapTime	MinMapTIme	AvgMapTime	MedianMapTime	MaxReduceTime	MinReduceTime	AvgReduceTime	MedianReducetime	Alias	Feature	Outputs
+job_201512021745_3701145	3	800	190	8	122	168	30	11	23	23	cpnSubcat,lapsed,lapsedCpn,lapsedJoinCpn	HASH_JOIN	
+job_201512021745_3701386	2	800	n/a	n/a	n/a	n/a	n/a	n/a	n/a	n/a		DISTINCT	
+job_201512021745_3701626	6	800	200	88	150	163	41	4	16	14	cpnScore,cpnScoreMembershipNbr,scoreJoinLapsed,scoreOut	HASH_JOIN	/user/pythia/Workspaces/SamsMEP/offerAssignment/2016feb684/cpn_reward_score_lapsedInd,
+
+Input(s):
+Successfully read 198 records from: "/user/pythia/Workspaces/SamsMEP/offerAssignment/2016feb684/subcatCpn"
+Successfully read 35198039 records from: "/user/jli21/sams/lapsed_member_subcat"
+Successfully read 32522983 records from: "/user/pythia/Workspaces/SamsMEP/pis_offer_assignment_score_file/campaign_month=Feb2016-684-rew"
+
+Output(s):
+Successfully stored 32522983 records in: "/user/pythia/Workspaces/SamsMEP/offerAssignment/2016feb684/cpn_reward_score_lapsedInd"
+
+Counters:
+Total records written : 32522983
+Total bytes written : 0
+Spillable Memory Manager spill count : 0
+Total bags proactively spilled: 0
+Total records proactively spilled: 0
+
+Job DAG:
+job_201512021745_3701145	->	job_201512021745_3701386,
+job_201512021745_3701386	->	job_201512021745_3701626,
+job_201512021745_3701626
+
+
+2016-01-27 10:39:12,390 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.MapReduceLauncher - Success!
+
+
+

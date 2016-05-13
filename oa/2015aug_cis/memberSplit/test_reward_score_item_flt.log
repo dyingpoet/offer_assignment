@@ -1,0 +1,110 @@
+2015-07-17 15:56:43,795 [main] INFO  org.apache.pig.Main - Apache Pig version 0.11.2-mapr (rexported) compiled Jul 12 2013, 16:59:38
+2015-07-17 15:56:43,796 [main] INFO  org.apache.pig.Main - Logging error messages to: /data1/home/jli21/sams/oa_module/2015aug_cis/memberSplit/pig_1437173803792.log
+2015-07-17 15:56:44,174 [main] INFO  org.apache.pig.impl.util.Utils - Default bootup file /home/jli21/.pigbootup not found
+2015-07-17 15:56:44,508 [main] INFO  org.apache.pig.backend.hadoop.executionengine.HExecutionEngine - Connecting to hadoop file system at: maprfs:///
+2015-07-17 15:56:44,633 [main] INFO  org.apache.pig.backend.hadoop.executionengine.HExecutionEngine - Connecting to map-reduce job tracker at: maprfs:///
+2015-07-17 15:56:45,897 [main] INFO  org.apache.pig.tools.pigstats.ScriptState - Pig features used in the script: HASH_JOIN
+2015-07-17 15:56:46,151 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.MRCompiler - File concatenation threshold: 100 optimistic? false
+2015-07-17 15:56:46,214 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.MRCompiler$LastInputStreamingOptimizer - Rewrite: POPackage->POForEach to POJoinPackage
+2015-07-17 15:56:46,225 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.MultiQueryOptimizer - MR plan size before optimization: 1
+2015-07-17 15:56:46,225 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.MultiQueryOptimizer - MR plan size after optimization: 1
+2015-07-17 15:56:46,319 [main] INFO  org.apache.pig.tools.pigstats.ScriptState - Pig script settings are added to the job
+2015-07-17 15:56:46,361 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.JobControlCompiler - mapred.job.reduce.markreset.buffer.percent is not set, set to default 0.3
+2015-07-17 15:56:46,368 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.JobControlCompiler - Setting Parallelism to 800
+2015-07-17 15:56:46,369 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.JobControlCompiler - creating jar file Job3933081942176197265.jar
+2015-07-17 15:56:53,835 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.JobControlCompiler - jar file Job3933081942176197265.jar created
+2015-07-17 15:56:53,875 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.JobControlCompiler - Setting up single store job
+2015-07-17 15:56:53,886 [main] INFO  org.apache.pig.data.SchemaTupleFrontend - Key [pig.schematuple] is false, will not generate code.
+2015-07-17 15:56:53,886 [main] INFO  org.apache.pig.data.SchemaTupleFrontend - Starting process to move generated code to distributed cacche
+2015-07-17 15:56:53,888 [main] INFO  org.apache.pig.data.SchemaTupleFrontend - Setting key [pig.schematuple.classes] with classes to deserialize []
+2015-07-17 15:56:54,032 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.MapReduceLauncher - 1 map-reduce job(s) waiting for submission.
+2015-07-17 15:56:54,078 [JobControl] INFO  org.apache.zookeeper.ZooKeeper - Client environment:zookeeper.version=3.3.6--1, built on 09/07/2012 18:16 GMT
+2015-07-17 15:56:54,079 [JobControl] INFO  org.apache.zookeeper.ZooKeeper - Client environment:host.name=sg-dev01.sv.walmartlabs.com
+2015-07-17 15:56:54,079 [JobControl] INFO  org.apache.zookeeper.ZooKeeper - Client environment:java.version=1.6.0_38
+2015-07-17 15:56:54,079 [JobControl] INFO  org.apache.zookeeper.ZooKeeper - Client environment:java.vendor=Sun Microsystems Inc.
+2015-07-17 15:56:54,079 [JobControl] INFO  org.apache.zookeeper.ZooKeeper - Client environment:java.home=/usr/java/jdk1.6.0_38/jre
+2015-07-17 15:56:54,079 [JobControl] INFO  org.apache.zookeeper.ZooKeeper - Client environment:java.class.path=/opt/mapr/hadoop/hadoop-0.20.2/bin/../conf:/usr/java/default/lib/tools.jar:/data1/opt/mapr/pig/pig-0.11.2/bin/../conf:/usr/java/default/lib/tools.jar:/data1/opt/mapr/pig/pig-0.11.2/bin/../lib/sdsuLibJKD12.jar:/data1/opt/mapr/pig/pig-0.11.2/bin/../pig-withouthadoop.jar::/usr/local/bfd/lib/hadoop/jackson-mapper-asl-1.9.2.jar:/usr/local/bfd/lib/hadoop/jackson-core-asl-1.9.2.jar:/usr/local/bfd/lib/hadoop/hadoop-snappy-0.0.1-walmart.jar:/opt/hadoopgpl/lib/hadoop-lzo.jar:/usr/local/bfd-hadoop-common/lib/bfd-hadoop-util-0.1-SNAPSHOT.jar:/opt/mapr/hadoop/hadoop-0.20.2/bin/..:/opt/mapr/hadoop/hadoop-0.20.2/bin/../hadoop*core*.jar:/opt/mapr/hadoop/hadoop-0.20.2/bin/../lib/amazon-s3.jar:/opt/mapr/hadoop/hadoop-0.20.2/bin/../lib/asm-3.2.jar:/opt/mapr/hadoop/hadoop-0.20.2/bin/../lib/aspectjrt-1.6.5.jar:/opt/mapr/hadoop/hadoop-0.20.2/bin/../lib/aspectjtools-1.6.5.jar:/opt/mapr/hadoop/hadoop-0.20.2/bin/../lib/aws-java-sdk-1.3.26.jar:/opt/mapr/hadoop/hadoop-0.20.2/bin/../lib/baseutils-0.1.jar:/opt/mapr/hadoop/hadoop-0.20.2/bin/../lib/commons-cli-1.2.jar:/opt/mapr/hadoop/hadoop-0.20.2/bin/../lib/commons-codec-1.5.jar:/opt/mapr/hadoop/hadoop-0.20.2/bin/../lib/commons-configuration-1.8.jar:/opt/mapr/hadoop/hadoop-0.20.2/bin/../lib/commons-daemon-1.0.1.jar:/opt/mapr/hadoop/hadoop-0.20.2/bin/../lib/commons-el-1.0.jar:/opt/mapr/hadoop/hadoop-0.20.2/bin/../lib/commons-httpclient-3.0.1.jar:/opt/mapr/hadoop/hadoop-0.20.2/bin/../lib/commons-httpclient-3.1.jar:/opt/mapr/hadoop/hadoop-0.20.2/bin/../lib/commons-lang-2.6.jar:/opt/mapr/hadoop/hadoop-0.20.2/bin/../lib/commons-logging-1.0.4.jar:/opt/mapr/hadoop/hadoop-0.20.2/bin/../lib/commons-logging-1.1.1.jar:/opt/mapr/hadoop/hadoop-0.20.2/bin/../lib/commons-logging-api-1.0.4.jar:/opt/mapr/hadoop/hadoop-0.20.2/bin/../lib/commons-math-2.1.jar:/opt/mapr/hadoop/hadoop-0.20.2/bin/../lib/commons-net-1.4.1.jar:/opt/mapr/hadoop/hadoop-0.20.2/bin/../lib/commons-net-3.1.jar:/opt/mapr/hadoop/hadoop-0.20.2/bin/../lib/core-3.1.1.jar:/opt/mapr/hadoop/hadoop-0.20.2/bin/../lib/emr-metrics-1.0.jar:/opt/mapr/hadoop/hadoop-0.20.2/bin/../lib/eval-0.5.jar:/opt/mapr/hadoop/hadoop-0.20.2/bin/../lib/gson-1.4.jar:/opt/mapr/hadoop/hadoop-0.20.2/bin/../lib/guava-13.0.1.jar:/opt/mapr/hadoop/hadoop-0.20.2/bin/../lib/hadoop-0.20.2-dev-capacity-scheduler.jar:/opt/mapr/hadoop/hadoop-0.20.2/bin/../lib/hadoop-0.20.2-dev-core.jar:/opt/mapr/hadoop/hadoop-0.20.2/bin/../lib/hadoop-0.20.2-dev-fairscheduler.jar:/opt/mapr/hadoop/hadoop-0.20.2/bin/../lib/hsqldb-1.8.0.10.jar:/opt/mapr/hadoop/hadoop-0.20.2/bin/../lib/httpclient-4.1.1.jar:/opt/mapr/hadoop/hadoop-0.20.2/bin/../lib/httpcore-4.1.jar:/opt/mapr/hadoop/hadoop-0.20.2/bin/../lib/jackson-core-asl-1.5.2.jar:/opt/mapr/hadoop/hadoop-0.20.2/bin/../lib/jackson-mapper-asl-1.5.2.jar:/opt/mapr/hadoop/hadoop-0.20.2/bin/../lib/jasper-compiler-5.5.12.jar:/opt/mapr/hadoop/hadoop-0.20.2/bin/../lib/jasper-runtime-5.5.12.jar:/opt/mapr/hadoop/hadoop-0.20.2/bin/../lib/jersey-core-1.8.jar:/opt/mapr/hadoop/hadoop-0.20.2/bin/../lib/jersey-json-1.8.jar:/opt/mapr/hadoop/hadoop-0.20.2/bin/../lib/jersey-server-1.8.jar:/opt/mapr/hadoop/hadoop-0.20.2/bin/../lib/jets3t-0.6.1.jar:/opt/mapr/hadoop/hadoop-0.20.2/bin/../lib/jetty-6.1.26.jar:/opt/mapr/hadoop/hadoop-0.20.2/bin/../lib/jetty-servlet-tester-6.1.26.jar:/opt/mapr/hadoop/hadoop-0.20.2/bin/../lib/jetty-util-6.1.26.jar:/opt/mapr/hadoop/hadoop-0.20.2/bin/../lib/junit-4.5.jar:/opt/mapr/hadoop/hadoop-0.20.2/bin/../lib/kfs-0.2.2.jar:/opt/mapr/hadoop/hadoop-0.20.2/bin/../lib/libprotodefs.jar:/opt/mapr/hadoop/hadoop-0.20.2/bin/../lib/log4j-1.2.15.jar:/opt/mapr/hadoop/hadoop-0.20.2/bin/../lib/logging-0.1.jar:/opt/mapr/hadoop/hadoop-0.20.2/bin/../lib/maprfs-1.0.3-mapr-3.0.3.jar:/opt/mapr/hadoop/hadoop-0.20.2/bin/../lib/maprfs-core-1.0.3-mapr-3.0.3.jar:/opt/mapr/hadoop/hadoop-0.20.2/bin/../lib/maprfs-core-1.0.3-mapr-3.0.3-tests.jar:/opt/mapr/hadoop/hadoop-0.20.2/bin/../lib/maprfs-diagnostic-tools-1.0.3-mapr-3.0.3.jar:/opt/mapr/hadoop/hadoop-0.20.2/bin/../lib/maprfs-*.jar:/opt/mapr/hadoop/hadoop-0.20.2/bin/../lib/maprfs-jni-1.0.3-mapr-3.0.3.jar:/opt/mapr/hadoop/hadoop-0.20.2/bin/../lib/mapr-hbase-1.0.3-mapr-3.0.3.jar:/opt/mapr/hadoop/hadoop-0.20.2/bin/../lib/mapr-hbase-1.0.3-mapr-3.0.3-tests.jar:/opt/mapr/hadoop/hadoop-0.20.2/bin/../lib/maprsecurity-0.1.jar:/opt/mapr/hadoop/hadoop-0.20.2/bin/../lib/mockito-all-1.8.2.jar:/opt/mapr/hadoop/hadoop-0.20.2/bin/../lib/mockito-all-1.8.5.jar:/opt/mapr/hadoop/hadoop-0.20.2/bin/../lib/mysql-connector-java-5.0.8-bin.jar:/opt/mapr/hadoop/hadoop-0.20.2/bin/../lib/oro-2.0.8.jar:/opt/mapr/hadoop/hadoop-0.20.2/bin/../lib/protobuf-java-2.4.1.jar:/opt/mapr/hadoop/hadoop-0.20.2/bin/../lib/servlet-api-2.5-20081211.jar:/opt/mapr/hadoop/hadoop-0.20.2/bin/../lib/servlet-api-2.5-6.1.14.jar:/opt/mapr/hadoop/hadoop-0.20.2/bin/../lib/slf4j-api-1.4.3.jar:/opt/mapr/hadoop/hadoop-0.20.2/bin/../lib/slf4j-log4j12-1.4.3.jar:/opt/mapr/hadoop/hadoop-0.20.2/bin/../lib/xmlenc-0.52.jar:/opt/mapr/hadoop/hadoop-0.20.2/bin/../lib/zookeeper-3.3.6.jar:/opt/mapr/hadoop/hadoop-0.20.2/bin/../lib/jsp-2.1/jsp-2.1.jar:/opt/mapr/hadoop/hadoop-0.20.2/bin/../lib/jsp-2.1/jsp-api-2.1.jar
+2015-07-17 15:56:54,079 [JobControl] INFO  org.apache.zookeeper.ZooKeeper - Client environment:java.library.path=/opt/hadoopgpl/native/Linux-amd64-64:/usr/local/bfd/lib/hadoop/native/Linux-amd64-64:/opt/mapr/hadoop/hadoop-0.20.2/bin/../lib/native/Linux-amd64-64:/usr/lib64:
+2015-07-17 15:56:54,079 [JobControl] INFO  org.apache.zookeeper.ZooKeeper - Client environment:java.io.tmpdir=/tmp
+2015-07-17 15:56:54,079 [JobControl] INFO  org.apache.zookeeper.ZooKeeper - Client environment:java.compiler=<NA>
+2015-07-17 15:56:54,079 [JobControl] INFO  org.apache.zookeeper.ZooKeeper - Client environment:os.name=Linux
+2015-07-17 15:56:54,079 [JobControl] INFO  org.apache.zookeeper.ZooKeeper - Client environment:os.arch=amd64
+2015-07-17 15:56:54,079 [JobControl] INFO  org.apache.zookeeper.ZooKeeper - Client environment:os.version=2.6.32-358.6.2.el6.x86_64
+2015-07-17 15:56:54,079 [JobControl] INFO  org.apache.zookeeper.ZooKeeper - Client environment:user.name=jli21
+2015-07-17 15:56:54,080 [JobControl] INFO  org.apache.zookeeper.ZooKeeper - Client environment:user.home=/home/jli21
+2015-07-17 15:56:54,080 [JobControl] INFO  org.apache.zookeeper.ZooKeeper - Client environment:user.dir=/data1/home/jli21/sams/oa_module/2015aug_cis/memberSplit
+2015-07-17 15:56:54,081 [JobControl] INFO  org.apache.zookeeper.ZooKeeper - Initiating client connection, connectString=mapr010:5181,mapr020:5181,mapr030:5181,mapr040:5181,mapr101:5181 sessionTimeout=30000 watcher=com.mapr.fs.JobTrackerWatcher@4a8d3d62
+2015-07-17 15:56:54,139 [JobControl-SendThread()] INFO  org.apache.zookeeper.ClientCnxn - Opening socket connection to server mapr030/10.93.128.130:5181
+2015-07-17 15:56:54,152 [JobControl-SendThread(mapr030:5181)] INFO  org.apache.zookeeper.ClientCnxn - Socket connection established to mapr030/10.93.128.130:5181, initiating session
+2015-07-17 15:56:54,187 [JobControl-SendThread(mapr030:5181)] INFO  org.apache.zookeeper.ClientCnxn - Session establishment complete on server mapr030/10.93.128.130:5181, sessionid = 0x24d44f960f80fcf, negotiated timeout = 30000
+2015-07-17 15:56:54,314 [JobControl] INFO  com.mapr.fs.JobTrackerWatcher - Current running JobTracker is: mapr380.sv.walmartlabs.com/10.93.131.19:9001
+2015-07-17 15:56:54,534 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.MapReduceLauncher - 0% complete
+2015-07-17 15:57:06,541 [JobControl] INFO  org.apache.hadoop.mapreduce.lib.input.FileInputFormat - Total input paths to process : 1
+2015-07-17 15:57:06,541 [JobControl] INFO  org.apache.pig.backend.hadoop.executionengine.util.MapRedUtil - Total input paths to process : 1
+2015-07-17 15:57:06,588 [JobControl] INFO  org.apache.pig.backend.hadoop.executionengine.util.MapRedUtil - Total input paths (combined) to process : 1
+2015-07-17 15:57:06,674 [JobControl] INFO  org.apache.hadoop.mapreduce.lib.input.FileInputFormat - Total input paths to process : 206
+2015-07-17 15:57:06,674 [JobControl] INFO  org.apache.pig.backend.hadoop.executionengine.util.MapRedUtil - Total input paths to process : 206
+2015-07-17 15:57:07,208 [JobControl] INFO  org.apache.pig.backend.hadoop.executionengine.util.MapRedUtil - Total input paths (combined) to process : 82
+2015-07-17 15:57:10,611 [JobControl] INFO  org.apache.hadoop.mapred.JobClient - Creating job's output directory at /user/jli21/pythia/Workspaces/SamsMEP/MNScoring/ProdData/score_items_tenure_season/segment=Aug2015CIS_555_2015-07-16_test
+2015-07-17 15:57:10,695 [JobControl] INFO  org.apache.hadoop.mapred.JobClient - Creating job's user history location directory at /user/jli21/pythia/Workspaces/SamsMEP/MNScoring/ProdData/score_items_tenure_season/segment=Aug2015CIS_555_2015-07-16_test/_logs
+2015-07-17 15:57:22,576 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.MapReduceLauncher - HadoopJobId: job_201506301010_790602
+2015-07-17 15:57:22,577 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.MapReduceLauncher - Processing aliases memberSplitTest,score,scoreJoin,scoreTest
+2015-07-17 15:57:22,577 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.MapReduceLauncher - detailed locations: M: memberSplitTest[14,18],memberSplitTest[-1,-1],scoreJoin[21,12],score[4,8],score[-1,-1],scoreJoin[21,12] C:  R: scoreTest[23,12]
+2015-07-17 15:57:22,577 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.MapReduceLauncher - More information at: http://maprfs:50030/jobdetails.jsp?jobid=job_201506301010_790602
+2015-07-17 15:57:22,605 [main] INFO  com.mapr.fs.JobTrackerWatcher - Current running JobTracker is: mapr380.sv.walmartlabs.com/10.93.131.19:9001
+2015-07-17 15:57:53,194 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.MapReduceLauncher - 5% complete
+2015-07-17 15:57:58,938 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.MapReduceLauncher - 12% complete
+2015-07-17 15:58:01,583 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.MapReduceLauncher - 15% complete
+2015-07-17 15:58:06,277 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.MapReduceLauncher - 22% complete
+2015-07-17 15:58:09,389 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.MapReduceLauncher - 25% complete
+2015-07-17 15:58:15,943 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.MapReduceLauncher - 32% complete
+2015-07-17 15:58:19,179 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.MapReduceLauncher - 36% complete
+2015-07-17 15:58:24,535 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.MapReduceLauncher - 43% complete
+2015-07-17 15:58:26,342 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.MapReduceLauncher - 44% complete
+2015-07-17 15:58:28,013 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.MapReduceLauncher - 45% complete
+2015-07-17 15:58:32,091 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.MapReduceLauncher - 47% complete
+2015-07-17 15:59:08,303 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.MapReduceLauncher - 50% complete
+2015-07-17 15:59:37,689 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.MapReduceLauncher - 50% complete
+2015-07-17 16:00:00,581 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.MapReduceLauncher - 50% complete
+2015-07-17 16:00:33,067 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.MapReduceLauncher - 53% complete
+2015-07-17 16:00:44,981 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.MapReduceLauncher - 57% complete
+2015-07-17 16:00:46,455 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.MapReduceLauncher - 59% complete
+2015-07-17 16:00:51,082 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.MapReduceLauncher - 65% complete
+2015-07-17 16:00:54,794 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.MapReduceLauncher - 70% complete
+2015-07-17 16:00:58,190 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.MapReduceLauncher - 74% complete
+2015-07-17 16:01:02,208 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.MapReduceLauncher - 83% complete
+2015-07-17 16:01:03,546 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.MapReduceLauncher - 88% complete
+2015-07-17 16:01:04,753 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.MapReduceLauncher - 93% complete
+2015-07-17 16:01:10,076 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.MapReduceLauncher - 98% complete
+2015-07-17 16:01:13,644 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.MapReduceLauncher - 99% complete
+2015-07-17 16:01:44,432 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.MapReduceLauncher - 100% complete
+2015-07-17 16:01:44,435 [main] INFO  org.apache.pig.tools.pigstats.SimplePigStats - Script Statistics: 
+
+HadoopVersion	PigVersion	UserId	StartedAt	FinishedAt	Features
+1.0.3	0.11.2-mapr	jli21	2015-07-17 15:56:46	2015-07-17 16:01:44	HASH_JOIN
+
+Success!
+
+Job Stats (time in seconds):
+JobId	Maps	Reduces	MaxMapTime	MinMapTIme	AvgMapTime	MedianMapTime	MaxReduceTime	MinReduceTime	AvgReduceTime	MedianReducetime	Alias	Feature	Outputs
+job_201506301010_790602	2	800	n/a	n/a	n/a	n/a	n/a	n/a	memberSplitTest,score,scoreJoin,scoreTest	HASH_JOIN	/user/jli21/pythia/Workspaces/SamsMEP/MNScoring/ProdData/score_items_tenure_season/segment=Aug2015CIS_555_2015-07-16_test,
+
+Input(s):
+Successfully read 500074 records from: "/user/pythia/Workspaces/SamsMEP/offer_assignmemt_member_test/campaign_month=Aug2015-555"
+Successfully read 283284892 records from: "/user/pythia/Workspaces/SamsMEP/MNScoring/ProdData/score_items_tenure_season/segment=Aug2015CIS_555_2015-07-16"
+
+Output(s):
+Successfully stored 194564488 records in: "/user/jli21/pythia/Workspaces/SamsMEP/MNScoring/ProdData/score_items_tenure_season/segment=Aug2015CIS_555_2015-07-16_test"
+
+Counters:
+Total records written : 194564488
+Total bytes written : 0
+Spillable Memory Manager spill count : 0
+Total bags proactively spilled: 0
+Total records proactively spilled: 0
+
+Job DAG:
+job_201506301010_790602
+
+
+2015-07-17 16:01:47,077 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.MapReduceLauncher - Success!

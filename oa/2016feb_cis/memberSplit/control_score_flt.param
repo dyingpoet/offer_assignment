@@ -1,0 +1,3 @@
+scoreAll=/user/pythia/Workspaces/SamsMEP/MNScoring/Dec2014/est/2014-11-06/score_items_tenure_season_masked_by_recency
+memberSplit=/user/pythia/Workspaces/SamsMEP/offer_assignmemt_member_split/campaign_month=Dec2014
+scoreTest=/user/jli21/pythia/Workspaces/SamsMEP/MNScoring/Dec2014/est/2014-11-06/score_items_tenure_season_masked_by_recency_test

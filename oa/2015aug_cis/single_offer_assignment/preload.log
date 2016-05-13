@@ -1,0 +1,58 @@
+Logging initialized using configuration in file:/etc/hive/conf.bfd-puppet/hive-log4j.properties
+
+OK
+Time taken: 0.042 seconds
+OK
+Time taken: 0.641 seconds
+USE pythia; SELECT * FROM offer_assignment_fia WHERE campaign_month='Aug2015-555' LIMIT 10;
+
+Logging initialized using configuration in file:/etc/hive/conf.bfd-puppet/hive-log4j.properties
+OK
+Time taken: 0.042 seconds
+OK
+0108	555	1	8	1	OR $ off	5609579	75000	2.05	0.0	1	1	52	CLUB INSIDER SAVINGS	N	942757	1	Core	56793	1017581	Y	FILLER	NULL	Aug2015-555
+0108	555	1	8	1	OR $ off	5961273	75000	1.5	0.0	1	1	52	CLUB INSIDER SAVINGS	N	942696	1	Core	56786	1017572	Y	FILLER	NULL	Aug2015-555
+0132	555	1	32	1	OR $ off	24687	75000	1.8	0.0	1	1	52	CLUB INSIDER SAVINGS	N	942737	1	Core	56791	1017579	Y	FILLER	NULL	Aug2015-555
+0132	555	1	32	1	OR $ off	969846	75000	1.8	0.0	1	1	52	CLUB INSIDER SAVINGS	N	942737	1	Core	56791	1017579	Y	FILLER	NULL	Aug2015-555
+0132	555	1	32	1	OR $ off	5051756	75000	2.1	0.0	1	1	52	CLUB INSIDER SAVINGS	N	942750	1	Core	56792	1017580	Y	FILLER	NULL	Aug2015-555
+0132	555	1	32	1	OR $ off	25791632	75000	1.6	0.0	1	1	52	CLUB INSIDER SAVINGS	N	942711	1	Core	56788	1017576	Y	FILLER	NULL	Aug2015-555
+0132	555	1	32	1	OR $ off	49078671	75000	1.8	0.0	1	1	52	CLUB INSIDER SAVINGS	N	942737	1	Core	56791	1017579	Y	FILLER	NULL	Aug2015-555
+0210	555	2	10	1	OR $ off	5845694	150000	2.0	0.0	1	2	52	CLUB INSIDER SAVINGS	Y	941527	1	Core	56746	1017412	Y	FILLER	NULL	Aug2015-555
+0210	555	2	10	1	OR $ off	21458313	150000	2.6	0.0	1	2	52	CLUB INSIDER SAVINGS	Y	941535	1	Core	56747	1017413	Y	FILLER	NULL	Aug2015-555
+0220	555	2	20	1	OR $ off	5953378	150000	3.5	0.0	1	2	52	CLUB INSIDER SAVINGS	Y	941543	1	Core	56750	1017422	Y	FILLER	NULL	Aug2015-555
+Time taken: 1.384 seconds, Fetched: 10 row(s)
+USE pythia; SELECT * FROM offer_assigned_member_base WHERE campaign_month='Aug2015-555' LIMIT 10;
+
+
+
+Logging initialized using configuration in file:/etc/hive/conf.bfd-puppet/hive-log4j.properties
+
+OK
+Time taken: 0.024 seconds
+Copying data from file:/home/jli21/sams/oa_module/2015aug_cis/config/memberAll
+Copying file: file:/home/jli21/sams/oa_module/2015aug_cis/config/memberAll
+Loading data to table pythia.offer_assigned_member_base partition (campaign_month=Aug2015-555)
+OK
+Time taken: 1.398 seconds
+USE pythia; SELECT * FROM offer_assignment_fia WHERE campaign_month='Aug2015-555' LIMIT 10;
+USE pythia; SELECT * FROM offer_assigned_member_base WHERE campaign_month='Aug2015-555' LIMIT 10;
+This is *bfd-main*.
+
+Logging initialized using configuration in file:/etc/hive/conf.bfd-puppet/hive-log4j.properties
+OK
+Time taken: 0.028 seconds
+OK
+3186_11_0001-01-01	NULL	NULL	Aug2015-555
+3749_11_0001-01-01	NULL	NULL	Aug2015-555
+4002_11_0001-01-01	NULL	NULL	Aug2015-555
+4796_16_0001-01-01	NULL	NULL	Aug2015-555
+5264_14_0001-01-01	NULL	NULL	Aug2015-555
+7310_21_0001-01-01	NULL	NULL	Aug2015-555
+7831_35_0001-01-01	NULL	NULL	Aug2015-555
+7880_12_0001-01-01	NULL	NULL	Aug2015-555
+11932_11_0001-01-01	NULL	NULL	Aug2015-555
+12146_11_0001-01-01	NULL	NULL	Aug2015-555
+Time taken: 1.231 seconds, Fetched: 10 row(s)
+
+
+

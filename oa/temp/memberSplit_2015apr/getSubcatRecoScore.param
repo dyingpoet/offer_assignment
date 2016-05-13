@@ -1,0 +1,3 @@
+scoreAll=/user/jli21/pythia/Workspaces/SamsMEP/Recommend/Scoring/79/2014-02-24/Decay/recommend_score_cobought_no_smoothing_max_cosine_cobought_transaction_debug_adj_study_scaled
+scoreTest=/user/jli21/pythia/Workspaces/SamsMEP/Recommend/Scoring/79/2014-02-24/Decay/recommend_score_cobought_no_smoothing_max_cosine_cobought_transaction_debug_adj_study_scaled_sample
+catsubcat=7294

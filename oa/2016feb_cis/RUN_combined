@@ -1,0 +1,17 @@
+#!/bin/bash
+
+#source offer_assignment_param.sh
+source offer_assignment_utility.sh
+
+source combined_offer_assignment_param.cfg
+
+### preprocess
+##bash ${SRC_DIR}/preprocess/oa_preprocess_driver
+
+### optimization
+#bash ${SRC_DIR}/optimization/oa_optimization_driver
+
+### postprocess
+bash ${SRC_DIR}/postprocess/oa_postprocess_driver 
+
+

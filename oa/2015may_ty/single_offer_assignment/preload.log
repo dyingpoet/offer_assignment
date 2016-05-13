@@ -1,0 +1,55 @@
+
+
+FAILED: Error in semantic analysis: Line 1:24 Invalid path ''/home/jli21/sams/oa_module/2015apr_ty/single_offer_assignment/../config/member_base_2015apr_478'': No files matching path file:/home/jli21/sams/oa_module/2015apr_ty/config/member_base_2015apr_478
+USE pythia; SELECT * FROM offer_assignment_fia WHERE campaign_month='Apr2015-478' LIMIT 10;
+Logging initialized using configuration in file:/etc/hive/conf.bfd-puppet/hive-log4j.properties
+Hive history file=/data1/hive/jli21/hive_job_log_jli21_201503041623_1796592166.txt
+OK
+Time taken: 0.037 seconds
+OK
+0101    478     1       1       1       OR $ off        30132412        75000   4.0     0.0     1       1       31      REWARD  N       522174  1       Core    54765   1014914 Y       FILLER  NULL    Apr2015-478
+0205    478     2       5       1       OR $ off        26299689        75000   1.5     0.0     1       1       31      REWARD  N       522204  1       Core    54769   1014918 Y       FILLER  NULL    Apr2015-478
+0208    478     2       8       1       OR $ off        20805041        75000   2.0     0.0     1       1       31      REWARD  N       522310  1       Core    54781   1014930 Y       FILLER  NULL    Apr2015-478
+0402    478     4       2       1       OR $ off        5585112 75000   2.0     0.0     1       1       31      REWARD  N       522367  1       Core    54788   1014939 Y       FILLER  NULL    Apr2015-478
+0460    478     4       60      1       OR $ off        4801986 75000   2.0     0.0     1       1       31      REWARD  N       522342  1       Core    54785   1014935 Y       FILLER  NULL    Apr2015-478
+0470    478     4       70      1       OR $ off        21784147        75000   2.0     0.0     1       1       31      REWARD  N       522008  1       Core    54745   1014892 Y       FILLER  NULL    Apr2015-478
+0810    478     8       10      1       OR $ off        3584469 75000   5.0     0.0     1       1       31      REWARD  N       522052  1       Core    54750   1014897 Y       FILLER  NULL    Apr2015-478
+1314    478     13      14      1       OR $ off        22909292        75000   2.0     0.0     1       1       31      REWARD  N       522302  1       Core    54780   1014929 Y       FILLER  NULL    Apr2015-478
+1315    478     13      15      1       OR $ off        23623141        75000   4.5     0.0     1       1       31      REWARD  N       521753  1       Core    54639   1014865 Y       FILLER  NULL    Apr2015-478
+1321    478     13      21      1       OR $ off        25642662        75000   3.0     0.0     1       1       31      REWARD  N       522123  1       Core    54759   1014908 Y       FILLER  NULL    Apr2015-478
+Time taken: 1.804 seconds
+USE pythia; SELECT * FROM offer_assigned_member_base WHERE campaign_month='Apr2015-478' LIMIT 10;
+
+
+* v2 reload member base
+put: Target /user/pythia/Workspaces/SamsMEP/offer_assignment_fia/campaign_month=Apr2015-478/sc_offers_2015apr_478_input already exists
+Logging initialized using configuration in file:/etc/hive/conf.bfd-puppet/hive-log4j.properties
+Hive history file=/data1/hive/jli21/hive_job_log_jli21_201503041629_1701111341.txt
+OK
+Time taken: 0.035 seconds
+Copying data from file:/home/jli21/sams/oa_module/2015apr_ty/config/member_base_2015apr_478
+Copying file: file:/home/jli21/sams/oa_module/2015apr_ty/config/member_base_2015apr_478
+Loading data to table pythia.offer_assigned_member_base partition (campaign_month=Apr2015-478)
+OK
+Time taken: 2.205 seconds
+USE pythia; SELECT * FROM offer_assigned_member_base WHERE campaign_month='Apr2015-478' LIMIT 10;
+Logging initialized using configuration in file:/etc/hive/conf.bfd-puppet/hive-log4j.properties
+Hive history file=/data1/hive/jli21/hive_job_log_jli21_201503041630_1976047088.txt
+OK
+Time taken: 0.038 seconds
+OK
+187881750       10      0001-01-01      Apr2015-478
+371017674       10      2006-04-18      Apr2015-478
+392827523       10      2006-11-10      Apr2015-478
+419485453       11      2007-07-04      Apr2015-478
+609964333       10      2011-11-07      Apr2015-478
+628816704       10      2012-04-01      Apr2015-478
+635881329       11      2012-05-23      Apr2015-478
+640385712       10      0001-01-01      Apr2015-478
+685155624       10      2013-06-12      Apr2015-478
+735824997       10      2014-06-01      Apr2015-478
+Time taken: 2.072 seconds
+
+
+
+

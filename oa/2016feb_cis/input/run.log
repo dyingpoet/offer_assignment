@@ -1,0 +1,95 @@
+[jli21@offers-ao00 input]$ cut -f7 fia_2015feb_684 | sort | uniq -c
+    180 0
+      1 10
+     14 1000000
+      7 2000000
+      1 30000
+      1 4306
+      2 500
+     44 500000
+      1 6163
+      1 8203
+      1 9286
+
+cat fia_2015nov_579_part2 | setter.py 6 10000000 > fia_2015nov_579
+
+mv fia_2016feb_684 fia_2016feb_684.orig
+cat fia_2016feb_684.orig | awk -F '\t' 'BEGIN{OFS="\t"}{$1=684;$2=substr($3,0,2); $3=substr($3,3,2); print}' | cut -f1-21 > fia_2016feb_684.align_col 
+cat fia_2016feb_684.align_col | setter_zero.py 6 500000 > fia_2016feb_684 
+cat fia_2016feb_684.bak | setter_small.py 6 500000 > fia_2016feb_684 
+
+
+#cat fia_2015aug_539.orig | python ~/flt.py vc_to_remove 17 $'\t'  1>fia_2015aug_539 2> fia_2015aug_539.rmd 
+cat fia_${TAG}.orig | python ~/flt.py vc_to_remove 17 $'\t'  1>fia_${TAG} 2> fia_${TAG}.rmd
+
+~/bin/setter.py
+
+
+
+[jli21@offers-ao00 input]$ cut -f7 fia_2015feb_684 | sort | uniq -c
+      1 10
+     14 1000000
+      7 2000000
+      1 30000
+      1 4306
+      2 500
+    224 500000
+      1 6163
+      1 8203
+      1 9286
+
+cut -d '|' -f1,19 sc_offers_2016feb_684_input | sort | uniq | wc -l
+198
+cut -d '|' -f19 sc_offers_2016feb_684_input | sort | uniq | wc -l
+197
+
+Value coupon 60109 has been tagged to multiple subcats
+cat 11, Subcats 9 and 97  
+
+0107	CANDY - SNACKS - BUSINESS|Fruit Snacks	52055080	614150	ANNIESFRUIT&CRACKER|30 CT	11.98
+
+
+[jli21@offers-ao00 input]$ head -2 ../../2015nov_isb/input/fia_2015nov_579
+579	1	8	1	OR $ off	31603613	10000000	2.0	0.0	1	5	96	BROAD REACH ALL MEMBERS WITH ADDON	Y	716094	1	Core	58820	1018711	Y	2015-11-20	FILLER
+579	1	8	1	OR $ off	48775395	10000000	2.0	0.0	1	5	96	BROAD REACH ALL MEMBERS WITH ADDON	Y	716094	1	Core	58820	1018711	Y	2015-11-20	FILLER
+[jli21@offers-ao00 input]$ head -2 ../../2015nov_isb/input/sc_offers_2015nov_579_input
+0108|579|1|8|1|OR $ off|31603613|10000000|2.0|0.0|1|5|96|BROAD REACH ALL MEMBERS WITH ADDON|Y|716094|1|Core|58820|1018711|Y|FILLER
+0108|579|1|8|1|OR $ off|48775395|10000000|2.0|0.0|1|5|96|BROAD REACH ALL MEMBERS WITH ADDON|Y|716094|1|Core|58820|1018711|Y|FILLER
+
+
+hive> desc offer_assignment_fia;                                                                                                        
+OK
+cat_subcat_nbr      	string              	                    
+campaign_nbr        	int                 	                    
+subclass_nbr        	int                 	                    
+dept_nbr            	int                 	                    
+val_offer_type_code 	string              	                    
+val_offer_type_desc 	string              	                    
+system_item_nbr     	int                 	                    
+investment_cnt_old  	int                 	                    
+value_amt           	string              	                    
+value_pct           	string              	                    
+min_item_purch_qty  	string              	                    
+max_redemption_cnt  	int                 	                    
+package_code        	string              	                    
+package_desc        	string              	                    
+vendor_funded_ind   	string              	                    
+coupon_item_nbr     	int                 	                    
+val_item_type_code  	string              	                    
+val_item_type_desc  	string              	                    
+value_coupon_nbr    	int                 	                    
+prvdr_coupon_nbr    	int                 	                    
+club_avail_ind      	string              	                    
+filler_data         	string              	                    
+investment_cnt      	int                 	                    
+campaign_month      	string              	                    
+	 	 
+# Partition Information	 	 
+# col_name            	data_type           	comment   
+
+
+cat sc_offers_2016feb_684_input | cut -d \| -f1,19 | sort | uniq > sc_cpn
+hd -put sc_cpn /user/pythia/Workspaces/SamsMEP/offerAssignment/2016feb684/subcatCpn/
+
+
+

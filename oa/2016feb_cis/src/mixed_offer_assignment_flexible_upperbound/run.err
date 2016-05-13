@@ -1,0 +1,138 @@
+Traceback (most recent call last):
+  File "/home/jli21/sams/oa_module/oa_v4_test_cis/src/optimization/py/auctionFastWithSubcatConstraintsV3E3.py", line 324, in <module>
+    run('scoreFile', 'offerFile', 'memberFile', 'offer2subcatFile')   
+  File "/home/jli21/sams/oa_module/oa_v4_test_cis/src/optimization/py/auctionFastWithSubcatConstraintsV3E3.py", line 19, in run
+    auctionSparse(offerFile+'.converted', memberFile+'.converted', scoreFile+'.converted', offer2subcat)
+  File "/home/jli21/sams/oa_module/oa_v4_test_cis/src/optimization/py/auctionFastWithSubcatConstraintsV3E3.py", line 297, in auctionSparse
+    bid (numMembers, lowerBounds, upperBounds, baskets, subcatBaskets, offerIDs, values, correspondingSubcats, offerHeaps, prices, indices, maxNumAvailableOffers)
+  File "/home/jli21/sams/oa_module/oa_v4_test_cis/src/optimization/py/auctionFastWithSubcatConstraintsV3E3.py", line 161, in bid
+    backupValue = computeBackup(currentValues, lowerBound, upperBound, me, maxNumAvailableOffers[me])
+  File "/home/jli21/sams/oa_module/oa_v4_test_cis/src/optimization/py/auctionFastWithSubcatConstraintsV3E3.py", line 97, in computeBackup
+    raise Exception('No feasible solutions: Not enough options for customer '+str(me)+'. Her lowerBound is '+str(lowerBound)+', while her maximum number of eligible offers is '+str(maxNumAvailableOffers)+'.')
+Exception: No feasible solutions: Not enough options for customer 0. Her lowerBound is 1, while her maximum number of eligible offers is 0.
+mv: cannot stat `scoreFile.converted_offerAssignment.outputFinal': No such file or directory
+~/sams/oa_module/2016feb_cis/src/mixed_offer_assignment_flexible_upperbound
+cat: /home/jli21/sams/working_session/Feb2016-684/Feb2016-684-LAPSED/offerAssignment: No such file or directory
+[jli21@offers-ao00 mixed_offer_assignment_flexible_upperbound]$ 
+
+
+
+2
+N
+Feb2016-684-LAPSED
+
+~/sams/working_session/Feb2016-684/Feb2016-684-LAPSED ~/sams/oa_module/2016feb_cis/src/mixed_offer_assignment_flexible_upperbound
+~/sams/oa_module/2016feb_cis/src/mixed_offer_assignment_flexible_upperbound
+LAPSED
+  File "/home/jli21/sams/oa_module/oa_v4_test_cis/src/preprocess/py/adjInvestment.py", line 24
+    print ' '.join([cpn, str(offerAvail[cpn])])
+            ^
+SyntaxError: invalid syntax
+
+
+
+### reco
+declare -x spark="bfd-exp-cldb00.sv.walmartlabs.com"
+4
+N
+Feb2016-684-RECOMMEND
+
+  File "/home/jli21/sams/oa_module/oa_v4_test_cis/src/preprocess/py/adjMemberFile.py", line 29
+    print ' '.join([member, str(_lb), str(_ub)])
+            ^
+SyntaxError: invalid syntax
+~/sams/working_session/Feb2016-684/Feb2016-684-RECOMMEND ~/sams/oa_module/2016feb_cis/src/mixed_offer_assignment_flexible_upperbound
+Traceback (most recent call last):
+  File "/home/jli21/sams/oa_module/oa_v4_test_cis/src/optimization/py/auctionFastWithSubcatConstraintsV3E3.py", line 324, in <module>
+    run('scoreFile', 'offerFile', 'memberFile', 'offer2subcatFile')   
+  File "/home/jli21/sams/oa_module/oa_v4_test_cis/src/optimization/py/auctionFastWithSubcatConstraintsV3E3.py", line 17, in run
+    offer2subcat = convert(scoreFile, offerFile, memberFile, offer2subcatFile, 1000000)
+  File "/home/jli21/sams/oa_module/oa_v4_test_cis/src/optimization/py/auctionFastWithSubcatConstraintsV3E3.py", line 49, in convert
+    offer, subcat = line.split()
+ValueError: too many values to unpack
+mv: cannot stat `scoreFile.converted_offerAssignment.outputFinal': No such file or directory
+~/sams/oa_module/2016feb_cis/src/mixed_offer_assignment_flexible_upperbound
+cat: /home/jli21/sams/working_session/Feb2016-684/Feb2016-684-RECOMMEND/offerAssignment: No such file or directory
+RECOMMEND
+Modify investment count for reward assignment (right after the reco assignment).
+
+
+
+
+Feb2016-684-REWARD
+
+~/sams/working_session/Feb2016-684/Feb2016-684-REWARD ~/sams/oa_module/2016feb_cis/src/mixed_offer_assignment_flexible_upperbound
+
+Traceback (most recent call last):
+  File "/home/jli21/sams/oa_module/oa_v4_test_cis/src/optimization/py/auctionFastWithSubcatConstraintsV3E3.py", line 324, in <module>
+    run('scoreFile', 'offerFile', 'memberFile', 'offer2subcatFile')   
+  File "/home/jli21/sams/oa_module/oa_v4_test_cis/src/optimization/py/auctionFastWithSubcatConstraintsV3E3.py", line 19, in run
+    auctionSparse(offerFile+'.converted', memberFile+'.converted', scoreFile+'.converted', offer2subcat)
+  File "/home/jli21/sams/oa_module/oa_v4_test_cis/src/optimization/py/auctionFastWithSubcatConstraintsV3E3.py", line 297, in auctionSparse
+    bid (numMembers, lowerBounds, upperBounds, baskets, subcatBaskets, offerIDs, values, correspondingSubcats, offerHeaps, prices, indices, maxNumAvailableOffers)
+  File "/home/jli21/sams/oa_module/oa_v4_test_cis/src/optimization/py/auctionFastWithSubcatConstraintsV3E3.py", line 191, in bid
+    raise Exception('No feasible solutions')
+Exception: No feasible solutions
+mv: cannot stat `scoreFile.converted_offerAssignment.outputFinal': No such file or directory
+~/sams/oa_module/2016feb_cis/src/mixed_offer_assignment_flexible_upperbound
+
+
+
+
+
+
+
+*** post-process
+
+        at org.apache.hadoop.hive.cli.CliDriver.executeDriver(CliDriver.java:748)
+        at org.apache.hadoop.hive.cli.CliDriver.run(CliDriver.java:686)
+        at org.apache.hadoop.hive.cli.CliDriver.main(CliDriver.java:625)
+        at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+        at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
+        at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+        at java.lang.reflect.Method.invoke(Method.java:606)
+        at org.apache.hadoop.util.RunJar.main(RunJar.java:197)
+FAILED: ParseException line 3:37 cannot recognize input near '(' 'campaign_id' 'INT' in table name
+Attached to the *bfd-main* Hadoop cluster
+
+Logging initialized using configuration in file:/etc/hive/conf.bfd-puppet/hive-log4j.properties
+OK
+Time taken: 0.029 seconds
+NoViableAltException(284@[])
+        at org.apache.hadoop.hive.ql.parse.HiveParser_SelectClauseParser.selectClause(HiveParser_SelectClauseParser.java:742)
+        at org.apache.hadoop.hive.ql.parse.HiveParser.selectClause(HiveParser.java:40143)
+        at org.apache.hadoop.hive.ql.parse.HiveParser.singleSelectStatement(HiveParser.java:38048)
+        at org.apache.hadoop.hive.ql.parse.HiveParser.selectStatement(HiveParser.java:37754)
+        at org.apache.hadoop.hive.ql.parse.HiveParser.regularBody(HiveParser.java:37654)
+        at org.apache.hadoop.hive.ql.parse.HiveParser.queryStatementExpressionBody(HiveParser.java:36898)
+        at org.apache.hadoop.hive.ql.parse.HiveParser.queryStatementExpression(HiveParser.java:36774)
+        at org.apache.hadoop.hive.ql.parse.HiveParser.execStatement(HiveParser.java:1338)
+        at org.apache.hadoop.hive.ql.parse.HiveParser.statement(HiveParser.java:1036)
+        at org.apache.hadoop.hive.ql.parse.ParseDriver.parse(ParseDriver.java:199)
+        at org.apache.hadoop.hive.ql.parse.ParseDriver.parse(ParseDriver.java:166)
+        at org.apache.hadoop.hive.ql.Driver.compile(Driver.java:404)
+        at org.apache.hadoop.hive.ql.Driver.compile(Driver.java:322)
+        at org.apache.hadoop.hive.ql.Driver.compileInternal(Driver.java:975)
+        at org.apache.hadoop.hive.ql.Driver.runInternal(Driver.java:1040)
+        at org.apache.hadoop.hive.ql.Driver.run(Driver.java:911)
+        at org.apache.hadoop.hive.ql.Driver.run(Driver.java:901)
+        at org.apache.hadoop.hive.cli.CliDriver.processLocalCmd(CliDriver.java:268)
+        at org.apache.hadoop.hive.cli.CliDriver.processCmd(CliDriver.java:220)
+        at org.apache.hadoop.hive.cli.CliDriver.processLine(CliDriver.java:423)
+        at org.apache.hadoop.hive.cli.CliDriver.processLine(CliDriver.java:359)
+        at org.apache.hadoop.hive.cli.CliDriver.processReader(CliDriver.java:456)
+        at org.apache.hadoop.hive.cli.CliDriver.processFile(CliDriver.java:466)
+        at org.apache.hadoop.hive.cli.CliDriver.executeDriver(CliDriver.java:748)
+        at org.apache.hadoop.hive.cli.CliDriver.run(CliDriver.java:686)
+        at org.apache.hadoop.hive.cli.CliDriver.main(CliDriver.java:625)
+        at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+        at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
+        at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+        at java.lang.reflect.Method.invoke(Method.java:606)
+        at org.apache.hadoop.util.RunJar.main(RunJar.java:197)
+FAILED: ParseException line 3:34 cannot recognize input near '(' 'segment' '=' in select clause
+get: null
+
+
+
+

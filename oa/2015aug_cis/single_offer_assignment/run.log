@@ -1,0 +1,47 @@
+Ended Job = job_201506301010_792894
+MapReduce Jobs Launched:
+Job 0: Map: 1  Reduce: 1   Cumulative CPU: 6.46 sec   MAPRFS Read: 19633 MAPRFS Write: 5510 SUCCESS
+Job 1: Map: 1  Reduce: 1   Cumulative CPU: 6.77 sec   MAPRFS Read: 6653 MAPRFS Write: 5928 SUCCESS
+Total MapReduce CPU Time Spent: 13 seconds 230 msec
+OK
+Time taken: 79.081 seconds, Fetched: 103 row(s)
+This is *bfd-main*.
+
+Logging initialized using configuration in file:/etc/hive/conf.bfd-puppet/hive-log4j.properties
+Total jobs = 2
+Launching Job 1 out of 2
+Number of reduce tasks not specified. Estimated from input data size: 1
+In order to change the average load for a reducer (in bytes):
+  set hive.exec.reducers.bytes.per.reducer=<number>
+In order to limit the maximum number of reducers:
+  set hive.exec.reducers.max=<number>
+In order to set a constant number of reducers:
+  set mapred.reduce.tasks=<number>
+Starting Job = job_201506301010_792922, Tracking URL = http://mapr380.sv.walmartlabs.com:50030/jobdetails.jsp?jobid=job_201506301010_792922
+Kill Command = /opt/mapr/hadoop/hadoop-0.20.2/bin/../bin/hadoop job  -kill job_201506301010_792922
+Hadoop job information for Stage-1: number of mappers: 1; number of reducers: 1
+2015-07-17 17:09:57,266 Stage-1 map = 100%,  reduce = 0%, Cumulative CPU 6.08 sec
+MapReduce Total cumulative CPU time: 6 seconds 80 msec
+Ended Job = job_201506301010_792922
+Launching Job 2 out of 2
+Number of reduce tasks determined at compile time: 1
+In order to change the average load for a reducer (in bytes):
+  set hive.exec.reducers.bytes.per.reducer=<number>
+In order to limit the maximum number of reducers:
+  set hive.exec.reducers.max=<number>
+In order to set a constant number of reducers:
+  set mapred.reduce.tasks=<number>
+Starting Job = job_201506301010_792944, Tracking URL = http://mapr380.sv.walmartlabs.com:50030/jobdetails.jsp?jobid=job_201506301010_792944
+Kill Command = /opt/mapr/hadoop/hadoop-0.20.2/bin/../bin/hadoop job  -kill job_201506301010_792944
+Hadoop job information for Stage-2: number of mappers: 1; number of reducers: 1
+2015-07-17 17:11:03,964 Stage-2 map = 100%,  reduce = 0%, Cumulative CPU 6.38 sec
+2015-07-17 17:11:19,779 Stage-2 map = 100%,  reduce = 100%, Cumulative CPU 8.62 sec
+MapReduce Total cumulative CPU time: 8 seconds 620 msec
+Ended Job = job_201506301010_792944
+MapReduce Jobs Launched:
+Job 0: Map: 1  Reduce: 1   Cumulative CPU: 8.26 sec   MAPRFS Read: 20663 MAPRFS Write: 6630 SUCCESS
+Job 1: Map: 1  Reduce: 1   Cumulative CPU: 8.62 sec   MAPRFS Read: 7567 MAPRFS Write: 6870 SUCCESS
+Total MapReduce CPU Time Spent: 16 seconds 880 msec
+OK
+Time taken: 129.525 seconds, Fetched: 103 row(s)
+

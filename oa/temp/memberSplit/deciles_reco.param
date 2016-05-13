@@ -1,0 +1,4 @@
+scoreAll=/user/jli21/pythia/Workspaces/SamsMEP/Recommend/Scoring/79/2014-02-24/Decay/recommend_score_cobought_no_smoothing_max_cosine_cobought_transaction_debug_adj_study_scaled_test
+decile=/user/pythia/Workspaces/SamsMEP/Attrition/Apr2015FY79_477/pred/2015-02-24/attrition_scores_union
+scoreOut=/user/jli21/pythia/Workspaces/SamsMEP/Recommend/Scoring/79/2014-02-24/Decay/recommend_score_cobought_no_smoothing_max_cosine_cobought_transaction_debug_adj_study_scaled_test_4_minus
+cond=<5

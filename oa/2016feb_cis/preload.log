@@ -1,0 +1,51 @@
+DS_RUN=2016-01-25
+
+Attached to the *bfd-main* Hadoop cluster
+
+Logging initialized using configuration in file:/etc/hive/conf.bfd-puppet/hive-log4j.properties
+OK
+Time taken: 0.019 seconds
+OK
+Time taken: 0.505 seconds
+Attached to the *bfd-main* Hadoop cluster
+
+Logging initialized using configuration in file:/etc/hive/conf.bfd-puppet/hive-log4j.properties
+OK
+Time taken: 0.02 seconds
+Copying data from file:/home/jli21/sams/oa_module/2016feb_cis/config/memberAll
+Copying file: file:/home/jli21/sams/oa_module/2016feb_cis/config/memberAll
+Loading data to table pythia.offer_assigned_member_base partition (campaign_month=Feb2016-684)
+OK
+Time taken: 2.221 seconds
+Attached to the *bfd-main* Hadoop cluster
+
+Logging initialized using configuration in file:/etc/hive/conf.bfd-puppet/hive-log4j.properties
+OK
+0107	684	1	7	1	OR $ off	52055080	500000	2.4	0.0	1	1	31	ANALYTIC	Y	85350	1	Core	60198	1021127	Y	FILLER	NULFeb2016-684
+0108	684	1	8	1	OR $ off	3468191	500000	1.2	0.0	1	5	31	ANALYTIC	Y	83800	1	Core	60154	1020962	Y	FILLER	NULL	Feb2016-684
+0108	684	1	8	1	OR $ off	5975806	500000	1.65	0.0	1	1	31	ANALYTIC	Y	83664	1	Core	60150	1020956	Y	FILLER	NULL	Feb2016-684
+0108	684	1	8	1	OR $ off	28591820	500000	1.55	0.0	1	5	31	ANALYTIC	Y	83698	1	Core	60152	1020960	Y	FILLER	NULFeb2016-684
+0123	684	1	23	1	OR $ off	21796950	500000	2.2	0.0	1	5	31	ANALYTIC	Y	82115	1	Core	60095	1020849	Y	FILLER	NULFeb2016-684
+0123	684	1	23	1	OR $ off	50268376	500000	2.25	0.0	1	5	31	ANALYTIC	Y	83678	1	Core	60151	1020957	Y	FILLER	NULFeb2016-684
+0132	684	1	32	1	OR $ off	31673631	500000	1.5	0.0	1	1	31	ANALYTIC	Y	85381	1	Core	60199	1021128	Y	FILLER	NULFeb2016-684
+0205	684	2	5	1	OR $ off	29121684	500000	2.0	0.0	1	2	31	ANALYTIC	Y	85745	1	Core	60213	1021170	Y	FILLER	NULFeb2016-684
+0205	684	2	5	1	OR $ off	37988176	500000	2.0	0.0	1	2	31	ANALYTIC	Y	85806	1	Core	60217	1021176	Y	FILLER	NULFeb2016-684
+0205	684	2	5	1	OR $ off	44286612	500000	2.0	0.0	1	2	31	ANALYTIC	Y	85798	1	Core	60216	1021175	Y	FILLER	NULFeb2016-684
+Time taken: 0.845 seconds, Fetched: 10 row(s)
+Attached to the *bfd-main* Hadoop cluster
+
+Logging initialized using configuration in file:/etc/hive/conf.bfd-puppet/hive-log4j.properties
+OK
+927	10	0001-01-01	Feb2016-684
+1081	11	0001-01-01	Feb2016-684
+2782	13	0001-01-01	Feb2016-684
+2824	10	0001-01-01	Feb2016-684
+3129	10	0001-01-01	Feb2016-684
+3426	12	0001-01-01	Feb2016-684
+3749	11	0001-01-01	Feb2016-684
+4184	26	0001-01-01	Feb2016-684
+4283	10	0001-01-01	Feb2016-684
+4531	10	0001-01-01	Feb2016-684
+Time taken: 0.721 seconds, Fetched: 10 row(s)
+
+

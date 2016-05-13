@@ -1,0 +1,27 @@
+1) reco
+Successfully read 274137569 records from: "/user/pythia/Workspaces/SamsMEP/subcatItemPref/member/ds=2016-01-25"
+Successfully read 0 records from: "/user/pythia/Workspaces/SamsMEP/pis_member_subcat_item_coupon_score/campaign_month=Feb2016-684-rec"
+
+Successfully stored 0 records in: "/user/pythia/Workspaces/SamsMEP/pis_member_subcat_item_coupon_score_final/campaign_month=Feb2016-684-rec"
+
+
+Input(s):
+Successfully read 0 records from: "/user/pythia/Workspaces/SamsMEP/pis_member_subcat_item_coupon_score_final/campaign_month=Feb2016-684-rec"
+Successfully read 214824 records from: "/user/pythia/Workspaces/SamsMEP/subcatItemPref/global/ds=2016-01-25"
+
+Output(s):
+Successfully stored 0 records in: "/user/pythia/Workspaces/SamsMEP/pis_offer_assignment_member_file/campaign_month=Feb2016-684-rec"
+Successfully stored 0 records in: "/user/pythia/Workspaces/SamsMEP/pis_offer_assignment_score_file/campaign_month=Feb2016-684-rec"
+
+
+
+hive> select * from pythia.pis_member_subcat_item_coupon_score where campaign_month='Feb2016-684-rec' limit 10; 
+OK
+Time taken: 0.157 seconds
+hive> 
+
+
+2) reward
+
+
+

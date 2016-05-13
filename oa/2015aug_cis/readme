@@ -1,0 +1,73 @@
+*** lapsed boosting
+*** run pre-load
+*** use memberTest to replace memberAll in the config folder
+
+
+item change
+
+Previous item number  = 84768 – 3lb
+New item number = 756195 – now 4 lb.
+ 
+4230	COOLER|Raw Bacon	90352	84768	BACON SLICED|3-1 LB PKG	0.0
+4230	COOLER|Raw Bacon	49875563	756195	OSCAR MAYER BACON|4 - 1 LBS PACKS	12.36
+
+4230	COOLER|Raw Bacon	90352	84768	BACON SLICED|3-1 LB PKG	0.0
+
+
+[jli21@sg-dev01 input]$ grep 90352 fia_2015aug_555
+[jli21@sg-dev01 input]$ grep 49875563 fia_2015aug_555
+555	42	30	1	OR $ off	49875563	150000	2.5	0.0	1	1	52	CLUB INSIDER SAVINGS	Y	941600	1	Core	56755	1017434	Y	2015-08-1FILLER
+
+We didn't see the new item added.
+
+
+hive> select min(ds) from item_info_history where system_item_nbr = 90352;
+2013-01-06
+
+select min(ds) from item_info_history where system_item_nbr = 90352;
+select * from item_info_history where ds = '2013-01-06' and system_item_nbr = 90352;
+
+select min(ds) from item_info_history where system_item_nbr = 49875563;
+2015-04-28
+select * from item_info_history where ds = '2015-04-28' and system_item_nbr = 49875563;
+
+
+
+
+
+The recommendation score is available below.
+
+/user/jli21/pythia/Workspaces/SamsMEP/Recommend/Scoring/ClubInsider/2015-07-16/Decay/recommend_score_cobought_no_smoothing_max_cosine_cobought_transaction_debug_adj_study_scaled
+
+
+Rewati,
+
+Please hold on the score combination until Wei generates the final member pool.
+
+Below are some parameters.
+
+DataStartT=2014-07-16
+export DataEndT=2015-07-15
+export ITEM_INFO_SNAPSHOT_DATE=2015-05-13
+campaign_id=555
+campaign_start_date=2015-08-05
+
+
+
+Item-level: /user/pythia/Workspaces/SamsMEP/MNScoring/ProdData/score_items_tenure_season/segment=Aug2015CIS_555_2015-07-16
+Subcat-level: /user/pythia/Workspaces/SamsMEP/MNScoring/ProdData/score_subcats_tenure_season/segment=Aug2015CIS_555_2015-07-16
+
+
+
+
+
+The final member pool for the August Club Insider Savings campaign is now ready on the BFD cluster: /user/pythia/Workspaces/SamsMEP/MNScoring/Aug2015CIS/init/2015-07-16/mem_with_compcards_test_control
+Test vs control labels can be accessed here: /user/pythia/Workspaces/SamsMEP/MNScoring/Aug2015CIS/init/2015-07-16/test_control_labels
+
+/user/pythia/Workspaces/SamsMEP/MNScoring/Aug2015CIS/init/2015-07-16/mem_with_compcards_test_control
+
+
+Hi Jun. The member pool on Prod6 is now ready too: mep_gec_modeling.mep_campaign_member_pool_archive(segment='cis_aug2015_555_20150715')
+
+
+

@@ -1,0 +1,14 @@
+
+Success!
+
+Job Stats (time in seconds):
+JobId	Maps	Reduces	MaxMapTime	MinMapTIme	AvgMapTime	MedianMapTime	MaxReduceTime	MinReduceTime	AvgReduceTime	MedianReducetime	Alias	Feature	Outputs
+job_201506301010_787722	1	0	21	21	21	21	0	0	0	0	scList	MAP_ONLY	
+job_201506301010_787758	500	800	84	29	42	41	280	9	154	201	1-19,scoreFlt,scoreJoin,scoreKeep,scoreOut,subcatScore	REPLICATED_JOIN,GROUP_BY	/user/pythia/Workspaces/SamsMEP/offerAssignment/2015aug555/score/reco_subcat_score_grouped,
+
+Input(s):
+Successfully read 62 records from: "/user/pythia/Workspaces/SamsMEP/offerAssignment/2015aug555/subcatList"
+Successfully read 2397555856 records from: "/user/jli21/pythia/Workspaces/SamsMEP/Recommend/Scoring/ClubInsider/2015-07-16/Decay/recommend_score_cobought_no_smoothing_max_cosine_cobought_transaction_debug_adj_study_scaled"
+
+Output(s):
+Successfully stored 53093423 records in: "/user/pythia/Workspaces/SamsMEP/offerAssignment/2015aug555/score/reco_subcat_score_grouped"

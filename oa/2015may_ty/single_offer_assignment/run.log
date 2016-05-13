@@ -1,0 +1,81 @@
+cat: /home/jli21/sams/oa_module/2015apr_ty/single_offer_assignment/../config/inventory_check_skip_category_list: No such file or directory
+Start the preprocessing!
+Item-subcat mapping is not needed for item-level scores.
+Logging initialized using configuration in file:/etc/hive/conf.bfd-puppet/hive-log4j.properties
+Hive history file=/data1/hive/jli21/hive_job_log_jli21_201503041828_1094204573.txt
+OK
+Time taken: 0.036 seconds
+OK
+Time taken: 1.588 seconds
+Inserted the score partition.
+test: Requested file /user/pythia/Workspaces/SamsMEP/fia_subcat_item_club/campaign_month=Apr2015-478 does not exist.
+Member club item preference failed!
+~/sams/working_session/Apr2015-478/Apr2015-478 ~/sams/oa_module/2015apr_ty/single_offer_assignment
+Traceback (most recent call last):
+  File "/home/jli21/sams/oa_module/oa_v3_test/src/optimization/py/auctionFastWithSubcatConstraintsV3E3.py", line 324, in <module>
+    run('scoreFile', 'offerFile', 'memberFile', 'offer2subcatFile')   
+  File "/home/jli21/sams/oa_module/oa_v3_test/src/optimization/py/auctionFastWithSubcatConstraintsV3E3.py", line 17, in run
+    offer2subcat = convert(scoreFile, offerFile, memberFile, offer2subcatFile, 1000000)
+  File "/home/jli21/sams/oa_module/oa_v3_test/src/optimization/py/auctionFastWithSubcatConstraintsV3E3.py", line 43, in convert
+    offerDict = constructDict(offerFile, 'offer')
+  File "/home/jli21/sams/oa_module/oa_v3_test/src/optimization/py/auctionFastWithSubcatConstraintsV3E3.py", line 28, in constructDict
+    with open(theFile, 'r') as inputObj: #the Python version at the server does not support multiple with-open's in one line
+IOError: [Errno 2] No such file or directory: 'offerFile'
+mv: cannot stat `scoreFile.converted_offerAssignment.outputFinal': No such file or directory
+~/sams/oa_module/2015apr_ty/single_offer_assignment
+
+
+
+
+MapReduce Jobs Launched: 
+Job 0: Map: 1  Reduce: 1   Cumulative CPU: 6.06 sec   MAPRFS Read: 12055 MAPRFS Write: 4449 SUCCESS
+Job 1: Map: 1  Reduce: 1   Cumulative CPU: 6.27 sec   MAPRFS Read: 5458 MAPRFS Write: 4721 SUCCESS
+Total MapReduce CPU Time Spent: 12 seconds 330 msec
+OK
+Time taken: 98.792 seconds
+Logging initialized using configuration in file:/etc/hive/conf.bfd-puppet/hive-log4j.properties
+Hive history file=/data1/hive/jli21/hive_job_log_jli21_201503041930_1588833430.txt
+Total MapReduce jobs = 2
+Launching Job 1 out of 2
+Number of reduce tasks not specified. Estimated from input data size: 1
+In order to change the average load for a reducer (in bytes):
+  set hive.exec.reducers.bytes.per.reducer=<number>
+In order to limit the maximum number of reducers:
+  set hive.exec.reducers.max=<number>
+In order to set a constant number of reducers:
+  set mapred.reduce.tasks=<number>
+Starting Job = job_201502200135_429394, Tracking URL = http://mapr300.sv.walmartlabs.com:50030/jobdetails.jsp?jobid=job_201502200135_429394
+Kill Command = /opt/mapr/hadoop/hadoop-0.20.2/bin/../bin/hadoop job  -Dmapred.job.tracker=maprfs:/// -kill job_201502200135_429394
+Hadoop job information for Stage-1: number of mappers: 1; number of reducers: 1
+2015-03-04 19:31:11,269 Stage-1 map = 100%,  reduce = 0%, Cumulative CPU 3.67 sec
+2015-03-04 19:31:22,771 Stage-1 map = 100%,  reduce = 0%, Cumulative CPU 3.67 sec
+2015-03-04 19:31:30,268 Stage-1 map = 100%,  reduce = 0%, Cumulative CPU 3.67 sec
+2015-03-04 19:31:41,999 Stage-1 map = 100%,  reduce = 100%, Cumulative CPU 6.78 sec
+MapReduce Total cumulative CPU time: 6 seconds 780 msec
+Ended Job = job_201502200135_429394
+Launching Job 2 out of 2
+Number of reduce tasks determined at compile time: 1
+In order to change the average load for a reducer (in bytes):
+  set hive.exec.reducers.bytes.per.reducer=<number>
+In order to limit the maximum number of reducers:
+  set hive.exec.reducers.max=<number>
+In order to set a constant number of reducers:
+  set mapred.reduce.tasks=<number>
+Starting Job = job_201502200135_429416, Tracking URL = http://mapr300.sv.walmartlabs.com:50030/jobdetails.jsp?jobid=job_201502200135_429416
+Kill Command = /opt/mapr/hadoop/hadoop-0.20.2/bin/../bin/hadoop job  -Dmapred.job.tracker=maprfs:/// -kill job_201502200135_429416
+Hadoop job information for Stage-2: number of mappers: 1; number of reducers: 1
+2015-03-04 19:32:12,189 Stage-2 map = 0%,  reduce = 0%, Cumulative CPU 5.19 sec
+2015-03-04 19:32:16,526 Stage-2 map = 100%,  reduce = 0%, Cumulative CPU 5.19 sec
+2015-03-04 19:32:20,426 Stage-2 map = 100%,  reduce = 0%, Cumulative CPU 6.5 sec
+MapReduce Total cumulative CPU time: 6 seconds 500 msec
+Ended Job = job_201502200135_429416
+MapReduce Jobs Launched: 
+Job 0: Map: 1  Reduce: 1   Cumulative CPU: 6.78 sec   MAPRFS Read: 12865 MAPRFS Write: 5328 SUCCESS
+Job 1: Map: 1  Reduce: 1   Cumulative CPU: 6.5 sec   MAPRFS Read: 6175 MAPRFS Write: 5482 SUCCESS
+Total MapReduce CPU Time Spent: 13 seconds 280 msec
+OK
+Time taken: 112.568 seconds
+
+
+
+

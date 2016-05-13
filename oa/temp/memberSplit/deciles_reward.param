@@ -1,0 +1,4 @@
+scoreAll=/user/jli21/pythia/Workspaces/SamsMEP/MNScoring/Apr2015FY79_477/est/2015-02-24/score_items_tenure_season_test
+decile=/user/pythia/Workspaces/SamsMEP/Attrition/Apr2015FY79_477/pred/2015-02-24/attrition_scores_union
+scoreOut=/user/jli21/pythia/Workspaces/SamsMEP/MNScoring/Apr2015FY79_477/est/2015-02-24/score_items_tenure_season_test_5_plus
+cond=>4

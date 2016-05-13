@@ -1,0 +1,18 @@
+TAG=2015aug_555
+
+target=sc_offers_${TAG}_input
+
+#cat fia_$TAG |  ./formatFIA.py  > $target
+#cut -d \| -f2- $target > ${target}.plain
+#cat ${target} | python ~/append_item_v2.py 6 '|' 1> ${target}.txt
+#cut -d '|' -f1,19 ${target} | sort | uniq | wc -l
+#cut -d '|' -f19 ${target} | sort | uniq | wc -l
+#
+#cat $target | cut -d \| -f1 | sort | uniq > fia.sc
+#cp $target ../config
+#cp ${target}.plain ../config
+#cp campaign_${TAG} ../config
+
+tr '\t' '_' < memberTest > ../config/memberTest
+tr '\t' ' ' < memberAll > ../config/memberAll
+tr '\t' ' ' < memberTestClusterId > ../config/memberTestClusterId

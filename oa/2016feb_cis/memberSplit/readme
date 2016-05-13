@@ -1,0 +1,34 @@
+getLasped.sh
+
+subcat_score_convert.sh
+
+separate_reward_lapse.pig
+
+
+run reward pipeline
+%default cpnScore '/user/pythia/Workspaces/SamsMEP/pis_offer_assignment_score_file/campaign_month=Feb2016-684-rew';
+
+
+/user/pythia/Workspaces/SamsMEP/offer_assignmemt_member_test/campaign_month=Feb2016-684
+
+
+join lapsed subcat score with the item reward score to get the lapsed score
+
+lapsed subcat score
+42792200^A3883
+
+/user/pythia/Workspaces/SamsMEP/offerAssignment/2015oct601/subcatCpn/* | head
+0103|58679
+
+
+%default lapsed '/user/jli21/sams/lapsed_member_subcat';
+%default cpnScore '/user/pythia/Workspaces/SamsMEP/pis_offer_assignment_score_file/campaign_month=Feb2016-684-rew';
+%default subcatCpn '/user/pythia/Workspaces/SamsMEP/offerAssignment/2015oct601/subcatCpn';
+%default scoreOut '/user/pythia/Workspaces/SamsMEP/offerAssignment/2015oct601/cpn_reward_score_lapsedInd';
+
+/user/pythia/Workspaces/SamsMEP/offerAssignment/2015oct601/cpn_reward_score_lapsedInd/* | head
+58729	901_12_0001-01-01	0.36870462	0
+
+hd -mkdir /user/pythia/Workspaces/SamsMEP/offerAssignment/2016feb684/subcatCpn
+
+

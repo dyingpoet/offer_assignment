@@ -1,0 +1,37 @@
+[jli21@sg-dev01 single_offer_assignment]$ bash debug.sh 
+select * from pythia.pis_member_item_subcat_score where (campaign_month='Aug2015-555-rew') limit 10;
+This is *bfd-main*.
+
+Logging initialized using configuration in file:/etc/hive/conf.bfd-puppet/hive-log4j.properties
+OK
+Time taken: 1.506 seconds
+select * from pythia.fia_subcat_item_club where (campaign_month='Aug2015-555') limit 10;
+This is *bfd-main*.
+
+Logging initialized using configuration in file:/etc/hive/conf.bfd-puppet/hive-log4j.properties
+OK
+4825    48414565        56758   6313    Aug2015-555
+4804    22064198        56828   6632    Aug2015-555
+7608    2967716 56803   8119    Aug2015-555
+4811    22078986        56759   8177    Aug2015-555
+7603    2969606 56802   6240    Aug2015-555
+7603    2969602 56810   4851    Aug2015-555
+7609    2967664 56796   4732    Aug2015-555
+7654    5801561 56795   6307    Aug2015-555
+7795    20750389        56781   4861    Aug2015-555
+5648    29182168        56780   6518    Aug2015-555
+Time taken: 1.078 seconds, Fetched: 10 row(s)
+select * from pythia.offer_assigned_member_base_w_club_preference where (campaign_month='Aug2015-555') limit 10;
+This is *bfd-main*.
+
+Logging initialized using configuration in file:/etc/hive/conf.bfd-puppet/hive-log4j.properties
+OK
+Time taken: 1.131 seconds
+select * from pythia.pis_member_subcat_item_coupon_score where (campaign_month='Aug2015-555-rew') limit 10;
+This is *bfd-main*.
+
+Logging initialized using configuration in file:/etc/hive/conf.bfd-puppet/hive-log4j.properties
+OK
+Time taken: 1.033 seconds
+
+

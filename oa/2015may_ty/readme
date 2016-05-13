@@ -1,0 +1,57 @@
+need to run the test / control split at the very first step
+
+
+VC_to_remove
+55032
+55045
+55044
+55073
+55081
+
+==> config/static_offer <==
+55023
+
+==> config/vc_to_remove <==
+55032
+55045
+55044
+55073
+55081
+
+
+/user/jli21/pythia/Workspaces/SamsMEP/reco/2014-08-20/study_subcats_holiday_v2
+
+
+We now have the May Thank You campaign member pool (test + control) on the BFD cluster here: /user/pythia/Workspaces/SamsMEP/MNScoring/May2015TY_489/init/2015-03-26/mem_with_compcards. Note that the control_ind label can be accessed from the member pool on Prod6: mep_gec_modeling.mep_campaign_member_pool_archive(segment='thankyou_may2015_490_20150323'). In total, there are 235,056 P units. If you have any questions, please just let me know. 
+
+  235056 memberAll
+  235056 memberAllClusterId
+  211682 memberTest
+  211682 memberTestClusterId
+
+
+/user/jli21/pythia/Workspaces/SamsMEP/Recommend/Scoring/ThankYou/2015-03-25/Decay/recommend_score_cobought_no_smoothing_max_cosine_cobought_transaction_debug_adj_study_scaled
+
+Hi Rewati, The reward score location is shown below:
+
+Item-level: /user/pythia/Workspaces/SamsMEP/MNScoring/May2015TY_489/est/2015-03-26/score_items_tenure_season
+Subcat-level: /user/pythia/Workspaces/SamsMEP/MNScoring/May2015TY_489/est/2015-03-26/score_subcats_tenure_season
+
+
+  235056 ../config/memberAll
+  211682 ../config/memberTest
+  211682 ../config/memberTestClusterId
+
+[jli21@sg-dev01 May2015-490]$ wc -l offerAssignment_member_decouple
+846728 offerAssignment_member_decouple
+ '846728/4.0'
+[1] 211682
+
+
+including control
+230325 members having offers
+
+
+
+
+

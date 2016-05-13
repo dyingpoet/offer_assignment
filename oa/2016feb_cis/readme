@@ -1,0 +1,105 @@
+*** sequential assignment 
+*** 1) Lapsed 2) reco 3) reward
+*** reward % < 20%
+*** 6 offers per member
+*** assign reco/lapsed 5 offers, use this result to calculate the total number of offer assigned for each coupon, 1/4 of them would be the investment cap for reward offers
+*** definition of reward/reco/lapsed this time?
+
+*** loose the reco scoring filtering and join with the (member, cutoff_date_1, cutoff_date_2) triplets
+
+*** modify the sequential assignment (specifically the investment count step of the reward assignment step)
+[jli21@offers-ao00 2016feb_cis]$ ls ../2015oct_cis/groupB
+config  mixed_offer_assignment_flexible_upperbound
+
+Global max of 6
+ 
+Lapsed
+Recommend
+Reward- 20% max of 2
+
+lapsed: 2
+reco: 3
+reward 1:2
+
+[jli21@offers-ao00 2016feb_cis]$ cat ../2015oct_cis/groupB/mixed_offer_assignment_flexible_upperbound/mixed_offer_assignment.init 
+export MIXED_TYPE_LIST=("LAPSED" "RECOMMEND" "REWARD")
+export MEMBER_UB_LIST=(unk unk 2)
+#export SCORE_LIST=($path1 $path2 $path3)
+export ITEM_LEVEL_SCORE_LIST=(N N Y)
+
+export CAMPAIGN_MONTH=Oct2015-601-groupB
+export MEMBER_LB_ALL=4
+export MEMBER_UB_ALL=6
+
+
+
+Step 1: transaction agg succeeded!
+Step 2: transaction normalization succeeded!
+Step 3: Core recommendation succeeded!
+
+Step 4: Member-item preference calculation succeeded!
+Step 5: Remind succeeded!
+Step 6: Subcat scoping succeeded!
+1.217748
+Step 7: Score normalization succeeded!
+Deleted maprfs:/user/jli21/pythia/Workspaces/SamsMEP/Recommend/Scoring/ClubInsider/2016-01-20/Decay/recommend_score_cobought_no_smoothing_max_cosine_cobought_transaction_debug
+Deleted maprfs:/user/jli21/pythia/Workspaces/SamsMEP/Recommend/Scoring/ClubInsider/2016-01-20/Decay/recommend_score_cobought_no_smoothing_max_cosine_cobought_transaction_debug_adj
+Deleted maprfs:/user/jli21/pythia/Workspaces/SamsMEP/Recommend/Scoring/ClubInsider/2016-01-20/Decay/recommend_score_cobought_no_smoothing_max_cosine_cobought_transaction_debug_adj_study
+Recommendation scores can be found at /user/jli21/pythia/Workspaces/SamsMEP/Recommend/Scoring/ClubInsider/2016-01-20/Decay/recommend_score_cobought_no_smoothing_max_cosine_cobought_transaction_debug_adj_study_scaled.
+Recommendation scoring pipline done at 2016-01-21 13:38:49.
+[jli21@offers-ao00 scoring]$ 
+
+
+Hi Jun, Wei,
+ 
+Please find the details for FIA for CIS Personalized ,
+ 
+·        Table name : mep_campaign.fia_offers_684
+·        There is no Item number tagged to multiple value coupons
+·        Total record count is 253 with 198 distinct Value coupons
+·        Value coupon 60109 has been tagged to multiple subcats
+  Subcats 9 and 97  
+  We haven’t removed this ,as you have already incorporated in your code
+·        Investment count details seems to 0 for 139 Value coupons’s .Need to get with Bobby and Lanie on this    
+
+Please use 500,000 for all of the ones with a 0 count.
+
+
+Please use 500,000 for all of the ones with a 0 count.
+
+
+We now have the updated member pool (test + control) for the Feb CIS campaign. It is stored on BFD: /user/pythia/Workspaces/SamsMEP/MNScoring/feb2016_cis/init/2016-01-22/mem_with_compcards
+
+
+
+The member pool on Prod6 is located here: 
+mep_gec_modeling.mep_campaign_member_pool_archive(segment='feb_2016_cis_684_20160122').
+
+
+This is the table which has the details for fia_campaigns, Please filter it based on the campaign id .
+Table :Mep_spe_v3.fia_campaigns
+
+reco score
+/user/jli21/pythia/Workspaces/SamsMEP/Recommend/Scoring/ClubInsider/2016-01-23/Decay/recommend_score_cobought_no_smoothing_max_cosine_cobought_transaction_debug_adj_study_scaled
+
+reward score
+
+
+
+grep \( backfill.txt | cut -d \( -f2 | cut -d \) -f1 > backfill
+cat backfill.item | append_customer_item.py 0 ' ' > backfill.item.mapped
+cut -f3 backfill.item.mapped > backfill.item.mapped.system
+cat config/sc_offers_2016feb_684_input | keep.py backfill.item.mapped.system 6 '|' > sc_offers_backfill
+cut -d \| -f7,19 sc_offers_backfill | sort > sc_offers_backfill.sort
+awk '{print $0"|"NR}' backfill.item.mapped.system | sort -t \| -k1,1 > backfill.item.mapped.system_rank
+join -t '|' sc_offers_backfill.sort backfill.item.mapped.system_rank | sort -t \| -g -k3,3 > backfill_system_cpn_rank
+cut -d \| -f2 backfill_system_cpn_rank > default_backfill_cpn
+
+We now have the updated member pool (test + control) for the Feb CIS campaign. It is stored on BFD: /user/pythia/Workspaces/SamsMEP/MNScoring/feb2016_cis/init/2016-01-22/mem_with_compcards
+
+
+Item level: /user/pythia/Workspaces/SamsMEP/MNScoring/ProdData/score_items_tenure_season/segment=cis_2016_feb_v2_2016-01-24
+Subcat level: /user/pythia/Workspaces/SamsMEP/MNScoring/ProdData/score_subcats_tenure_season/segment=cis_2016_feb_v2_2016-01-24
+
+
+
